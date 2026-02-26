@@ -1,0 +1,8776 @@
+--[[
+═══════════════════════════════════════════════════════════════
+    HL5 MENU V3.0 - PREMIUM EDITION
+    Vollständig neu geschrieben mit modernem Hellgrau-Design
+    Hauptfarbe: Hellgrau | Clean, Professionell, Fehlerfrei
+═══════════════════════════════════════════════════════════════
+]]
+
+-- ═══════════════════════════════════════════════════════════════
+-- SERVICES & GRUNDLEGENDE INITIALISIERUNG
+-- ═══════════════════════════════════════════════════════════════
+
+local Services = {
+    TweenService = game:GetService("TweenService"),
+    Players = game:GetService("Players"),
+    UserInputService = game:GetService("UserInputService"),
+    RunService = game:GetService("RunService"),
+    Workspace = game:GetService("Workspace"),
+    TeleportService = game:GetService("TeleportService"),
+    HttpService = game:GetService("HttpService"),
+    Lighting = game:GetService("Lighting"),
+    ReplicatedStorage = game:GetService("ReplicatedStorage"),
+    TextChatService = game:GetService("TextChatService")
+}
+
+local LocalPlayer = Services.Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local Camera = Services.Workspace.CurrentCamera
+
+-- ═══════════════════════════════════════════════════════════════
+-- THEME SYSTEM - MODERNES HELLGRAU-DESIGN
+-- ═══════════════════════════════════════════════════════════════
+
+local Theme = {
+    -- Primäre Hellgrau-Töne
+    Primary = Color3.fromRGB(200, 200, 200),      -- Hellgrau (Hauptfarbe)
+    PrimaryLight = Color3.fromRGB(220, 220, 220),  -- Sehr helles Grau
+    PrimaryDark = Color3.fromRGB(160, 160, 160),   -- Mittelgrau
+    
+    -- Sekundäre Farben
+    Secondary = Color3.fromRGB(180, 180, 180),     -- Hellgrau
+    SecondaryLight = Color3.fromRGB(210, 210, 210), -- Sehr helles Grau
+    
+    -- Hintergrundfarben
+    Background = Color3.fromRGB(240, 240, 240),    -- Sehr helles Grau (fast weiß)
+    BackgroundLight = Color3.fromRGB(250, 250, 250), -- Fast weiß
+    Surface = Color3.fromRGB(230, 230, 230),        -- Helles Grau
+    SurfaceLight = Color3.fromRGB(245, 245, 245),   -- Sehr helles Grau
+    
+    -- Text-Farben
+    TextPrimary = Color3.fromRGB(30, 30, 30),       -- Fast schwarz
+    TextSecondary = Color3.fromRGB(80, 80, 80),     -- Dunkelgrau
+    TextTertiary = Color3.fromRGB(120, 120, 120),   -- Mittelgrau
+    
+    -- Status-Farben
+    Success = Color3.fromRGB(76, 175, 80),          -- Grün
+    Warning = Color3.fromRGB(255, 152, 0),          -- Orange
+    Danger = Color3.fromRGB(244, 67, 54),           -- Rot
+    Info = Color3.fromRGB(33, 150, 243),            -- Blau
+    
+    -- Border & Shadow
+    Border = Color3.fromRGB(160, 160, 160),         -- Mittelgrau Border
+    BorderLight = Color3.fromRGB(200, 200, 200),    -- Heller Border
+    Shadow = Color3.fromRGB(0, 0, 0),                -- Schwarz für Schatten
+}
+
+-- ═══════════════════════════════════════════════════════════════
+-- PRESET COLORS (GLOBAL)
+-- ═══════════════════════════════════════════════════════════════
+
+local PresetColors = {
+    Color3.fromRGB(200, 200, 200),   -- Hellgrau (Primary)
+    Color3.fromRGB(255, 0, 0),        -- Rot
+    Color3.fromRGB(255, 127, 0),      -- Orange
+    Color3.fromRGB(255, 255, 0),      -- Gelb
+    Color3.fromRGB(0, 255, 0),        -- Grün
+    Color3.fromRGB(0, 255, 255),      -- Cyan
+    Color3.fromRGB(0, 0, 255),        -- Blau
+    Color3.fromRGB(255, 0, 255),      -- Magenta
+    Color3.fromRGB(255, 255, 255),    -- Weiß
+    Color3.fromRGB(200, 200, 200),    -- Hellgrau
+    Color3.fromRGB(128, 128, 128),    -- Grau
+    Color3.fromRGB(0, 0, 0),          -- Schwarz
+}
+
+-- ═══════════════════════════════════════════════════════════════
+-- SETTINGS & CONFIGURATION
+-- ═══════════════════════════════════════════════════════════════
+
+local Settings = {
+    MenuKey = Enum.KeyCode.RightControl,
+    MenuScale = 1.0,
+    Theme = Theme,
+    
+    -- Animation Settings
+    AnimationSpeed = 0.3,
+    AnimationStyle = Enum.EasingStyle.Quad,
+    AnimationDirection = Enum.EasingDirection.Out,
+    
+    -- Performance Settings
+    UpdateInterval = 0.016, -- 60 FPS
+    DistanceCheckInterval = 2.0,
+    
+    -- File Paths
+    SettingsFile = "hl5_menu_settings_v3_" .. LocalPlayer.UserId .. ".json"
+}
+
+-- ═══════════════════════════════════════════════════════════════
+-- FEATURE STATES MIT KEYBINDS
+-- ═══════════════════════════════════════════════════════════════
+
+local FeatureStates = {
+    -- Character Features
+    Fly = {
+        enabled = false,
+        key = Enum.KeyCode.F,
+        value = 50,
+        maxValue = 200,
+        category = "Character"
+    },
+    WalkSpeed = {
+        enabled = false,
+        key = Enum.KeyCode.Q,
+        value = 16,
+        maxValue = 500,
+        category = "Character"
+    },
+    JumpPower = {
+        enabled = false,
+        key = Enum.KeyCode.J,
+        value = 50,
+        maxValue = 500,
+        category = "Character"
+    },
+    InvisibleMode = {
+        enabled = false,
+        key = Enum.KeyCode.V,
+        value = 0,
+        maxValue = 0,
+        category = "Character"
+    },
+    Noclip = {
+        enabled = false,
+        key = Enum.KeyCode.N,
+        value = 0,
+        maxValue = 0,
+        category = "Character"
+    },
+    SpinCharacter = {
+        enabled = false,
+        key = Enum.KeyCode.R,
+        value = 5,
+        maxValue = 100,
+        category = "Character"
+    },
+    Ragdoll = {
+        enabled = false,
+        key = Enum.KeyCode.G,
+        value = 0,
+        maxValue = 0,
+        category = "Character"
+    },
+    SpaceMode = {
+        enabled = false,
+        key = Enum.KeyCode.Z,
+        value = 20,
+        maxValue = 100,
+        category = "Character"
+    },
+    XRay = {
+        enabled = false,
+        key = Enum.KeyCode.X,
+        value = 70,
+        maxValue = 100,
+        category = "Character"
+    },
+    Godmode = {
+        enabled = false,
+        key = Enum.KeyCode.H,
+        value = 0,
+        maxValue = 0,
+        category = "Character"
+    },
+    DashStrafe = {
+        enabled = false,
+        key = Enum.KeyCode.B,
+        value = 50,        -- Dash-Geschwindigkeit
+        maxValue = 1000,
+        dashDistance = 5,  -- Wie weit nach links/rechts
+        category = "Character"
+    },
+    -- Aim Features
+    Aimbot = {
+        enabled = false,
+        key = Enum.KeyCode.M,
+        value = 100,  -- FOV Circle Radius
+        maxValue = 500,
+        category = "Aim",
+        targetPart = "Head",  -- "Head" oder "Body"
+        circleVisible = true,
+        circleColor = Color3.fromRGB(200, 200, 200),
+        smoothing = false,
+        smoothingAmount = 5
+    },
+    -- ESP Features
+    ESPHighlight = {
+        enabled = false,
+        key = Enum.KeyCode.E,
+        value = 50,
+        maxValue = 100,
+        color = Color3.fromRGB(200, 200, 200), -- Hellgrau
+        category = "ESP"
+    },
+    ESPNametags = {
+        enabled = false,
+        key = Enum.KeyCode.T,
+        value = 14,
+        maxValue = 30,
+        color = Color3.fromRGB(30, 30, 30), -- Fast schwarz
+        category = "ESP"
+    }
+}
+
+-- ═══════════════════════════════════════════════════════════════
+-- UTILITY FUNCTIONS
+-- ═══════════════════════════════════════════════════════════════
+
+local Utility = {}
+
+-- Tween Helper
+function Utility.Tween(instance, properties, duration, style, direction)
+    local tweenInfo = TweenInfo.new(
+        duration or Settings.AnimationSpeed,
+        style or Settings.AnimationStyle,
+        direction or Settings.AnimationDirection
+    )
+    local tween = Services.TweenService:Create(instance, tweenInfo, properties)
+    tween:Play()
+    return tween
+end
+
+-- Create Instance Helper
+function Utility.Create(className, properties)
+    local instance = Instance.new(className)
+    for property, value in pairs(properties) do
+        if property ~= "Parent" then
+            instance[property] = value
+        end
+    end
+    if properties.Parent then
+        instance.Parent = properties.Parent
+    end
+    return instance
+end
+
+-- Safe Call
+function Utility.SafeCall(func, ...)
+    local success, result = pcall(func, ...)
+    if not success then
+        warn("[HL5 Error]", result)
+    end
+    return success, result
+end
+
+-- Distance Check
+function Utility.GetDistance(pos1, pos2)
+    return (pos1 - pos2).Magnitude
+end
+
+-- Format Number
+function Utility.FormatNumber(num)
+    if num >= 1000000 then
+        return string.format("%.1fM", num / 1000000)
+    elseif num >= 1000 then
+        return string.format("%.1fK", num / 1000)
+    else
+        return tostring(math.floor(num))
+    end
+end
+
+-- ═══════════════════════════════════════════════════════════════
+-- SETTINGS MANAGER - SPEICHERN & LADEN
+-- ═══════════════════════════════════════════════════════════════
+
+local SettingsManager = {}
+
+function SettingsManager.Save()
+    return Utility.SafeCall(function()
+        if not writefile then
+            warn("[HL5] writefile not available")
+            return false
+        end
+        
+        local data = {
+            MenuKey = Settings.MenuKey and Settings.MenuKey.Name or "RightControl",
+            MenuScale = Settings.MenuScale,
+            Features = {}
+        }
+        
+        for featureName, featureData in pairs(FeatureStates) do
+            data.Features[featureName] = {
+                enabled = false, -- Niemals enabled-State speichern
+                key = featureData.key and featureData.key.Name or nil,
+                value = featureData.value,
+                dashDistance = featureData.dashDistance or nil,
+                
+                -- Normale Farbe (ESP Features)
+                color = featureData.color and {
+                    R = featureData.color.R,
+                    G = featureData.color.G,
+                    B = featureData.color.B
+                } or nil,
+                
+                -- AIMBOT SPEZIFISCHE SETTINGS
+                circleColor = featureData.circleColor and {
+                    R = featureData.circleColor.R,
+                    G = featureData.circleColor.G,
+                    B = featureData.circleColor.B
+                } or nil,
+                targetPart = featureData.targetPart or nil,
+                circleVisible = featureData.circleVisible,
+                smoothing = featureData.smoothing,
+                smoothingAmount = featureData.smoothingAmount or nil
+            }
+        end
+        
+        local jsonData = Services.HttpService:JSONEncode(data)
+        writefile(Settings.SettingsFile, jsonData)
+        print("[HL5] ✅ Settings saved successfully")
+        return true
+    end)
+end
+
+function SettingsManager.Load()
+    return Utility.SafeCall(function()
+        if not readfile or not isfile then
+            warn("[HL5] readfile/isfile not available")
+            return nil
+        end
+        
+        if not isfile(Settings.SettingsFile) then
+            print("[HL5] No saved settings found")
+            return nil
+        end
+        
+        local jsonData = readfile(Settings.SettingsFile)
+        local data = Services.HttpService:JSONDecode(jsonData)
+        
+        -- Apply loaded settings
+        if data.MenuKey then
+            Settings.MenuKey = Enum.KeyCode[data.MenuKey]
+        end
+        
+        if data.MenuScale then
+            Settings.MenuScale = data.MenuScale
+        end
+        
+        if data.Features then
+            for featureName, savedData in pairs(data.Features) do
+                if FeatureStates[featureName] then
+                    -- Keybind
+                    if savedData.key then
+                        FeatureStates[featureName].key = Enum.KeyCode[savedData.key]
+                    end
+                    
+                    -- Value
+                    if savedData.value then
+                        FeatureStates[featureName].value = savedData.value
+                    end
+                    
+                    -- Dash Distance
+                    if savedData.dashDistance then
+                        FeatureStates[featureName].dashDistance = savedData.dashDistance
+                    end
+                    
+                    -- Normale Farbe (ESP)
+                    if savedData.color then
+                        FeatureStates[featureName].color = Color3.new(
+                            savedData.color.R,
+                            savedData.color.G,
+                            savedData.color.B
+                        )
+                    end
+                    
+                    -- AIMBOT CIRCLE COLOR
+                    if savedData.circleColor then
+                        FeatureStates[featureName].circleColor = Color3.new(
+                            savedData.circleColor.R,
+                            savedData.circleColor.G,
+                            savedData.circleColor.B
+                        )
+                    end
+                    
+                    -- AIMBOT TARGET PART
+                    if savedData.targetPart then
+                        FeatureStates[featureName].targetPart = savedData.targetPart
+                    end
+                    
+                    -- AIMBOT CIRCLE VISIBLE
+                    if savedData.circleVisible ~= nil then
+                        FeatureStates[featureName].circleVisible = savedData.circleVisible
+                    end
+                    
+                    -- AIMBOT SMOOTHING
+                    if savedData.smoothing ~= nil then
+                        FeatureStates[featureName].smoothing = savedData.smoothing
+                    end
+                    
+                    -- AIMBOT SMOOTHING AMOUNT
+                    if savedData.smoothingAmount then
+                        FeatureStates[featureName].smoothingAmount = savedData.smoothingAmount
+                    end
+                end
+            end
+        end
+        
+        print("[HL5] ✅ Settings loaded successfully")
+        return true
+    end)
+end
+
+-- Load settings on startup
+SettingsManager.Load()
+
+-- ═══════════════════════════════════════════════════════════════
+-- PREMIUM LOADSCREEN - MODERN & ANIMATED
+-- ═══════════════════════════════════════════════════════════════
+
+local LoadScreen = {}
+
+function LoadScreen.Create()
+    local gui = Utility.Create("ScreenGui", {
+        Name = "HL5LoadScreen",
+        ResetOnSpawn = false,
+        ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+        Parent = PlayerGui
+    })
+    
+    -- UNSICHTBARER HINTERGRUND
+    local background = Utility.Create("Frame", {
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundTransparency = 1,  -- KOMPLETT UNSICHTBAR
+        BorderSizePixel = 0,
+        Parent = gui
+    })
+    
+    -- Center container
+    local container = Utility.Create("Frame", {
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Size = UDim2.new(0, 400, 0, 280),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        BackgroundColor3 = Theme.Surface,
+        BackgroundTransparency = 0.1,
+        BorderSizePixel = 0,
+        Parent = gui
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 20),
+        Parent = container
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = Theme.Primary,
+        Thickness = 2,
+        Transparency = 0.5,
+        Parent = container
+    })
+    
+    -- Glow effect
+    local glow = Utility.Create("ImageLabel", {
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Size = UDim2.new(1, 40, 1, 40),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        BackgroundTransparency = 1,
+        Image = "rbxassetid://5028857084",
+        ImageColor3 = Theme.Primary,
+        ImageTransparency = 0.7,
+        ZIndex = 0,
+        Parent = container
+    })
+    
+    -- Logo container
+    local logoContainer = Utility.Create("Frame", {
+        AnchorPoint = Vector2.new(0.5, 0),
+        Size = UDim2.new(0, 100, 0, 100),
+        Position = UDim2.new(0.5, 0, 0, 30),
+        BackgroundColor3 = Theme.Primary,
+        BackgroundTransparency = 0.2,
+        BorderSizePixel = 0,
+        Parent = container
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 20),
+        Parent = logoContainer
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = Theme.PrimaryLight,
+        Thickness = 3,
+        Transparency = 0.3,
+        Parent = logoContainer
+    })
+    
+    local logoGradient = Utility.Create("UIGradient", {
+        Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Theme.Primary),
+            ColorSequenceKeypoint.new(1, Theme.PrimaryLight)
+        },
+        Rotation = 45,
+        Parent = logoContainer
+    })
+    
+    -- Logo text
+    local logo = Utility.Create("TextLabel", {
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = "H",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 60,
+        Font = Enum.Font.GothamBold,
+        Parent = logoContainer
+    })
+    
+    -- Title
+    local title = Utility.Create("TextLabel", {
+        AnchorPoint = Vector2.new(0.5, 0),
+        Size = UDim2.new(0.9, 0, 0, 35),
+        Position = UDim2.new(0.5, 0, 0, 140),
+        BackgroundTransparency = 1,
+        Text = "HL5 MENU",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 28,
+        Font = Enum.Font.GothamBold,
+        Parent = container
+    })
+    
+    local titleGradient = Utility.Create("UIGradient", {
+        Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Theme.Primary),
+            ColorSequenceKeypoint.new(0.5, Theme.TextPrimary),
+            ColorSequenceKeypoint.new(1, Theme.Primary)
+        },
+        Parent = title
+    })
+    
+    -- Version
+    local version = Utility.Create("TextLabel", {
+        AnchorPoint = Vector2.new(0.5, 0),
+        Size = UDim2.new(0.9, 0, 0, 20),
+        Position = UDim2.new(0.5, 0, 0, 175),
+        BackgroundTransparency = 1,
+        Text = "Premium Edition V3.0",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 14,
+        Font = Enum.Font.Gotham,
+        Parent = container
+    })
+    
+    -- Progress bar background
+    local progressBg = Utility.Create("Frame", {
+        AnchorPoint = Vector2.new(0.5, 0),
+        Size = UDim2.new(0.85, 0, 0, 6),
+        Position = UDim2.new(0.5, 0, 0, 210),
+        BackgroundColor3 = Theme.BackgroundLight,
+        BorderSizePixel = 0,
+        Parent = container
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(1, 0),
+        Parent = progressBg
+    })
+    
+    -- Progress bar fill
+    local progressFill = Utility.Create("Frame", {
+        Size = UDim2.new(0, 0, 1, 0),
+        BackgroundColor3 = Theme.Primary,
+        BorderSizePixel = 0,
+        Parent = progressBg
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(1, 0),
+        Parent = progressFill
+    })
+    
+    local progressGradient = Utility.Create("UIGradient", {
+        Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Theme.Primary),
+            ColorSequenceKeypoint.new(1, Theme.PrimaryLight)
+        },
+        Parent = progressFill
+    })
+    
+    -- Status text
+    local status = Utility.Create("TextLabel", {
+        AnchorPoint = Vector2.new(0.5, 0),
+        Size = UDim2.new(0.9, 0, 0, 20),
+        Position = UDim2.new(0.5, 0, 0, 230),
+        BackgroundTransparency = 1,
+        Text = "Initializing...",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 13,
+        Font = Enum.Font.Gotham,
+        Parent = container
+    })
+    
+    -- Fade in animation
+    container.BackgroundTransparency = 1
+    logo.TextTransparency = 1
+    title.TextTransparency = 1
+    version.TextTransparency = 1
+    status.TextTransparency = 1
+    progressBg.BackgroundTransparency = 1
+    
+    Utility.Tween(container, {BackgroundTransparency = 0.1}, 0.5)
+    Utility.Tween(logo, {TextTransparency = 0}, 0.5)
+    Utility.Tween(title, {TextTransparency = 0}, 0.5)
+    Utility.Tween(version, {TextTransparency = 0}, 0.5)
+    Utility.Tween(progressBg, {BackgroundTransparency = 0}, 0.5)
+    Utility.Tween(status, {TextTransparency = 0}, 0.5)
+    
+    -- Loading animation
+    task.wait(0.5)
+    
+    local steps = {
+        {progress = 0.25, text = "Loading core systems...", wait = 0.4},
+        {progress = 0.5, text = "Initializing features...", wait = 0.4},
+        {progress = 0.75, text = "Building interface...", wait = 0.4},
+        {progress = 1.0, text = "Complete!", wait = 0.3}
+    }
+    
+    for _, step in ipairs(steps) do
+        Utility.Tween(progressFill, {Size = UDim2.new(step.progress, 0, 1, 0)}, 0.3)
+        status.Text = step.text
+        task.wait(step.wait)
+    end
+    
+    status.TextColor3 = Theme.Success
+    task.wait(0.3)
+    
+    -- Fade out
+    Utility.Tween(container, {BackgroundTransparency = 1}, 0.4)
+    Utility.Tween(logo, {TextTransparency = 1}, 0.4)
+    Utility.Tween(title, {TextTransparency = 1}, 0.4)
+    Utility.Tween(version, {TextTransparency = 1}, 0.4)
+    Utility.Tween(progressBg, {BackgroundTransparency = 1}, 0.4)
+    Utility.Tween(progressFill, {BackgroundTransparency = 1}, 0.4)
+    Utility.Tween(status, {TextTransparency = 1}, 0.4)
+    Utility.Tween(background, {BackgroundTransparency = 1}, 0.4)
+    
+    task.wait(0.4)
+    gui:Destroy()
+end
+
+-- ═══════════════════════════════════════════════════════════════
+-- FLY SYSTEM - VOLLSTÄNDIG & OPTIMIERT
+-- ═══════════════════════════════════════════════════════════════
+
+local FlySystem = {
+    enabled = false,
+    speed = 50,
+    bodyVelocity = nil,
+    bodyPosition = nil,
+    bodyAngularVelocity = nil,
+    connection = nil
+}
+
+function FlySystem:GetTargetCharacter()
+    -- Support for Invisible Mode (wird später definiert)
+    if _G.HL5InvisibleSystem and _G.HL5InvisibleSystem.isActive and _G.HL5InvisibleSystem.cloneCharacter then
+        return _G.HL5InvisibleSystem.cloneCharacter
+    end
+    return LocalPlayer.Character
+end
+
+function FlySystem:Enable()
+    if self.enabled then return end
+    
+    local character = self:GetTargetCharacter()
+    if not character then return end
+    
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not hrp or not humanoid then return end
+    
+    -- Set humanoid state
+    humanoid.PlatformStand = true
+    
+    -- Create physics objects
+    self.bodyVelocity = Utility.Create("BodyVelocity", {
+        MaxForce = Vector3.new(math.huge, math.huge, math.huge),
+        Velocity = Vector3.zero,
+        Parent = hrp
+    })
+    
+    self.bodyAngularVelocity = Utility.Create("BodyAngularVelocity", {
+        MaxTorque = Vector3.new(math.huge, math.huge, math.huge),
+        AngularVelocity = Vector3.zero,
+        Parent = hrp
+    })
+    
+    self.bodyPosition = Utility.Create("BodyPosition", {
+        MaxForce = Vector3.zero,
+        Position = hrp.Position,
+        D = 2000,
+        P = 10000,
+        Parent = hrp
+    })
+    
+    self.speed = FeatureStates.Fly.value
+    self.enabled = true
+    
+    -- Start update loop
+    self:StartUpdateLoop()
+    
+    print("[HL5] ✅ Fly enabled")
+end
+
+function FlySystem:Disable()
+    if not self.enabled then return end
+    
+    local character = self:GetTargetCharacter()
+    
+    if character then
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.PlatformStand = false
+        end
+        
+        local hrp = character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            for _, obj in pairs(hrp:GetChildren()) do
+                if obj:IsA("BodyMover") then
+                    obj:Destroy()
+                end
+            end
+        end
+    end
+    
+    if self.bodyVelocity then self.bodyVelocity:Destroy() end
+    if self.bodyPosition then self.bodyPosition:Destroy() end
+    if self.bodyAngularVelocity then self.bodyAngularVelocity:Destroy() end
+    if self.connection then self.connection:Disconnect() end
+    
+    self.bodyVelocity = nil
+    self.bodyPosition = nil
+    self.bodyAngularVelocity = nil
+    self.connection = nil
+    self.enabled = false
+    
+    print("[HL5] ✅ Fly disabled")
+end
+
+function FlySystem:StartUpdateLoop()
+    if self.connection then self.connection:Disconnect() end
+    
+    self.connection = Services.RunService.Heartbeat:Connect(function()
+        self:Update()
+    end)
+end
+
+function FlySystem:Update()
+    if not self.enabled then return end
+    
+    local character = self:GetTargetCharacter()
+    if not character then
+        self:Disable()
+        return
+    end
+    
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if not hrp then
+        self:Disable()
+        return
+    end
+    
+    -- Camera-relative rotation
+    local camCFrame = Camera.CFrame
+    local lookDir = camCFrame.LookVector
+    local upDir = camCFrame.UpVector
+    local rightDir = camCFrame.RightVector
+    
+    hrp.CFrame = CFrame.fromMatrix(hrp.Position, rightDir, upDir, -lookDir)
+    
+    -- Movement input
+    local moveVector = Vector3.zero
+    local UIS = Services.UserInputService
+    
+    if UIS:IsKeyDown(Enum.KeyCode.W) then moveVector += lookDir end
+    if UIS:IsKeyDown(Enum.KeyCode.S) then moveVector -= lookDir end
+    if UIS:IsKeyDown(Enum.KeyCode.A) then moveVector -= rightDir end
+    if UIS:IsKeyDown(Enum.KeyCode.D) then moveVector += rightDir end
+    if UIS:IsKeyDown(Enum.KeyCode.Space) then moveVector += Vector3.new(0, 1, 0) end
+    if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then moveVector -= Vector3.new(0, 1, 0) end
+    
+    if moveVector.Magnitude > 0 then
+        moveVector = moveVector.Unit
+    end
+    
+    -- Apply velocity
+    if self.bodyVelocity then
+        self.bodyVelocity.Velocity = moveVector * self.speed
+    end
+    
+    if self.bodyAngularVelocity then
+        self.bodyAngularVelocity.AngularVelocity = Vector3.zero
+    end
+    
+    if self.bodyPosition then
+        self.bodyPosition.MaxForce = Vector3.zero
+    end
+end
+
+function FlySystem:SetSpeed(newSpeed)
+    self.speed = math.clamp(newSpeed, 1, 1000)
+end
+
+-- Global reference
+_G.HL5FlySystem = FlySystem
+
+-- ═══════════════════════════════════════════════════════════════
+-- RAGDOLL SYSTEM - PHYSICS-BASED
+-- ═══════════════════════════════════════════════════════════════
+
+local RagdollSystem = {
+    enabled = false,
+    originalJoints = {}
+}
+
+function RagdollSystem:Enable()
+    if self.enabled then return end
+    
+    local character = LocalPlayer.Character
+    if not character then return end
+    
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
+    
+    -- Change to physics state
+    humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+    
+    -- Replace Motor6Ds with BallSocketConstraints
+    for _, descendant in pairs(character:GetDescendants()) do
+        if descendant:IsA("Motor6D") then
+            -- Save original joint
+            table.insert(self.originalJoints, {
+                motor = descendant,
+                parent = descendant.Parent,
+                part0 = descendant.Part0,
+                part1 = descendant.Part1,
+                c0 = descendant.C0,
+                c1 = descendant.C1
+            })
+            
+            -- Create attachments
+            local att0 = Utility.Create("Attachment", {
+                CFrame = descendant.C0,
+                Parent = descendant.Part0
+            })
+            
+            local att1 = Utility.Create("Attachment", {
+                CFrame = descendant.C1,
+                Parent = descendant.Part1
+            })
+            
+            -- Create ball socket
+            local ball = Utility.Create("BallSocketConstraint", {
+                Attachment0 = att0,
+                Attachment1 = att1,
+                LimitsEnabled = true,
+                TwistLimitsEnabled = true,
+                Parent = descendant.Parent
+            })
+            
+            -- Disable motor
+            descendant.Enabled = false
+        end
+    end
+    
+    self.enabled = true
+    print("[HL5] ✅ Ragdoll enabled")
+end
+
+function RagdollSystem:Disable()
+    if not self.enabled then return end
+    
+    local character = LocalPlayer.Character
+    if not character then return end
+    
+    -- Remove constraints
+    for _, descendant in pairs(character:GetDescendants()) do
+        if descendant:IsA("BallSocketConstraint") or 
+           (descendant:IsA("Attachment") and not descendant:FindFirstAncestorOfClass("Tool")) then
+            descendant:Destroy()
+        end
+    end
+    
+    -- Re-enable motors
+    for _, jointInfo in pairs(self.originalJoints) do
+        if jointInfo.motor and jointInfo.motor.Parent then
+            jointInfo.motor.Enabled = true
+        end
+    end
+    
+    -- Reset humanoid
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+        task.wait(0.1)
+        humanoid:ChangeState(Enum.HumanoidStateType.Running)
+    end
+    
+    self.originalJoints = {}
+    self.enabled = false
+    
+    print("[HL5] ✅ Ragdoll disabled")
+end
+
+-- Global reference
+_G.HL5RagdollSystem = RagdollSystem
+
+-- ═══════════════════════════════════════════════════════════════
+-- SPACE MODE SYSTEM - ZERO GRAVITY PHYSICS (STABILE KOLLISION)
+-- ═══════════════════════════════════════════════════════════════
+
+local SpaceModeSystem = {
+    enabled = false,
+    bodyVelocity = nil,
+    bodyAngularVelocity = nil,
+    connection = nil,
+    velocity = Vector3.zero,
+    angularVelocity = Vector3.zero,
+    touchConnections = {},
+    
+    -- Physics constants
+    THRUST_POWER = 25,
+    ROTATION_SPEED = 2.5,
+    LINEAR_DAMPING = 0.998,
+    ANGULAR_DAMPING = 0.985,
+    MAX_LINEAR_SPEED = 150,
+    MAX_ANGULAR_SPEED = 8,
+    COLLISION_ELASTICITY = 0.7,
+    MASS = 2.0,
+    
+    -- Collision detection
+    lastCollisionTime = {},
+    collisionCooldown = 0.05,
+    activeCollisions = {}
+}
+
+function SpaceModeSystem:Enable()
+    if self.enabled then return end
+    
+    local character = LocalPlayer.Character
+    if not character then return end
+    
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if not humanoid or not hrp then return end
+    
+    print("[HL5] 🚀 Space Mode enabled - Zero Gravity Active")
+    
+    -- Freeze humanoid but keep physics active
+    humanoid.PlatformStand = true
+    humanoid.AutoRotate = false
+    
+    -- Enable collision on ALL body parts
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = true
+            part.Massless = false
+            part.CustomPhysicalProperties = PhysicalProperties.new(
+                self.MASS,
+                0.1,
+                self.COLLISION_ELASTICITY,
+                1,
+                1
+            )
+        end
+    end
+    
+    -- Create body movers
+    self.bodyVelocity = Utility.Create("BodyVelocity", {
+        MaxForce = Vector3.new(math.huge, math.huge, math.huge),
+        Velocity = Vector3.zero,
+        P = 12000,
+        Parent = hrp
+    })
+    
+    self.bodyAngularVelocity = Utility.Create("BodyAngularVelocity", {
+        MaxTorque = Vector3.new(math.huge, math.huge, math.huge),
+        AngularVelocity = Vector3.zero,
+        P = 8000,
+        Parent = hrp
+    })
+    
+    -- Setup collision handlers for ALL parts
+    self:SetupCollisions(character)
+    
+    -- Reset velocities
+    self.velocity = hrp.AssemblyLinearVelocity or Vector3.zero
+    self.angularVelocity = Vector3.zero
+    
+    -- Start update loop
+    self:StartUpdateLoop(character, humanoid, hrp)
+    
+    self.enabled = true
+    
+    print("[HL5] ✅ Collision enabled on all body parts including legs")
+end
+
+function SpaceModeSystem:SetupCollisions(character)
+    -- Clear old connections
+    for _, conn in pairs(self.touchConnections) do
+        Utility.SafeCall(function() conn:Disconnect() end)
+    end
+    self.touchConnections = {}
+    self.activeCollisions = {}
+    
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    
+    -- Get ALL body parts including legs
+    local bodyParts = {}
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            table.insert(bodyParts, part)
+            part.CanCollide = true -- Force enable collision
+        end
+    end
+    
+    print("[HL5] Setting up collision for " .. #bodyParts .. " body parts")
+    
+    -- Setup collision detection for each part
+    for _, part in pairs(bodyParts) do
+        local partName = part.Name
+        
+        local connection = part.Touched:Connect(function(hit)
+            if not self.enabled then return end
+            if hit:IsDescendantOf(character) then return end
+            
+            self:HandleCollision(part, hit, character, hrp)
+        end)
+        
+        table.insert(self.touchConnections, connection)
+    end
+    
+    print("[HL5] ✅ Collision handlers active: " .. #self.touchConnections)
+end
+
+function SpaceModeSystem:HandleCollision(myPart, hitPart, myCharacter, hrp)
+    -- Ignore invalid collisions
+    if not myPart or not hitPart or not hrp then return end
+    if hitPart:IsDescendantOf(myCharacter) then return end
+    
+    -- Cooldown check per unique collision pair
+    local collisionKey = myPart.Name .. "_" .. hitPart:GetFullName()
+    local now = tick()
+    
+    if self.lastCollisionTime[collisionKey] and (now - self.lastCollisionTime[collisionKey]) < self.collisionCooldown then
+        return
+    end
+    self.lastCollisionTime[collisionKey] = now
+    
+    -- Get positions
+    local myPos = myPart.Position
+    local hitPos = hitPart.Position
+    
+    -- Calculate collision normal (direction from hit to me)
+    local normal = (myPos - hitPos).Unit
+    
+    -- Get velocities
+    local myVel = self.velocity
+    local hitVel = Vector3.zero
+    
+    -- Check if hit object is a player
+    local hitPlayer = Services.Players:GetPlayerFromCharacter(hitPart.Parent)
+    if hitPlayer then
+        local hitChar = hitPart.Parent
+        local hitHRP = hitChar:FindFirstChild("HumanoidRootPart")
+        if hitHRP then
+            hitVel = hitHRP.AssemblyLinearVelocity or hitHRP.Velocity
+        end
+    elseif hitPart:IsA("BasePart") then
+        hitVel = hitPart.AssemblyLinearVelocity or hitPart.Velocity
+    end
+    
+    -- Calculate relative velocity
+    local relativeVel = myVel - hitVel
+    local impactSpeed = relativeVel.Magnitude
+    
+    -- Minimum impact threshold
+    if impactSpeed < 1 then return end
+    
+    -- Check if we're moving toward the collision surface
+    local normalVelocity = relativeVel:Dot(normal)
+    
+    -- Apply collision response
+    if normalVelocity < 0 then
+        -- Calculate reflection
+        local reflectedVel = relativeVel - (2 * normalVelocity * normal)
+        
+        -- Apply elasticity
+        local newVelocity = hitVel + (reflectedVel * self.COLLISION_ELASTICITY)
+        
+        -- Update velocity
+        self.velocity = newVelocity
+        
+        -- Add rotational impulse based on collision point
+        local collisionOffset = myPos - hrp.Position
+        local torqueAxis = collisionOffset:Cross(relativeVel)
+        
+        if torqueAxis.Magnitude > 0.1 then
+            local torqueMagnitude = math.clamp(impactSpeed * 0.2, 0.5, 6)
+            self.angularVelocity = self.angularVelocity + (torqueAxis.Unit * torqueMagnitude)
+        end
+        
+        -- Push away from surface to prevent sticking
+        local separationForce = normal * math.min(impactSpeed * 0.1, 2)
+        hrp.CFrame = hrp.CFrame + (normal * 0.08)
+        self.velocity = self.velocity + separationForce
+        
+        -- Debug output
+        if myPart.Name:match("Leg") or myPart.Name:match("Foot") then
+            print("[HL5] Leg collision detected: " .. myPart.Name .. " hit " .. hitPart.Name)
+        end
+    end
+end
+
+function SpaceModeSystem:StartUpdateLoop(character, humanoid, hrp)
+    if self.connection then self.connection:Disconnect() end
+    
+    self.connection = Services.RunService.Heartbeat:Connect(function(dt)
+        if not character or not character.Parent or not humanoid or not hrp or humanoid.Health <= 0 then
+            self:Disable()
+            return
+        end
+        
+        -- Ensure all parts stay collidable
+        for _, part in pairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                if not part.CanCollide then
+                    part.CanCollide = true
+                end
+            end
+        end
+        
+        -- Get camera orientation
+        local camCF = Camera.CFrame
+        local camLook = camCF.LookVector
+        local camRight = camCF.RightVector
+        local camUp = camCF.UpVector
+        
+        -- Movement input (thrust)
+        local thrustDir = Vector3.zero
+        local UIS = Services.UserInputService
+        
+        if UIS:IsKeyDown(Enum.KeyCode.W) then thrustDir = thrustDir + camLook end
+        if UIS:IsKeyDown(Enum.KeyCode.S) then thrustDir = thrustDir - camLook end
+        if UIS:IsKeyDown(Enum.KeyCode.A) then thrustDir = thrustDir - camRight end
+        if UIS:IsKeyDown(Enum.KeyCode.D) then thrustDir = thrustDir + camRight end
+        if UIS:IsKeyDown(Enum.KeyCode.Space) then thrustDir = thrustDir + camUp end
+        if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then thrustDir = thrustDir - camUp end
+        
+        -- Apply thrust
+        local thrustPower = FeatureStates.SpaceMode.value
+        if thrustDir.Magnitude > 0 then
+            thrustDir = thrustDir.Unit
+            self.velocity = self.velocity + (thrustDir * thrustPower * dt * 4)
+        end
+        
+        -- Rotation input
+        local rotationInput = Vector3.zero
+        
+        if UIS:IsKeyDown(Enum.KeyCode.Q) then 
+            rotationInput = rotationInput + Vector3.new(0, 1, 0) 
+        end
+        if UIS:IsKeyDown(Enum.KeyCode.E) then 
+            rotationInput = rotationInput + Vector3.new(0, -1, 0) 
+        end
+        if UIS:IsKeyDown(Enum.KeyCode.R) then 
+            rotationInput = rotationInput + camRight 
+        end
+        if UIS:IsKeyDown(Enum.KeyCode.F) then 
+            rotationInput = rotationInput - camRight 
+        end
+        if UIS:IsKeyDown(Enum.KeyCode.T) then 
+            rotationInput = rotationInput + camLook 
+        end
+        if UIS:IsKeyDown(Enum.KeyCode.G) then 
+            rotationInput = rotationInput - camLook 
+        end
+        
+        -- Apply rotation
+        if rotationInput.Magnitude > 0 then
+            rotationInput = rotationInput.Unit
+            self.angularVelocity = self.angularVelocity + (rotationInput * self.ROTATION_SPEED * dt * 50)
+        end
+        
+        -- Apply damping (space friction simulation)
+        self.velocity = self.velocity * self.LINEAR_DAMPING
+        self.angularVelocity = self.angularVelocity * self.ANGULAR_DAMPING
+        
+        -- Clamp velocities
+        if self.velocity.Magnitude > self.MAX_LINEAR_SPEED then
+            self.velocity = self.velocity.Unit * self.MAX_LINEAR_SPEED
+        end
+        
+        if self.angularVelocity.Magnitude > self.MAX_ANGULAR_SPEED then
+            self.angularVelocity = self.angularVelocity.Unit * self.MAX_ANGULAR_SPEED
+        end
+        
+        -- Apply to body movers
+        if self.bodyVelocity then
+            self.bodyVelocity.Velocity = self.velocity
+        end
+        
+        if self.bodyAngularVelocity then
+            self.bodyAngularVelocity.AngularVelocity = self.angularVelocity
+        end
+        
+        -- Keep humanoid frozen
+        humanoid.PlatformStand = true
+        humanoid.AutoRotate = false
+    end)
+end
+
+function SpaceModeSystem:Disable()
+    if not self.enabled then return end
+    
+    -- Disconnect update loop
+    if self.connection then
+        self.connection:Disconnect()
+        self.connection = nil
+    end
+    
+    -- Disconnect collision handlers
+    for _, conn in pairs(self.touchConnections) do
+        Utility.SafeCall(function() conn:Disconnect() end)
+    end
+    self.touchConnections = {}
+    self.activeCollisions = {}
+    
+    -- Destroy body movers
+    if self.bodyVelocity then
+        self.bodyVelocity:Destroy()
+        self.bodyVelocity = nil
+    end
+    
+    if self.bodyAngularVelocity then
+        self.bodyAngularVelocity:Destroy()
+        self.bodyAngularVelocity = nil
+    end
+    
+    local character = LocalPlayer.Character
+    if character then
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        local hrp = character:FindFirstChild("HumanoidRootPart")
+        
+        -- Reset collision and physics properties
+        for _, part in pairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CustomPhysicalProperties = nil
+                part.CanCollide = (part.Name == "HumanoidRootPart")
+                part.Massless = false
+            end
+        end
+        
+        -- Unfreeze humanoid
+        if humanoid then
+            humanoid.PlatformStand = false
+            humanoid.AutoRotate = true
+            humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+            task.wait(0.1)
+            humanoid:ChangeState(Enum.HumanoidStateType.Running)
+        end
+        
+        -- Stop all movement
+        if hrp then
+            hrp.AssemblyLinearVelocity = Vector3.zero
+            hrp.AssemblyAngularVelocity = Vector3.zero
+        end
+    end
+    
+    -- Reset state
+    self.velocity = Vector3.zero
+    self.angularVelocity = Vector3.zero
+    self.lastCollisionTime = {}
+    self.enabled = false
+    
+    print("[HL5] Space Mode disabled")
+end
+
+-- Global reference
+_G.HL5SpaceModeSystem = SpaceModeSystem
+
+-- ═══════════════════════════════════════════════════════════════
+-- XRAY SYSTEM - UNBEGRENZTE REICHWEITE (OPTIMIERT)
+-- ═══════════════════════════════════════════════════════════════
+
+local XRaySystem = {
+    enabled = false,
+    transparency = 0.7,
+    
+    -- Caching
+    processedParts = {},
+    terrainMaterials = {},
+    
+    -- Connections
+    descendantAddedConnection = nil,
+    descendantRemovingConnection = nil,
+    
+    -- Performance Settings
+    skipSmallParts = true, -- Kleine Parts überspringen für Performance
+    batchSize = 200, -- Parts pro Frame beim Enable
+}
+
+function XRaySystem:IsPlayerCharacterPart(part)
+    local current = part
+    
+    while current do
+        if current:IsA("Model") then
+            local humanoid = current:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                for _, player in pairs(Services.Players:GetPlayers()) do
+                    if player.Character == current then
+                        return true
+                    end
+                end
+            end
+        end
+        
+        if current:IsA("Accessory") then
+            local character = current.Parent
+            if character and character:IsA("Model") then
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    for _, player in pairs(Services.Players:GetPlayers()) do
+                        if player.Character == character then
+                            return true
+                        end
+                    end
+                end
+            end
+        end
+        
+        current = current.Parent
+        
+        if current == Services.Workspace then
+            break
+        end
+    end
+    
+    return false
+end
+
+function XRaySystem:ShouldProcess(part)
+    -- Player-Check
+    if self:IsPlayerCharacterPart(part) then 
+        return false 
+    end
+    
+    -- Skip already transparent
+    if part.Transparency >= 0.95 then 
+        return false 
+    end
+    
+    -- Skip very small parts (Performance!)
+    if self.skipSmallParts then
+        local size = part.Size
+        if size.X < 1 and size.Y < 1 and size.Z < 1 then
+            return false
+        end
+    end
+    
+    -- KEIN DISTANCE CHECK MEHR!
+    
+    return true
+end
+
+function XRaySystem:ApplyToPart(part)
+    if not part or not part:IsA("BasePart") then return end
+    if self.processedParts[part] then return end
+    
+    if self:ShouldProcess(part) then
+        self.processedParts[part] = part.Transparency
+        part.Transparency = self.transparency
+    end
+end
+
+function XRaySystem:RestorePart(part)
+    local originalTransparency = self.processedParts[part]
+    if originalTransparency then
+        if part and part.Parent then
+            part.Transparency = originalTransparency
+        end
+        self.processedParts[part] = nil
+    end
+end
+
+function XRaySystem:ProcessTerrain()
+    local terrain = Services.Workspace:FindFirstChildOfClass("Terrain")
+    if not terrain then return end
+    
+    Utility.SafeCall(function()
+        terrain.WaterTransparency = math.min(self.transparency + 0.2, 1)
+        terrain.WaterWaveSize = 0
+        terrain.WaterWaveSpeed = 0
+        terrain.Decoration = false
+        
+        local materials = {
+            Enum.Material.Grass,
+            Enum.Material.Slate,
+            Enum.Material.Concrete,
+            Enum.Material.Brick,
+            Enum.Material.Sand,
+            Enum.Material.WoodPlanks,
+            Enum.Material.Rock,
+            Enum.Material.Glacier,
+            Enum.Material.Snow,
+            Enum.Material.Sandstone,
+            Enum.Material.Mud,
+            Enum.Material.Basalt,
+            Enum.Material.Ground,
+            Enum.Material.CrackedLava,
+            Enum.Material.Asphalt,
+            Enum.Material.Cobblestone,
+            Enum.Material.Ice,
+            Enum.Material.LeafyGrass,
+            Enum.Material.Salt,
+            Enum.Material.Limestone,
+            Enum.Material.Pavement,
+        }
+        
+        for _, material in pairs(materials) do
+            local color = terrain:GetMaterialColor(material)
+            if not self.terrainMaterials[material] then
+                self.terrainMaterials[material] = color
+            end
+            
+            local r = math.min(color.R + (1 - color.R) * self.transparency, 1)
+            local g = math.min(color.G + (1 - color.G) * self.transparency, 1)
+            local b = math.min(color.B + (1 - color.B) * self.transparency, 1)
+            
+            terrain:SetMaterialColor(material, Color3.new(r, g, b))
+        end
+    end)
+end
+
+function XRaySystem:RestoreTerrain()
+    local terrain = Services.Workspace:FindFirstChildOfClass("Terrain")
+    if not terrain then return end
+    
+    Utility.SafeCall(function()
+        terrain.WaterTransparency = 0.3
+        terrain.WaterWaveSize = 0.15
+        terrain.WaterWaveSpeed = 10
+        terrain.Decoration = true
+        
+        for material, originalColor in pairs(self.terrainMaterials) do
+            terrain:SetMaterialColor(material, originalColor)
+        end
+        
+        self.terrainMaterials = {}
+    end)
+end
+
+function XRaySystem:Enable()
+    if self.enabled then return end
+    
+    self.enabled = true
+    self.transparency = FeatureStates.XRay.value / 100
+    self.processedParts = {}
+    self.terrainMaterials = {}
+    
+    print("[HL5 X-Ray] Enabling (UNLIMITED RANGE)...")
+    
+    -- BATCH PROCESSING: Um Lag zu vermeiden
+    task.spawn(function()
+        local allParts = {}
+        
+        -- Sammle alle Parts
+        for _, part in pairs(Services.Workspace:GetDescendants()) do
+            if part:IsA("BasePart") then
+                table.insert(allParts, part)
+            end
+        end
+        
+        local total = #allParts
+        local processed = 0
+        local skipped = 0
+        
+        print(string.format("[HL5 X-Ray] Found %d total parts, processing in batches...", total))
+        
+        -- Verarbeite in Batches
+        for i = 1, total, self.batchSize do
+            if not self.enabled then break end
+            
+            local endIndex = math.min(i + self.batchSize - 1, total)
+            
+            for j = i, endIndex do
+                local part = allParts[j]
+                if self:ShouldProcess(part) then
+                    self:ApplyToPart(part)
+                    processed = processed + 1
+                else
+                    skipped = skipped + 1
+                end
+            end
+            
+            -- Kleine Pause zwischen Batches
+            if endIndex < total then
+                task.wait()
+            end
+        end
+        
+        print(string.format("[HL5 X-Ray] ✅ %d processed, %d skipped", processed, skipped))
+    end)
+    
+    -- Terrain sofort verarbeiten
+    self:ProcessTerrain()
+    
+    -- Event-Based: Neue Parts
+    self.descendantAddedConnection = Services.Workspace.DescendantAdded:Connect(function(descendant)
+        if not self.enabled then return end
+        
+        task.wait(0.05)
+        
+        if descendant:IsA("BasePart") then
+            self:ApplyToPart(descendant)
+        end
+    end)
+    
+    -- Auto-Cleanup
+    self.descendantRemovingConnection = Services.Workspace.DescendantRemoving:Connect(function(descendant)
+        if not self.enabled then return end
+        
+        if descendant:IsA("BasePart") and self.processedParts[descendant] then
+            self.processedParts[descendant] = nil
+        end
+    end)
+end
+
+function XRaySystem:Disable()
+    if not self.enabled then return end
+    
+    -- Stop Connections
+    if self.descendantAddedConnection then
+        self.descendantAddedConnection:Disconnect()
+        self.descendantAddedConnection = nil
+    end
+    
+    if self.descendantRemovingConnection then
+        self.descendantRemovingConnection:Disconnect()
+        self.descendantRemovingConnection = nil
+    end
+    
+    self.enabled = false
+    
+    print("[HL5 X-Ray] Restoring...")
+    
+    -- DOPPEL-CHECK: Alle Parts im Workspace durchgehen
+    local restored = 0
+    local checked = 0
+    
+    task.spawn(function()
+        -- Methode 1: Aus Cache restoren
+        for part, originalTransparency in pairs(self.processedParts) do
+            if part and part.Parent then
+                part.Transparency = originalTransparency
+                restored = restored + 1
+            end
+        end
+        
+        -- Methode 2: SICHERHEITS-CHECK - Alle Parts im Workspace prüfen
+        for _, part in pairs(Services.Workspace:GetDescendants()) do
+            if part:IsA("BasePart") then
+                checked = checked + 1
+                
+                -- Wenn Part im Cache war aber nicht restored wurde
+                if self.processedParts[part] and part.Transparency ~= self.processedParts[part] then
+                    part.Transparency = self.processedParts[part]
+                    restored = restored + 1
+                end
+                
+                -- Alle 200 Parts Pause
+                if checked % 200 == 0 then
+                    task.wait()
+                end
+            end
+        end
+        
+        -- Cache leeren
+        self.processedParts = {}
+        
+        print(string.format("[HL5 X-Ray] ✅ Restored %d parts (checked %d total)", restored, checked))
+    end)
+    
+    -- Terrain restore
+    self:RestoreTerrain()
+end
+
+-- Global reference
+_G.HL5XRaySystem = XRaySystem
+
+-- ═══════════════════════════════════════════════════════════════
+-- GODMODE SYSTEM - ANTI-DAMAGE METHOD
+-- Verhindert Damage BEVOR er passiert!
+-- ═══════════════════════════════════════════════════════════════
+
+local GodmodeSystem = {
+    enabled = false,
+    connections = {},
+    
+    -- Original Character References
+    originalCharacter = nil,
+    originalHumanoid = nil,
+}
+
+function GodmodeSystem:GetTargetCharacter()
+    if _G.HL5InvisibleSystem and _G.HL5InvisibleSystem.isActive and _G.HL5InvisibleSystem.cloneCharacter then
+        return _G.HL5InvisibleSystem.cloneCharacter
+    end
+    return LocalPlayer.Character
+end
+
+function GodmodeSystem:ClearConnections()
+    for _, conn in pairs(self.connections) do
+        if conn then
+            pcall(function() conn:Disconnect() end)
+        end
+    end
+    self.connections = {}
+end
+
+function GodmodeSystem:BlockAllDamage(character)
+    if not character then return end
+    
+    -- Make ALL parts completely non-collidable with damage sources
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            -- Set collision group to avoid damage
+            part.CanCollide = false
+            part.CanTouch = false  -- Prevents Touched events
+            
+            -- Make massless to avoid physics damage
+            part.Massless = true
+        end
+    end
+end
+
+function GodmodeSystem:Enable()
+    if self.enabled then return end
+    
+    local character = self:GetTargetCharacter()
+    if not character then 
+        print("[HL5] ❌ No character!")
+        return 
+    end
+    
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then 
+        print("[HL5] ❌ No humanoid!")
+        return 
+    end
+    
+    self.enabled = true
+    self.originalCharacter = character
+    self.originalHumanoid = humanoid
+    
+    print("[HL5] 🛡️ ANTI-DAMAGE GODMODE ENABLING...")
+    
+    -- METHOD 1: Max out health to extreme value
+    humanoid.MaxHealth = 1e308  -- Max float value
+    humanoid.Health = 1e308
+    
+    -- METHOD 2: Disable ALL damage-related states
+    for _, state in pairs(Enum.HumanoidStateType:GetEnumItems()) do
+        pcall(function()
+            humanoid:SetStateEnabled(state, state == Enum.HumanoidStateType.Running or state == Enum.HumanoidStateType.RunningNoPhysics)
+        end)
+    end
+    
+    -- METHOD 3: Add invisible ForceFields (x20)
+    for i = 1, 20 do
+        local ff = Instance.new("ForceField")
+        ff.Visible = false
+        ff.Parent = character
+    end
+    
+    -- METHOD 4: Block collision damage
+    self:BlockAllDamage(character)
+    
+    -- METHOD 5: Health Lock (Triple Layer)
+    -- Layer A: RenderStepped (highest priority)
+    local renderConn = Services.RunService.RenderStepped:Connect(function()
+        if not self.enabled then return end
+        
+        local char = self:GetTargetCharacter()
+        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        
+        if hum and hum.Health < 1e308 then
+            hum.Health = 1e308
+        end
+    end)
+    table.insert(self.connections, renderConn)
+    
+    -- Layer B: Heartbeat
+    local heartbeatConn = Services.RunService.Heartbeat:Connect(function()
+        if not self.enabled then return end
+        
+        local char = self:GetTargetCharacter()
+        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        
+        if hum and hum.Health < 1e308 then
+            hum.Health = 1e308
+        end
+    end)
+    table.insert(self.connections, heartbeatConn)
+    
+    -- Layer C: Stepped
+    local steppedConn = Services.RunService.Stepped:Connect(function()
+        if not self.enabled then return end
+        
+        local char = self:GetTargetCharacter()
+        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        
+        if hum and hum.Health < 1e308 then
+            hum.Health = 1e308
+        end
+    end)
+    table.insert(self.connections, steppedConn)
+    
+    -- METHOD 6: Event-based protection
+    local healthChangedConn = humanoid.HealthChanged:Connect(function(health)
+        if not self.enabled then return end
+        
+        if health < 1e308 then
+            print("[HL5] 🛡️ DAMAGE BLOCKED! Restoring health...")
+            
+            -- Massive parallel restore
+            for i = 1, 200 do
+                task.spawn(function()
+                    humanoid.Health = 1e308
+                end)
+            end
+        end
+    end)
+    table.insert(self.connections, healthChangedConn)
+    
+    local diedConn = humanoid.Died:Connect(function()
+        if not self.enabled then return end
+        
+        print("[HL5] 🛡️ DEATH EVENT INTERCEPTED!")
+        
+        -- Emergency revival
+        for i = 1, 500 do
+            task.spawn(function()
+                humanoid.Health = 1e308
+                humanoid:ChangeState(Enum.HumanoidStateType.Running)
+            end)
+        end
+    end)
+    table.insert(self.connections, diedConn)
+    
+    -- METHOD 7: Background ultra-fast loop
+    task.spawn(function()
+        while self.enabled do
+            local char = self:GetTargetCharacter()
+            local hum = char and char:FindFirstChildOfClass("Humanoid")
+            
+            if hum then
+                -- Force health
+                if hum.Health ~= 1e308 then
+                    hum.Health = 1e308
+                end
+                
+                -- Verify ForceFields
+                local ffCount = 0
+                for _, child in pairs(char:GetChildren()) do
+                    if child:IsA("ForceField") then
+                        ffCount = ffCount + 1
+                    end
+                end
+                
+                if ffCount < 10 then
+                    for i = 1, 20 do
+                        local ff = Instance.new("ForceField")
+                        ff.Visible = false
+                        ff.Parent = char
+                    end
+                end
+                
+                -- Maintain collision blocking
+                for _, part in pairs(char:GetDescendants()) do
+                    if part:IsA("BasePart") and part.CanCollide then
+                        part.CanCollide = false
+                    end
+                end
+            end
+            
+            task.wait() -- Minimal delay
+        end
+    end)
+    
+    -- METHOD 8: CharacterAdded handler
+    local charConn = LocalPlayer.CharacterAdded:Connect(function(newChar)
+        if not self.enabled then return end
+        
+        print("[HL5] 🛡️ Character respawned - reapplying godmode!")
+        self:ClearConnections()
+        task.wait(0.5)
+        self:Enable()
+    end)
+    table.insert(self.connections, charConn)
+    
+    -- METHOD 9: DescendantAdded (for new parts)
+    local descConn = character.DescendantAdded:Connect(function(descendant)
+        if not self.enabled then return end
+        
+        if descendant:IsA("BasePart") then
+            task.wait()
+            descendant.CanCollide = false
+            descendant.CanTouch = false
+            descendant.Massless = true
+        end
+    end)
+    table.insert(self.connections, descConn)
+    
+    print("[HL5] ✅ ANTI-DAMAGE GODMODE ACTIVE!")
+    print("[HL5] 🛡️ 9 Protection Methods Active")
+end
+
+function GodmodeSystem:Disable()
+    if not self.enabled then return end
+    
+    print("[HL5] 🛡️ Disabling Anti-Damage Godmode...")
+    
+    self.enabled = false
+    self:ClearConnections()
+    
+    local character = self:GetTargetCharacter()
+    if character then
+        -- Remove ForceFields
+        for _, child in pairs(character:GetChildren()) do
+            if child:IsA("ForceField") then
+                child:Destroy()
+            end
+        end
+        
+        -- Restore collision
+        for _, part in pairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                if part.Name == "HumanoidRootPart" then
+                    part.CanCollide = true
+                else
+                    part.CanCollide = false
+                end
+                part.CanTouch = true
+                part.Massless = false
+            end
+        end
+        
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            -- Restore health
+            humanoid.MaxHealth = 100
+            humanoid.Health = 100
+            
+            -- Re-enable states
+            for _, state in pairs(Enum.HumanoidStateType:GetEnumItems()) do
+                pcall(function()
+                    humanoid:SetStateEnabled(state, true)
+                end)
+            end
+            
+            -- Force running state
+            humanoid:ChangeState(Enum.HumanoidStateType.Running)
+        end
+    end
+    
+    print("[HL5] ✅ Anti-Damage Godmode disabled")
+end
+
+-- Global reference
+_G.HL5GodmodeSystem = GodmodeSystem
+
+-- ═══════════════════════════════════════════════════════════════
+-- AIMBOT SYSTEM - MAUS-BASIERT MIT WALL CHECK
+-- Funktioniert NUR wenn Spieler sichtbar ist (keine Wände)
+-- ═══════════════════════════════════════════════════════════════
+
+local AimbotSystem = {
+    enabled = false,
+    fovCircle = nil,
+    connection = nil,
+    currentTarget = nil,
+    lockedTarget = nil,
+    
+    -- Settings
+    fovRadius = 100,
+    targetPart = "Head",
+    smoothing = false,
+    smoothingAmount = 5,
+    circleVisible = true,
+    circleColor = Color3.fromRGB(200, 200, 200),
+    
+    -- Prediction
+    predictionEnabled = true,
+    predictionAmount = 0.13,
+    
+    -- Wall Check
+    wallCheckEnabled = true,  -- NEU: Wall Check aktiviert
+    
+    -- Current target data
+    currentTargetPosition = nil,
+    currentScreenPosition = nil,
+}
+
+function AimbotSystem:CreateFOVCircle()
+    if self.fovCircle then
+        pcall(function() self.fovCircle:Remove() end)
+    end
+    
+    local circle = Drawing.new("Circle")
+    circle.Thickness = 2
+    circle.NumSides = 64
+    circle.Radius = self.fovRadius
+    circle.Filled = false
+    circle.Transparency = 1
+    circle.Color = self.circleColor
+    circle.Visible = self.circleVisible
+    circle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+    
+    self.fovCircle = circle
+    return circle
+end
+
+function AimbotSystem:IsTargetValid(player)
+    if not player or not player.Parent then return false end
+    if not player.Character then return false end
+    
+    local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+    if not humanoid or humanoid.Health <= 0 then return false end
+    
+    return true
+end
+
+-- WALL CHECK - Prüft ob Spieler wirklich sichtbar ist
+function AimbotSystem:HasLineOfSight(targetPart)
+    if not self.wallCheckEnabled then return true end
+    if not targetPart then return false end
+    
+    local character = LocalPlayer.Character
+    if not character then return false end
+    
+    -- Start von Kamera Position
+    local startPos = Camera.CFrame.Position
+    local endPos = targetPart.Position
+    
+    -- Erstelle Raycast Parameter
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+    
+    -- Ignoriere eigenen Character und Character des Ziels
+    local ignoreList = {character}
+    if targetPart.Parent then
+        table.insert(ignoreList, targetPart.Parent)
+    end
+    raycastParams.FilterDescendantsInstances = ignoreList
+    
+    -- Ignoriere Transparente/Non-Collidable Parts
+    raycastParams.IgnoreWater = true
+    
+    -- Schieße Raycast
+    local direction = (endPos - startPos)
+    local raycastResult = Services.Workspace:Raycast(startPos, direction, raycastParams)
+    
+    -- Wenn nichts getroffen = freie Sicht
+    if not raycastResult then
+        return true
+    end
+    
+    -- Wenn das getroffene Teil zum Ziel-Character gehört = freie Sicht
+    if raycastResult.Instance then
+        local hitParent = raycastResult.Instance.Parent
+        if hitParent and hitParent == targetPart.Parent then
+            return true
+        end
+        
+        -- Check auch für Accessories
+        if hitParent and hitParent.Parent and hitParent.Parent == targetPart.Parent then
+            return true
+        end
+    end
+    
+    -- Sonst wurde eine Wand getroffen = keine Sicht
+    return false
+end
+
+function AimbotSystem:GetClosestPlayerInFOV()
+    local closestPlayer = nil
+    local shortestDistance = math.huge
+    local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+    
+    for _, player in pairs(Services.Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            local character = player.Character
+            local targetPart = character:FindFirstChild(self.targetPart)
+            
+            if not targetPart then
+                targetPart = character:FindFirstChild("HumanoidRootPart")
+            end
+            
+            if targetPart then
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if humanoid and humanoid.Health > 0 then
+                    -- Prüfe zuerst Sichtlinie
+                    if self:HasLineOfSight(targetPart) then
+                        local screenPos, onScreen = Camera:WorldToViewportPoint(targetPart.Position)
+                        
+                        if onScreen then
+                            local screenPos2D = Vector2.new(screenPos.X, screenPos.Y)
+                            local distance = (screenPos2D - screenCenter).Magnitude
+                            
+                            if distance <= self.fovRadius and distance < shortestDistance then
+                                shortestDistance = distance
+                                closestPlayer = player
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    return closestPlayer
+end
+
+function AimbotSystem:PredictPosition(targetPart)
+    local currentPos = targetPart.Position
+    
+    if self.predictionEnabled then
+        local velocity = targetPart.AssemblyLinearVelocity or targetPart.Velocity or Vector3.zero
+        local predictedPos = currentPos + (velocity * self.predictionAmount)
+        return predictedPos
+    end
+    
+    return currentPos
+end
+
+function AimbotSystem:MoveMouseToTarget(targetPlayer)
+    if not targetPlayer or not targetPlayer.Character then
+        self.currentTargetPosition = nil
+        self.currentScreenPosition = nil
+        return
+    end
+    
+    local targetPart = targetPlayer.Character:FindFirstChild(self.targetPart)
+    if not targetPart then
+        targetPart = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+    end
+    
+    if not targetPart then
+        self.currentTargetPosition = nil
+        self.currentScreenPosition = nil
+        return
+    end
+    
+    -- DOPPEL-CHECK: Ist Ziel immer noch sichtbar?
+    if not self:HasLineOfSight(targetPart) then
+        self.currentTargetPosition = nil
+        self.currentScreenPosition = nil
+        return
+    end
+    
+    -- Berechne 3D Position mit Prediction
+    local targetPosition = self:PredictPosition(targetPart)
+    self.currentTargetPosition = targetPosition
+    
+    -- Konvertiere zu Screen Position
+    local screenPos, onScreen = Camera:WorldToViewportPoint(targetPosition)
+    
+    if not onScreen then
+        self.currentScreenPosition = nil
+        return
+    end
+    
+    local targetScreenPos = Vector2.new(screenPos.X, screenPos.Y)
+    self.currentScreenPosition = targetScreenPos
+    
+    -- Maus physisch bewegen
+    if mousemoverel then
+        local currentMousePos = Services.UserInputService:GetMouseLocation()
+        local delta = targetScreenPos - currentMousePos
+        
+        -- FIX: RICHTIGE Smoothing-Berechnung
+        if self.smoothing then
+            -- smoothingAmount: 1 = super langsam, 100 = instant
+            -- Formel: Je HÖHER der Wert, desto SCHNELLER
+            local smoothFactor = self.smoothingAmount / 100
+            delta = delta * smoothFactor
+        end
+        
+        mousemoverel(delta.X, delta.Y)
+    end
+end
+
+function AimbotSystem:IsPlayerShooting()
+    return Services.UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
+end
+
+function AimbotSystem:SetupMouseHooks()
+    local mt = getrawmetatable(game)
+    local oldIndex = mt.__index
+    local oldNamecall = mt.__namecall
+    
+    setreadonly(mt, false)
+    
+    mt.__index = newcclosure(function(self, key)
+        if self == LocalPlayer:GetMouse() and AimbotSystem.enabled and AimbotSystem.currentTargetPosition then
+            if key == "Hit" then
+                return CFrame.new(AimbotSystem.currentTargetPosition)
+            end
+            
+            if key == "Target" then
+                if AimbotSystem.currentTarget and AimbotSystem.currentTarget.Character then
+                    local part = AimbotSystem.currentTarget.Character:FindFirstChild(AimbotSystem.targetPart)
+                    if part then return part end
+                end
+            end
+            
+            if key == "X" and AimbotSystem.currentScreenPosition then
+                return AimbotSystem.currentScreenPosition.X
+            end
+            
+            if key == "Y" and AimbotSystem.currentScreenPosition then
+                return AimbotSystem.currentScreenPosition.Y
+            end
+            
+            if key == "UnitRay" then
+                local origin = Camera.CFrame.Position
+                local direction = (AimbotSystem.currentTargetPosition - origin).Unit
+                return Ray.new(origin, direction * 1000)
+            end
+        end
+        
+        return oldIndex(self, key)
+    end)
+    
+    mt.__namecall = newcclosure(function(self, ...)
+        local method = getnamecallmethod()
+        
+        if method == "GetMouseLocation" and AimbotSystem.enabled and AimbotSystem.currentScreenPosition then
+            return AimbotSystem.currentScreenPosition
+        end
+        
+        return oldNamecall(self, ...)
+    end)
+    
+    setreadonly(mt, true)
+    
+    print("[HL5 Aimbot] Mouse Hooks aktiviert")
+end
+
+function AimbotSystem:Enable()
+    if self.enabled then return end
+    
+    self.enabled = true
+    self.fovRadius = FeatureStates.Aimbot.value
+    self.targetPart = FeatureStates.Aimbot.targetPart
+    self.smoothing = FeatureStates.Aimbot.smoothing
+    self.smoothingAmount = FeatureStates.Aimbot.smoothingAmount
+    self.circleVisible = FeatureStates.Aimbot.circleVisible
+    self.circleColor = FeatureStates.Aimbot.circleColor
+    
+    self:CreateFOVCircle()
+    
+    pcall(function()
+        self:SetupMouseHooks()
+    end)
+    
+    print("[HL5 Aimbot] ✅ AKTIVIERT")
+    print("   FOV:", self.fovRadius)
+    print("   Target:", self.targetPart)
+    print("   Smoothing:", self.smoothing and "EIN" or "AUS")
+    print("   🖱️ Maus-Steuerung: EIN")
+    print("   🧱 Wall Check: EIN (Nur sichtbare Ziele)")
+    
+    self.connection = Services.RunService.RenderStepped:Connect(function()
+        if not self.enabled then return end
+        
+        -- Update FOV Circle
+        if self.fovCircle then
+            self.fovCircle.Radius = self.fovRadius
+            self.fovCircle.Color = self.circleColor
+            self.fovCircle.Visible = self.circleVisible
+            self.fovCircle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+        end
+        
+        -- NEU: Update Smoothing-Settings live
+        self.smoothing = FeatureStates.Aimbot.smoothing
+        self.smoothingAmount = FeatureStates.Aimbot.smoothingAmount
+        
+        if self:IsPlayerShooting() then
+            -- Prüfe ob locked target noch sichtbar ist
+            if self.lockedTarget and self:IsTargetValid(self.lockedTarget) then
+                local targetPart = self.lockedTarget.Character:FindFirstChild(self.targetPart) or 
+                                 self.lockedTarget.Character:FindFirstChild("HumanoidRootPart")
+                
+                -- Wenn Target hinter Wand geht = unlock
+                if targetPart and self:HasLineOfSight(targetPart) then
+                    self.currentTarget = self.lockedTarget
+                    self:MoveMouseToTarget(self.lockedTarget)
+                else
+                    -- Target nicht mehr sichtbar = neues suchen
+                    self.lockedTarget = nil
+                    local newTarget = self:GetClosestPlayerInFOV()
+                    if newTarget then
+                        self.lockedTarget = newTarget
+                        self.currentTarget = newTarget
+                        self:MoveMouseToTarget(newTarget)
+                    else
+                        self.currentTarget = nil
+                        self.currentTargetPosition = nil
+                        self.currentScreenPosition = nil
+                    end
+                end
+            else
+                -- Suche neues Target (nur sichtbare)
+                local newTarget = self:GetClosestPlayerInFOV()
+                if newTarget then
+                    self.lockedTarget = newTarget
+                    self.currentTarget = newTarget
+                    self:MoveMouseToTarget(newTarget)
+                else
+                    self.currentTarget = nil
+                    self.currentTargetPosition = nil
+                    self.currentScreenPosition = nil
+                end
+            end
+        else
+            self.lockedTarget = nil
+            self.currentTarget = nil
+            self.currentTargetPosition = nil
+            self.currentScreenPosition = nil
+        end
+    end)
+end
+
+function AimbotSystem:Disable()
+    if not self.enabled then return end
+    
+    self.enabled = false
+    
+    if self.fovCircle then
+        pcall(function() self.fovCircle:Remove() end)
+        self.fovCircle = nil
+    end
+    
+    if self.connection then
+        self.connection:Disconnect()
+        self.connection = nil
+    end
+    
+    self.currentTarget = nil
+    self.lockedTarget = nil
+    self.currentTargetPosition = nil
+    self.currentScreenPosition = nil
+    
+    print("[HL5 Aimbot] ✅ Deaktiviert")
+end
+
+function AimbotSystem:UpdateSettings()
+    self.fovRadius = FeatureStates.Aimbot.value
+    self.targetPart = FeatureStates.Aimbot.targetPart
+    self.smoothing = FeatureStates.Aimbot.smoothing
+    self.smoothingAmount = FeatureStates.Aimbot.smoothingAmount
+    self.circleVisible = FeatureStates.Aimbot.circleVisible
+    self.circleColor = FeatureStates.Aimbot.circleColor
+    
+    if self.fovCircle then
+        self.fovCircle.Radius = self.fovRadius
+        self.fovCircle.Color = self.circleColor
+        self.fovCircle.Visible = self.circleVisible and self.enabled
+    end
+end
+
+-- Global reference
+_G.HL5AimbotSystem = AimbotSystem
+
+-- ═══════════════════════════════════════════════════════════════
+-- DASH/STRAFE SYSTEM - AUTOMATIC LEFT/RIGHT MOVEMENT
+-- ═══════════════════════════════════════════════════════════════
+
+local DashStrafeSystem = {
+    enabled = false,
+    connection = nil,
+    movingRight = true, -- true = rechts, false = links
+    currentDistance = 0,
+    speed = 50,
+    maxDistance = 5,
+    startPosition = nil,
+    startCFrame = nil
+}
+
+function DashStrafeSystem:GetTargetCharacter()
+    if _G.HL5InvisibleSystem and _G.HL5InvisibleSystem.isActive and _G.HL5InvisibleSystem.cloneCharacter then
+        return _G.HL5InvisibleSystem.cloneCharacter
+    end
+    return LocalPlayer.Character
+end
+
+function DashStrafeSystem:Enable()
+    if self.enabled then return end
+    
+    local character = self:GetTargetCharacter()
+    if not character then return end
+    
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    
+    self.enabled = true
+    self.speed = FeatureStates.DashStrafe.value
+    self.maxDistance = FeatureStates.DashStrafe.dashDistance
+    self.currentDistance = 0
+    self.movingRight = true
+    self.startPosition = hrp.Position
+    self.startCFrame = hrp.CFrame
+    
+    print("[HL5] 💨 Dash/Strafe enabled")
+    print("   Speed:", self.speed, "studs/sec")
+    print("   Distance:", self.maxDistance, "studs each side")
+    
+    self:StartUpdateLoop()
+end
+
+function DashStrafeSystem:StartUpdateLoop()
+    if self.connection then
+        self.connection:Disconnect()
+    end
+    
+    self.connection = Services.RunService.Heartbeat:Connect(function(deltaTime)
+        if not self.enabled then return end
+        
+        local character = self:GetTargetCharacter()
+        if not character then
+            self:Disable()
+            return
+        end
+        
+        local hrp = character:FindFirstChild("HumanoidRootPart")
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        
+        if not hrp or not humanoid then
+            self:Disable()
+            return
+        end
+        
+        -- Update values from UI (live änderbar)
+        self.speed = FeatureStates.DashStrafe.value
+        self.maxDistance = FeatureStates.DashStrafe.dashDistance
+        
+        -- Berechne Bewegungsrichtung relativ zum Character
+        local lookVector = hrp.CFrame.LookVector
+        local rightVector = hrp.CFrame.RightVector
+        
+        -- Berechne Bewegung für diesen Frame
+        local moveDistance = self.speed * deltaTime
+        
+        -- Bewege in aktuelle Richtung
+        if self.movingRight then
+            self.currentDistance = self.currentDistance + moveDistance
+            
+            -- Wenn Maximum erreicht, Richtung wechseln
+            if self.currentDistance >= self.maxDistance then
+                self.currentDistance = self.maxDistance
+                self.movingRight = false
+            end
+        else
+            self.currentDistance = self.currentDistance - moveDistance
+            
+            -- Wenn Minimum erreicht, Richtung wechseln
+            if self.currentDistance <= -self.maxDistance then
+                self.currentDistance = -self.maxDistance
+                self.movingRight = true
+            end
+        end
+        
+        -- Wende Bewegung an (additiv zur Spielerbewegung)
+        local strafeOffset = rightVector * (self.movingRight and moveDistance or -moveDistance)
+        hrp.CFrame = hrp.CFrame + strafeOffset
+    end)
+end
+
+function DashStrafeSystem:Disable()
+    if not self.enabled then return end
+    
+    if self.connection then
+        self.connection:Disconnect()
+        self.connection = nil
+    end
+    
+    self.enabled = false
+    self.currentDistance = 0
+    self.movingRight = true
+    
+    print("[HL5] ✅ Dash/Strafe disabled")
+end
+
+-- Global reference
+_G.HL5DashStrafeSystem = DashStrafeSystem
+
+-- ═══════════════════════════════════════════════════════════════
+-- INVISIBLE MODE SYSTEM - CLONE-BASED (OHNE BLENDEN-EFFEKT) - FIXED FÜR CUSTOM CHARACTER SIZE
+-- ═══════════════════════════════════════════════════════════════
+
+local InvisibleSystem = {
+    isActive = false,
+    cloneCharacter = nil,
+    cloneRoot = nil,
+    cloneHumanoid = nil,
+    savedCFrame = nil,
+    originalHipHeight = nil,
+    
+    -- Connections
+    teleportConnection = nil,
+    movementConnection = nil,
+    colorMaintainConnection = nil,
+    
+    -- Animations
+    cloneAnimations = {},
+    currentAnimation = nil,
+    lastAnimationState = "Idle"
+}
+
+function InvisibleSystem:CreateClone()
+    local character = LocalPlayer.Character
+    if not character then return nil, nil, nil end
+    
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    local originalHumanoid = character:FindFirstChildOfClass("Humanoid")
+    if not hrp or not originalHumanoid then return nil, nil, nil end
+    
+    -- Speichere die originale HipHeight
+    self.originalHipHeight = originalHumanoid.HipHeight
+    
+    local originalArchivable = character.Archivable
+    character.Archivable = true
+    
+    local clone = character:Clone()
+    
+    character.Archivable = originalArchivable
+    
+    clone.Name = "HL5Clone"
+    
+    local cloneHRP = clone:FindFirstChild("HumanoidRootPart")
+    local cloneHumanoid = clone:FindFirstChildOfClass("Humanoid")
+    
+    if not cloneHRP or not cloneHumanoid then
+        clone:Destroy()
+        return nil, nil, nil
+    end
+    
+    cloneHumanoid.DisplayName = ""
+    cloneHumanoid.HealthDisplayDistance = 0
+    cloneHumanoid.NameDisplayDistance = 0
+    cloneHumanoid.WalkSpeed = FeatureStates.WalkSpeed.enabled and FeatureStates.WalkSpeed.value or 16
+    cloneHumanoid.JumpPower = FeatureStates.JumpPower.enabled and FeatureStates.JumpPower.value or 50
+    cloneHumanoid.JumpHeight = FeatureStates.JumpPower.enabled and (FeatureStates.JumpPower.value / 10) or 7.2
+    cloneHumanoid.AutoRotate = true
+    cloneHumanoid.AutoJumpEnabled = false
+    
+    -- Übernehme die originale HipHeight vom echten Character
+    cloneHumanoid.HipHeight = self.originalHipHeight
+    
+    cloneHumanoid.Health = cloneHumanoid.MaxHealth
+    
+    -- Entferne alle Scripts und unnötige Objekte
+    for _, descendant in pairs(clone:GetDescendants()) do
+        if descendant:IsA("LocalScript") or descendant:IsA("Script") or descendant:IsA("ModuleScript") then
+            descendant:Destroy()
+        elseif descendant:IsA("Sound") then
+            descendant:Destroy()
+        elseif descendant:IsA("ParticleEmitter") or descendant:IsA("Trail") or descendant:IsA("Beam") then
+            descendant:Destroy()
+        elseif descendant:IsA("CharacterMesh") then
+            descendant:Destroy()
+        elseif descendant:IsA("BodyGyro") or descendant:IsA("BodyPosition") or 
+               descendant:IsA("BodyVelocity") or descendant:IsA("BodyThrust") or
+               descendant:IsA("BodyAngularVelocity") then
+            descendant:Destroy()
+        end
+    end
+    
+    if not cloneHumanoid:FindFirstChildOfClass("Animator") then
+        Instance.new("Animator", cloneHumanoid)
+    end
+    
+    cloneHRP.Transparency = 1
+    cloneHRP.CanCollide = true
+    cloneHRP.Anchored = false
+    cloneHRP.Massless = false
+    cloneHRP.CustomPhysicalProperties = PhysicalProperties.new(1.0, 0.3, 0, 1, 1)
+    cloneHRP.CFrame = hrp.CFrame + Vector3.new(0, 0.2, 0)
+    cloneHRP.AssemblyLinearVelocity = Vector3.zero
+    cloneHRP.AssemblyAngularVelocity = Vector3.zero
+    
+    -- ALLE PARTS: SOFORT UND DAUERHAFT HELLGRAU
+    for _, part in pairs(clone:GetDescendants()) do
+        if part:IsA("BasePart") and part ~= cloneHRP then
+            part.Color = Theme.BackgroundLight
+            part.Transparency = 0.3
+            part.CanCollide = false
+            part.Massless = true
+            part.Material = Enum.Material.SmoothPlastic
+        end
+    end
+    
+    -- Accessories: SOFORT UND DAUERHAFT HELLGRAU
+    for _, accessory in pairs(clone:GetChildren()) do
+        if accessory:IsA("Accessory") then
+            local handle = accessory:FindFirstChild("Handle")
+            if handle and handle:IsA("BasePart") then
+                handle.Color = Theme.BackgroundLight
+                handle.Transparency = 0.3
+                handle.CanCollide = false
+                handle.Massless = true
+                handle.Material = Enum.Material.SmoothPlastic
+            end
+        end
+    end
+    
+    -- Clothing entfernen
+    for _, clothing in pairs(clone:GetChildren()) do
+        if clothing:IsA("Shirt") or clothing:IsA("Pants") or clothing:IsA("ShirtGraphic") then
+            clothing:Destroy()
+        end
+    end
+    
+    -- HEAD: SOFORT UND DAUERHAFT HELLGRAU
+    local head = clone:FindFirstChild("Head")
+    if head then
+        head.Color = Theme.BackgroundLight
+        head.Transparency = 0.3
+        head.Material = Enum.Material.SmoothPlastic
+        
+        local face = head:FindFirstChildOfClass("Decal")
+        if face then
+            face.Transparency = 0.3
+        end
+    end
+    
+    -- Welds validieren
+    task.spawn(function()
+        task.wait(0.1)
+        
+        for _, descendant in pairs(clone:GetDescendants()) do
+            if descendant:IsA("Weld") or descendant:IsA("Motor6D") or 
+               descendant:IsA("ManualWeld") or descendant:IsA("WeldConstraint") then
+                
+                if descendant.Part0 and descendant.Part0:IsDescendantOf(character) then
+                    descendant:Destroy()
+                elseif descendant.Part1 and descendant.Part1:IsDescendantOf(character) then
+                    descendant:Destroy()
+                elseif not descendant.Part0 or not descendant.Part1 then
+                    descendant:Destroy()
+                end
+            end
+        end
+        
+        for _, accessory in pairs(clone:GetChildren()) do
+            if accessory:IsA("Accessory") then
+                local handle = accessory:FindFirstChild("Handle")
+                if handle then
+                    local handleAttachment = handle:FindFirstChildOfClass("Attachment")
+                    if handleAttachment then
+                        local attachmentName = handleAttachment.Name
+                        
+                        local connected = false
+                        for _, part in pairs(clone:GetChildren()) do
+                            if part:IsA("BasePart") then
+                                local targetAttachment = part:FindFirstChild(attachmentName)
+                                if targetAttachment and targetAttachment:IsA("Attachment") then
+                                    if not handle:FindFirstChildOfClass("WeldConstraint") then
+                                        local weld = Instance.new("WeldConstraint")
+                                        weld.Part0 = handle
+                                        weld.Part1 = part
+                                        weld.Parent = handle
+                                    end
+                                    connected = true
+                                    break
+                                end
+                            end
+                        end
+                        
+                        if not connected and head then
+                            if not handle:FindFirstChildOfClass("WeldConstraint") then
+                                local weld = Instance.new("WeldConstraint")
+                                weld.Part0 = handle
+                                weld.Part1 = head
+                                weld.Parent = handle
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end)
+    
+    clone.Parent = Services.Workspace
+    
+    task.wait(0.05)
+    
+    cloneHRP.CFrame = hrp.CFrame + Vector3.new(0, 0.2, 0)
+    cloneHRP.AssemblyLinearVelocity = Vector3.zero
+    cloneHRP.AssemblyAngularVelocity = Vector3.zero
+    
+    print("[HL5] ✅ Clone created (Hellgrau) with HipHeight:", self.originalHipHeight)
+    
+    return clone, cloneHRP, cloneHumanoid
+end
+
+-- FARBE KONSTANT HALTEN (NUR BEI ÄNDERUNG - KEIN BLENDEN)
+function InvisibleSystem:MaintainCloneColor()
+    if not self.isActive or not self.cloneCharacter then return end
+    
+    for _, part in pairs(self.cloneCharacter:GetDescendants()) do
+        if part:IsA("BasePart") and part ~= self.cloneRoot then
+            -- NUR setzen wenn anders (verhindert unnötige Updates)
+            if part.Color ~= Theme.BackgroundLight then
+                part.Color = Theme.BackgroundLight
+            end
+            if part.Transparency ~= 0.3 then
+                part.Transparency = 0.3
+            end
+            if part.Material ~= Enum.Material.SmoothPlastic then
+                part.Material = Enum.Material.SmoothPlastic
+            end
+        end
+    end
+    
+    for _, accessory in pairs(self.cloneCharacter:GetChildren()) do
+        if accessory:IsA("Accessory") then
+            local handle = accessory:FindFirstChild("Handle")
+            if handle and handle:IsA("BasePart") then
+                if handle.Color ~= Theme.BackgroundLight then
+                    handle.Color = Theme.BackgroundLight
+                end
+                if handle.Transparency ~= 0.3 then
+                    handle.Transparency = 0.3
+                end
+                if handle.Material ~= Enum.Material.SmoothPlastic then
+                    handle.Material = Enum.Material.SmoothPlastic
+                end
+            end
+        end
+    end
+end
+
+function InvisibleSystem:LoadAnimations()
+    if not self.cloneHumanoid then return end
+    
+    local animator = self.cloneHumanoid:FindFirstChildOfClass("Animator")
+    if not animator then return end
+    
+    local animationIds = {
+        Idle = "rbxassetid://507766666",
+        Walk = "rbxassetid://507777826",
+        Run = "rbxassetid://507767714",
+        Jump = "rbxassetid://507765000",
+        Fall = "rbxassetid://507767968"
+    }
+    
+    for animName, animId in pairs(animationIds) do
+        local animation = Instance.new("Animation")
+        animation.AnimationId = animId
+        
+        local success, track = Utility.SafeCall(function()
+            return animator:LoadAnimation(animation)
+        end)
+        
+        if success and track then
+            self.cloneAnimations[animName] = track
+        end
+    end
+    
+    if self.cloneAnimations.Idle then
+        self.cloneAnimations.Idle:Play()
+        self.currentAnimation = self.cloneAnimations.Idle
+        self.lastAnimationState = "Idle"
+    end
+end
+
+function InvisibleSystem:UpdateAnimation(moveVector, isJumping)
+    if not self.cloneHumanoid or not next(self.cloneAnimations) then return end
+    
+    local newState = "Idle"
+    
+    if isJumping then
+        newState = "Jump"
+    elseif self.cloneHumanoid:GetState() == Enum.HumanoidStateType.Freefall then
+        newState = "Fall"
+    elseif moveVector.Magnitude > 0 then
+        if Services.UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
+            newState = "Run"
+        else
+            newState = "Walk"
+        end
+    else
+        newState = "Idle"
+    end
+    
+    if newState ~= self.lastAnimationState then
+        if self.currentAnimation then
+            self.currentAnimation:Stop(0.2)
+        end
+        
+        if self.cloneAnimations[newState] then
+            self.cloneAnimations[newState]:Play(0.2)
+            self.currentAnimation = self.cloneAnimations[newState]
+            self.lastAnimationState = newState
+        end
+    end
+    
+    if self.currentAnimation and (newState == "Walk" or newState == "Run") then
+        local speedRatio = self.cloneHumanoid.WalkSpeed / 16
+        self.currentAnimation:AdjustSpeed(speedRatio)
+    end
+end
+
+function InvisibleSystem:MakeInvisible()
+    if not self.isActive then return end
+    
+    local character = LocalPlayer.Character
+    if not character then return end
+    
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    local humanoid = character:FindFirstChild("Humanoid")
+    if not hrp or not humanoid then return end
+    
+    local safeY = -400
+    
+    humanoid.Health = humanoid.MaxHealth
+    humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+    humanoid.AutoRotate = false
+    
+    humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+    humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+    humanoid:SetStateEnabled(Enum.HumanoidStateType.Dead, false)
+    
+    for i = 1, 3 do
+        hrp.CFrame = CFrame.new(0, safeY, 0)
+    end
+    
+    hrp.AssemblyLinearVelocity = Vector3.zero
+    hrp.AssemblyAngularVelocity = Vector3.zero
+    hrp.Velocity = Vector3.zero
+    hrp.RotVelocity = Vector3.zero
+    
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false
+            part.Massless = true
+            if part ~= hrp then
+                part.Transparency = 1
+            end
+        end
+    end
+end
+
+function InvisibleSystem:ControlClone()
+    if not self.cloneRoot or not self.cloneHumanoid then return end
+    if _G.HL5FlySystem and _G.HL5FlySystem.enabled then return end
+    
+    local camera = Camera
+    local moveVector = Vector3.zero
+    local UIS = Services.UserInputService
+    
+    if UIS:IsKeyDown(Enum.KeyCode.W) then moveVector += Vector3.new(0, 0, -1) end
+    if UIS:IsKeyDown(Enum.KeyCode.S) then moveVector += Vector3.new(0, 0, 1) end
+    if UIS:IsKeyDown(Enum.KeyCode.A) then moveVector += Vector3.new(-1, 0, 0) end
+    if UIS:IsKeyDown(Enum.KeyCode.D) then moveVector += Vector3.new(1, 0, 0) end
+    
+    self.cloneHumanoid.PlatformStand = false
+    
+    local walkSpeed = FeatureStates.WalkSpeed.enabled and FeatureStates.WalkSpeed.value or 16
+    if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then
+        walkSpeed = walkSpeed * 1.5
+    end
+    self.cloneHumanoid.WalkSpeed = walkSpeed
+    
+    if FeatureStates.JumpPower.enabled then
+        local jumpValue = FeatureStates.JumpPower.value
+        if self.cloneHumanoid.UseJumpPower then
+            self.cloneHumanoid.JumpPower = jumpValue
+        else
+            self.cloneHumanoid.JumpHeight = jumpValue / 10
+        end
+    else
+        if self.cloneHumanoid.UseJumpPower then
+            self.cloneHumanoid.JumpPower = 50
+        else
+            self.cloneHumanoid.JumpHeight = 7.2
+        end
+    end
+    
+    -- Stelle sicher, dass HipHeight konstant bleibt
+    if self.originalHipHeight and self.cloneHumanoid.HipHeight ~= self.originalHipHeight then
+        self.cloneHumanoid.HipHeight = self.originalHipHeight
+    end
+    
+    local isJumping = UIS:IsKeyDown(Enum.KeyCode.Space)
+    
+    if moveVector.Magnitude > 0 then
+        local cameraCFrame = camera.CFrame
+        local cameraRelativeMove = cameraCFrame:VectorToWorldSpace(moveVector)
+        cameraRelativeMove = Vector3.new(cameraRelativeMove.X, 0, cameraRelativeMove.Z).Unit
+        
+        self.cloneHumanoid:Move(cameraRelativeMove, false)
+    else
+        self.cloneHumanoid:Move(Vector3.zero, false)
+    end
+    
+    if isJumping then
+        Utility.SafeCall(function()
+            self.cloneHumanoid.Jump = true
+        end)
+    end
+    
+    self:UpdateAnimation(moveVector, isJumping)
+end
+
+function InvisibleSystem:Enable()
+    if self.isActive then return end
+    
+    local character = LocalPlayer.Character
+    if not character then return end
+    
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        self.savedCFrame = hrp.CFrame
+    else
+        return
+    end
+    
+    if _G.HL5FlySystem and _G.HL5FlySystem.enabled then
+        _G.HL5FlySystem:Disable()
+    end
+    
+    self.cloneCharacter, self.cloneRoot, self.cloneHumanoid = self:CreateClone()
+    
+    if not self.cloneRoot then
+        return false
+    end
+    
+    task.wait(0.2)
+    self:LoadAnimations()
+    
+    self.isActive = true
+    
+    self:MakeInvisible()
+    
+    self.teleportConnection = Services.RunService.RenderStepped:Connect(function()
+        self:MakeInvisible()
+    end)
+    
+    self.movementConnection = Services.RunService.RenderStepped:Connect(function()
+        self:ControlClone()
+    end)
+    
+    -- COLOR MAINTAIN: Nur alle 0.1 Sekunden prüfen (weniger Updates = kein Blenden)
+    local lastColorCheck = 0
+    self.colorMaintainConnection = Services.RunService.Heartbeat:Connect(function()
+        local now = tick()
+        if now - lastColorCheck >= 0.1 then
+            lastColorCheck = now
+            self:MaintainCloneColor()
+        end
+    end)
+    
+    if self.cloneHumanoid then
+        Camera.CameraSubject = self.cloneHumanoid
+    end
+    
+    print("[HL5] ✅ Invisible Mode enabled (Hellgrau Clone) - HipHeight:", self.originalHipHeight)
+    return true
+end
+
+function InvisibleSystem:Disable()
+    if not self.isActive then return end
+    
+    for _, track in pairs(self.cloneAnimations) do
+        if track then
+            track:Stop()
+        end
+    end
+    self.cloneAnimations = {}
+    self.currentAnimation = nil
+    self.lastAnimationState = "Idle"
+    
+    local targetCFrame = nil
+    if self.cloneRoot and self.cloneRoot.Parent and self.cloneHumanoid then
+        targetCFrame = self.cloneRoot.CFrame - Vector3.new(0, 0.2, 0)
+    else
+        targetCFrame = self.savedCFrame or CFrame.new(0, 50, 0)
+    end
+    
+    self.isActive = false
+    
+    if self.teleportConnection then
+        self.teleportConnection:Disconnect()
+        self.teleportConnection = nil
+    end
+    
+    if self.movementConnection then
+        self.movementConnection:Disconnect()
+        self.movementConnection = nil
+    end
+    
+    if self.colorMaintainConnection then
+        self.colorMaintainConnection:Disconnect()
+        self.colorMaintainConnection = nil
+    end
+    
+    local character = LocalPlayer.Character
+    if not character then return end
+    
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    local humanoid = character:FindFirstChild("Humanoid")
+    if not hrp or not humanoid then return end
+    
+    for _, obj in pairs(hrp:GetChildren()) do
+        if obj:IsA("BodyMover") then
+            obj:Destroy()
+        end
+    end
+    
+    hrp.Anchored = true
+    
+    for i = 1, 5 do
+        hrp.CFrame = targetCFrame
+    end
+    
+    hrp.AssemblyLinearVelocity = Vector3.zero
+    hrp.AssemblyAngularVelocity = Vector3.zero
+    hrp.Velocity = Vector3.zero
+    hrp.RotVelocity = Vector3.zero
+    
+    hrp.Anchored = false
+    
+    humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
+    humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, true)
+    humanoid:SetStateEnabled(Enum.HumanoidStateType.Dead, true)
+    humanoid.AutoRotate = true
+    humanoid.PlatformStand = false
+    humanoid.Health = humanoid.MaxHealth
+    
+    -- Stelle die originale HipHeight wieder her
+    if self.originalHipHeight then
+        humanoid.HipHeight = self.originalHipHeight
+    end
+    
+    humanoid:ChangeState(Enum.HumanoidStateType.Running)
+    
+    task.wait(0.1)
+    
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            if part.Name == "HumanoidRootPart" then
+                part.Transparency = 1
+                part.CanCollide = true
+            else
+                part.Transparency = 0
+                part.CanCollide = false
+            end
+            part.Massless = false
+            part.CustomPhysicalProperties = nil
+            
+            part.AssemblyLinearVelocity = Vector3.zero
+            part.AssemblyAngularVelocity = Vector3.zero
+            if part.Name == "HumanoidRootPart" then
+                part.Velocity = Vector3.zero
+                part.RotVelocity = Vector3.zero
+            end
+        end
+    end
+    
+    humanoid.PlatformStand = false
+    humanoid.Sit = false
+    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+    task.wait(0.1)
+    humanoid:ChangeState(Enum.HumanoidStateType.Running)
+    
+    Camera.CameraSubject = humanoid
+    
+    if self.cloneCharacter and self.cloneCharacter.Parent then
+        self.cloneCharacter:Destroy()
+    end
+    
+    self.cloneCharacter = nil
+    self.cloneRoot = nil
+    self.cloneHumanoid = nil
+    
+    print("[HL5] ✅ Invisible Mode disabled - HipHeight restored:", self.originalHipHeight)
+end
+
+function InvisibleSystem:GetActiveCharacter()
+    if self.isActive and self.cloneCharacter then
+        return self.cloneCharacter
+    end
+    return LocalPlayer.Character
+end
+
+function InvisibleSystem:GetActiveRootPart()
+    if self.isActive and self.cloneRoot then
+        return self.cloneRoot
+    end
+    local character = LocalPlayer.Character
+    return character and character:FindFirstChild("HumanoidRootPart")
+end
+
+function InvisibleSystem:GetActiveHumanoid()
+    if self.isActive and self.cloneHumanoid then
+        return self.cloneHumanoid
+    end
+    local character = LocalPlayer.Character
+    return character and character:FindFirstChildOfClass("Humanoid")
+end
+
+-- Global reference
+_G.HL5InvisibleSystem = InvisibleSystem
+
+-- ═══════════════════════════════════════════════════════════════
+-- MIMIC SYSTEM - 1:1 PLAYER ANIMATION COPYING
+-- ═══════════════════════════════════════════════════════════════
+
+local MimicSystem = {
+    enabled = false,
+    targetPlayer = nil,
+    connection = nil,
+    lastJumpTick = 0,
+    copiedTracks = {},
+    originalAnimations = {}
+}
+
+function MimicSystem:Enable(player)
+    if self.enabled and self.targetPlayer == player then return end
+    
+    if self.enabled then
+        self:Disable()
+    end
+    
+    if not player or player == LocalPlayer then
+        warn("[HL5] Cannot mimic yourself")
+        return
+    end
+    
+    self.targetPlayer = player
+    self.enabled = true
+    self.lastJumpTick = 0
+    
+    print("[HL5] 🎭 Mimic started:", player.Name)
+    
+    -- Use RenderStepped for maximum sync speed
+    self.connection = Services.RunService.RenderStepped:Connect(function()
+        if not self.enabled or not self.targetPlayer then return end
+        
+        Utility.SafeCall(function()
+            self:UpdateMimic()
+        end)
+    end)
+end
+
+function MimicSystem:UpdateMimic()
+    local targetChar = self.targetPlayer.Character
+    local localChar = LocalPlayer.Character
+    
+    if not targetChar or not localChar then return end
+    
+    local targetRoot = targetChar:FindFirstChild("HumanoidRootPart")
+    local localRoot = localChar:FindFirstChild("HumanoidRootPart")
+    local targetHumanoid = targetChar:FindFirstChildOfClass("Humanoid")
+    local localHumanoid = localChar:FindFirstChildOfClass("Humanoid")
+    
+    if not targetRoot or not localRoot or not targetHumanoid or not localHumanoid then return end
+    
+    -- 1. Copy rotation
+    local targetCFrame = targetRoot.CFrame
+    local localPosition = localRoot.Position
+    local targetRotation = targetCFrame - targetCFrame.Position
+    localRoot.CFrame = CFrame.new(localPosition) * targetRotation
+    
+    -- 2. Copy walk speed
+    localHumanoid.WalkSpeed = targetHumanoid.WalkSpeed
+    
+    -- 3. Copy jump power/height
+    if targetHumanoid.UseJumpPower then
+        localHumanoid.UseJumpPower = true
+        localHumanoid.JumpPower = targetHumanoid.JumpPower
+    else
+        localHumanoid.UseJumpPower = false
+        localHumanoid.JumpHeight = targetHumanoid.JumpHeight
+    end
+    
+    -- 4. Movement with sensitive detection
+    local targetVelocity = targetRoot.AssemblyLinearVelocity or targetRoot.Velocity
+    local horizontalVelocity = Vector3.new(targetVelocity.X, 0, targetVelocity.Z)
+    
+    if horizontalVelocity.Magnitude > 0.2 then
+        local bv = localRoot:FindFirstChild("MimicVelocity")
+        if not bv then
+            bv = Utility.Create("BodyVelocity", {
+                Name = "MimicVelocity",
+                Parent = localRoot
+            })
+        end
+        
+        local speedMultiplier = math.max(1, targetHumanoid.WalkSpeed / 16)
+        bv.MaxForce = Vector3.new(75000 * speedMultiplier, 0, 75000 * speedMultiplier)
+        bv.P = 15000
+        bv.Velocity = horizontalVelocity
+    else
+        local bv = localRoot:FindFirstChild("MimicVelocity")
+        if bv then
+            bv:Destroy()
+        end
+    end
+    
+    -- 5. Reliable jump detection
+    local currentTick = tick()
+    local targetYVelocity = targetRoot.AssemblyLinearVelocity.Y or targetRoot.Velocity.Y
+    local isTargetJumping = 
+        targetHumanoid:GetState() == Enum.HumanoidStateType.Jumping or
+        targetHumanoid.Jump or
+        (targetYVelocity > 8 and targetHumanoid.FloorMaterial == Enum.Material.Air)
+    
+    if isTargetJumping and (currentTick - self.lastJumpTick) > 0.15 then
+        localHumanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        localHumanoid.Jump = true
+        self.lastJumpTick = currentTick
+    end
+    
+    -- 6. Copy default animations
+    self:CopyDefaultAnimations(targetHumanoid, localHumanoid)
+    
+    -- 7. Copy Animate script animations
+    self:CopyAnimateScriptAnimations(targetChar, localChar)
+    
+    -- 8. Sync custom animations (emotes, etc.)
+    self:SyncCustomAnimations(targetHumanoid, localHumanoid)
+end
+
+function MimicSystem:CopyDefaultAnimations(targetHumanoid, localHumanoid)
+    local animNames = {"walk", "run", "idle", "jump", "fall", "climb", "swim"}
+    
+    for _, animName in pairs(animNames) do
+        local targetAnim = targetHumanoid:FindFirstChild(animName) or 
+                          targetHumanoid:FindFirstChild(animName:sub(1,1):upper() .. animName:sub(2))
+        local localAnim = localHumanoid:FindFirstChild(animName) or
+                         localHumanoid:FindFirstChild(animName:sub(1,1):upper() .. animName:sub(2))
+        
+        if targetAnim and localAnim and targetAnim:IsA("Animation") then
+            -- Save original
+            if not self.originalAnimations[animName] then
+                self.originalAnimations[animName] = localAnim.AnimationId
+            end
+            
+            -- Copy animation ID
+            if targetAnim.AnimationId ~= "" and targetAnim.AnimationId ~= localAnim.AnimationId then
+                localAnim.AnimationId = targetAnim.AnimationId
+            end
+        end
+    end
+end
+
+function MimicSystem:CopyAnimateScriptAnimations(targetChar, localChar)
+    local targetAnimate = targetChar:FindFirstChild("Animate")
+    local localAnimate = localChar:FindFirstChild("Animate")
+    
+    if not targetAnimate or not localAnimate then return end
+    
+    for _, targetAnim in pairs(targetAnimate:GetDescendants()) do
+        if targetAnim:IsA("Animation") and targetAnim.AnimationId ~= "" then
+            local localAnim = localAnimate:FindFirstChild(targetAnim.Name, true)
+            if localAnim and localAnim:IsA("Animation") then
+                -- Save original
+                local backupKey = "animate_" .. targetAnim.Name
+                if not self.originalAnimations[backupKey] then
+                    self.originalAnimations[backupKey] = localAnim.AnimationId
+                end
+                
+                -- Copy
+                if localAnim.AnimationId ~= targetAnim.AnimationId then
+                    localAnim.AnimationId = targetAnim.AnimationId
+                end
+            end
+        end
+    end
+end
+
+function MimicSystem:SyncCustomAnimations(targetHumanoid, localHumanoid)
+    local targetAnimator = targetHumanoid:FindFirstChildOfClass("Animator")
+    local localAnimator = localHumanoid:FindFirstChildOfClass("Animator")
+    
+    if not targetAnimator or not localAnimator then return end
+    
+    local targetTracks = targetAnimator:GetPlayingAnimationTracks()
+    local activeAnimIds = {}
+    
+    for _, targetTrack in pairs(targetTracks) do
+        if not targetTrack or not targetTrack.Animation then continue end
+        
+        local animId = targetTrack.Animation.AnimationId
+        if animId == "" then continue end
+        
+        activeAnimIds[animId] = true
+        
+        local localTrack = self.copiedTracks[animId]
+        
+        if not localTrack then
+            -- Load new animation
+            Utility.SafeCall(function()
+                local anim = Instance.new("Animation")
+                anim.AnimationId = animId
+                localTrack = localAnimator:LoadAnimation(anim)
+                
+                localTrack.Priority = targetTrack.Priority
+                localTrack.Looped = targetTrack.Looped
+                
+                localTrack:Play(0.1, 1, targetTrack.Speed)
+                localTrack.TimePosition = targetTrack.TimePosition
+                localTrack:AdjustWeight(targetTrack.WeightCurrent, 0.1)
+                
+                self.copiedTracks[animId] = localTrack
+            end)
+        else
+            -- Sync existing animation
+            if targetTrack.IsPlaying then
+                if not localTrack.IsPlaying then
+                    localTrack:Play(0.1, 1, targetTrack.Speed)
+                    localTrack.TimePosition = targetTrack.TimePosition
+                    localTrack:AdjustWeight(targetTrack.WeightCurrent, 0.1)
+                else
+                    -- Continuous sync
+                    if math.abs(localTrack.Speed - targetTrack.Speed) > 0.05 then
+                        localTrack:AdjustSpeed(targetTrack.Speed)
+                    end
+                    
+                    local weightDiff = math.abs(localTrack.WeightCurrent - targetTrack.WeightCurrent)
+                    if weightDiff > 0.05 then
+                        localTrack:AdjustWeight(targetTrack.WeightCurrent, 0.1)
+                    end
+                    
+                    local timeDiff = math.abs(localTrack.TimePosition - targetTrack.TimePosition)
+                    if timeDiff > 0.1 then
+                        localTrack.TimePosition = targetTrack.TimePosition
+                    elseif timeDiff > 0.05 then
+                        local correction = (targetTrack.TimePosition - localTrack.TimePosition) * 0.5
+                        localTrack.TimePosition = localTrack.TimePosition + correction
+                    end
+                end
+            end
+        end
+    end
+    
+    -- Stop inactive animations
+    for animId, track in pairs(self.copiedTracks) do
+        if not activeAnimIds[animId] and track and track.IsPlaying then
+            track:Stop(0.2)
+            task.delay(0.3, function()
+                self.copiedTracks[animId] = nil
+            end)
+        end
+    end
+end
+
+function MimicSystem:Disable()
+    if not self.enabled then return end
+    
+    print("[HL5] Mimic stopped - Restoring animations...")
+    
+    if self.connection then
+        self.connection:Disconnect()
+        self.connection = nil
+    end
+    
+    local localChar = LocalPlayer.Character
+    if localChar then
+        local localRoot = localChar:FindFirstChild("HumanoidRootPart")
+        if localRoot then
+            local bv = localRoot:FindFirstChild("MimicVelocity")
+            if bv then bv:Destroy() end
+        end
+        
+        local localHumanoid = localChar:FindFirstChildOfClass("Humanoid")
+        if localHumanoid then
+            localHumanoid.WalkSpeed = 16
+            
+            -- Restore default animations
+            for animName, originalId in pairs(self.originalAnimations) do
+                if not animName:match("^animate_") then
+                    local localAnim = localHumanoid:FindFirstChild(animName) or
+                                     localHumanoid:FindFirstChild(animName:sub(1,1):upper() .. animName:sub(2))
+                    if localAnim and localAnim:IsA("Animation") then
+                        localAnim.AnimationId = originalId
+                    end
+                end
+            end
+        end
+        
+        -- Restore Animate script animations
+        local localAnimate = localChar:FindFirstChild("Animate")
+        if localAnimate then
+            for backupKey, originalId in pairs(self.originalAnimations) do
+                if backupKey:match("^animate_") then
+                    local animName = backupKey:gsub("^animate_", "")
+                    local localAnim = localAnimate:FindFirstChild(animName, true)
+                    if localAnim and localAnim:IsA("Animation") then
+                        localAnim.AnimationId = originalId
+                    end
+                end
+            end
+        end
+    end
+    
+    -- Stop copied animations
+    for _, track in pairs(self.copiedTracks) do
+        Utility.SafeCall(function()
+            if track and track.IsPlaying then
+                track:Stop(0.2)
+            end
+        end)
+    end
+    self.copiedTracks = {}
+    
+    self.targetPlayer = nil
+    self.enabled = false
+    self.lastJumpTick = 0
+    
+    print("[HL5] ✅ Mimic disabled - Animations restored")
+end
+
+-- Global reference
+_G.HL5MimicSystem = MimicSystem
+
+-- ═══════════════════════════════════════════════════════════════
+-- PLAYER DETECTION & RANK SYSTEM
+-- ═══════════════════════════════════════════════════════════════
+
+local PlayerDetection = {}
+
+function PlayerDetection.GetRank(player)
+    -- Check team name
+    if player.Team then
+        local teamName = string.lower(player.Team.Name)
+        if string.find(teamName, "owner") then
+            return "Owner"
+        elseif string.find(teamName, "admin") or string.find(teamName, "administrator") then
+            return "Administrator"
+        elseif string.find(teamName, "mod") or string.find(teamName, "moderator") then
+            return "Moderator"
+        elseif string.find(teamName, "vip") then
+            return "VIP"
+        elseif string.find(teamName, "staff") then
+            return "Staff"
+        end
+    end
+    
+    -- Check group rank
+    local success, rank = Utility.SafeCall(function()
+        if game.CreatorType == Enum.CreatorType.Group then
+            local groupId = game.CreatorId
+            return player:GetRankInGroup(groupId)
+        end
+        return nil
+    end)
+    
+    if success and rank then
+        if rank >= 255 then
+            return "Owner"
+        elseif rank >= 200 then
+            return "Administrator"
+        elseif rank >= 100 then
+            return "Moderator"
+        elseif rank >= 50 then
+            return "Staff"
+        end
+    end
+    
+    return nil
+end
+
+function PlayerDetection.GetThumbnail(userId)
+    return "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=150&height=150&format=png"
+end
+
+-- ═══════════════════════════════════════════════════════════════
+-- ESP SYSTEM - HIGHLIGHTS, NAMETAGS, HEALTHBARS
+-- ═══════════════════════════════════════════════════════════════
+
+local ESPSystem = {
+    highlights = {},
+    nametags = {},
+    healthbars = {}
+}
+
+function ESPSystem:CreateHighlight(character)
+    if not character or not character.Parent then return nil end
+    
+    -- Remove old highlight
+    for _, child in pairs(character:GetChildren()) do
+        if child.Name == "HL5ESP" then
+            child:Destroy()
+        end
+    end
+    
+    local highlight = Utility.Create("Highlight", {
+        Name = "HL5ESP",
+        FillColor = FeatureStates.ESPHighlight.color,
+        OutlineColor = FeatureStates.ESPHighlight.color,
+        FillTransparency = FeatureStates.ESPHighlight.value / 100,
+        OutlineTransparency = 0,
+        DepthMode = Enum.HighlightDepthMode.AlwaysOnTop,
+        Parent = character
+    })
+    
+    return highlight
+end
+
+function ESPSystem:CreateHealthbar(character)
+    if not character or not character.Parent then return nil end
+    
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not hrp or not humanoid then return nil end
+    
+    -- Remove old healthbar
+    for _, child in pairs(hrp:GetChildren()) do
+        if child:IsA("BillboardGui") and child.Name == "HL5Healthbar" then
+            child:Destroy()
+        end
+    end
+    
+    -- Calculate character height
+    local characterHeight = 5
+    if character:FindFirstChild("Head") then
+        local head = character.Head
+        characterHeight = math.abs(head.Position.Y - hrp.Position.Y) + head.Size.Y/2 + hrp.Size.Y/2
+    end
+    
+    -- Create billboard
+    local billboard = Utility.Create("BillboardGui", {
+        Name = "HL5Healthbar",
+        Size = UDim2.new(0, 0, characterHeight * 0.8, 0),
+        StudsOffset = Vector3.new(2.5, 0, 0),
+        AlwaysOnTop = true,
+        Parent = hrp
+    })
+    
+    -- Background
+    local background = Utility.Create("Frame", {
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+        BorderSizePixel = 1,
+        BorderColor3 = Color3.fromRGB(255, 255, 255),
+        Parent = billboard
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 2),
+        Parent = background
+    })
+    
+    -- Health bar
+    local currentHealthPercent = math.max(humanoid.Health / humanoid.MaxHealth, 0.05)
+    local healthBar = Utility.Create("Frame", {
+        Size = UDim2.new(1, -2, currentHealthPercent, -2),
+        Position = UDim2.new(0, 1, 1, -1),
+        AnchorPoint = Vector2.new(0, 1),
+        BackgroundColor3 = Color3.fromRGB(0, 255, 0),
+        BorderSizePixel = 0,
+        Parent = background
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 1),
+        Parent = healthBar
+    })
+    
+    -- Update on health change
+    humanoid.HealthChanged:Connect(function()
+        if healthBar and healthBar.Parent then
+            local healthPercent = math.max(humanoid.Health / humanoid.MaxHealth, 0.05)
+            healthBar.Size = UDim2.new(1, -2, healthPercent, -2)
+            
+            -- Color based on health
+            if healthPercent > 0.6 then
+                healthBar.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+            elseif healthPercent > 0.3 then
+                healthBar.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+            else
+                healthBar.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+            end
+        end
+    end)
+    
+    return billboard
+end
+
+function ESPSystem:CreateNametag(character, playerName)
+    if not character or not character.Parent then return nil end
+    
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return nil end
+    
+    -- Remove old nametag
+    for _, child in pairs(hrp:GetChildren()) do
+        if child.Name == "HL5Nametag" then
+            child:Destroy()
+        end
+    end
+    
+    -- Calculate character height for feet placement
+    local characterHeight = 3
+    if character:FindFirstChild("Head") and character:FindFirstChild("HumanoidRootPart") then
+        local head = character.Head
+        characterHeight = math.abs(head.Position.Y - hrp.Position.Y) + hrp.Size.Y/2
+    end
+    
+    -- Create billboard at feet
+    local billboard = Utility.Create("BillboardGui", {
+        Name = "HL5Nametag",
+        Size = UDim2.new(0, 200, 0, 50),
+        StudsOffset = Vector3.new(0, -characterHeight - 0.5, 0),
+        AlwaysOnTop = true,
+        Parent = hrp
+    })
+    
+    -- Text label
+    local textLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = playerName,
+        TextColor3 = FeatureStates.ESPNametags.color,
+        TextSize = FeatureStates.ESPNametags.value,
+        Font = Enum.Font.GothamBold,
+        TextStrokeTransparency = 0,
+        TextStrokeColor3 = Color3.fromRGB(255, 255, 255),
+        Parent = billboard
+    })
+    
+    return billboard
+end
+
+function ESPSystem:EnableHighlights()
+    -- Clear old
+    for player, highlight in pairs(self.highlights) do
+        if highlight and highlight.Parent then
+            highlight:Destroy()
+        end
+    end
+    for player, healthbar in pairs(self.healthbars) do
+        if healthbar and healthbar.Parent then
+            healthbar:Destroy()
+        end
+    end
+    self.highlights = {}
+    self.healthbars = {}
+    
+    -- Create new
+    for _, player in pairs(Services.Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            local highlight = self:CreateHighlight(player.Character)
+            if highlight then
+                self.highlights[player] = highlight
+            end
+            
+            local healthbar = self:CreateHealthbar(player.Character)
+            if healthbar then
+                self.healthbars[player] = healthbar
+            end
+        end
+    end
+end
+
+function ESPSystem:DisableHighlights()
+    for player, highlight in pairs(self.highlights) do
+        if highlight and highlight.Parent then
+            highlight:Destroy()
+        end
+    end
+    for player, healthbar in pairs(self.healthbars) do
+        if healthbar and healthbar.Parent then
+            healthbar:Destroy()
+        end
+    end
+    self.highlights = {}
+    self.healthbars = {}
+end
+
+function ESPSystem:EnableNametags()
+    -- Clear old
+    for player, nametag in pairs(self.nametags) do
+        if nametag and nametag.Parent then
+            nametag:Destroy()
+        end
+    end
+    self.nametags = {}
+    
+    -- Create new
+    for _, player in pairs(Services.Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            local nametag = self:CreateNametag(player.Character, player.Name)
+            if nametag then
+                self.nametags[player] = nametag
+            end
+        end
+    end
+end
+
+function ESPSystem:DisableNametags()
+    for player, nametag in pairs(self.nametags) do
+        if nametag and nametag.Parent then
+            nametag:Destroy()
+        end
+    end
+    self.nametags = {}
+end
+
+-- Global reference
+_G.HL5ESPSystem = ESPSystem
+
+-- ═══════════════════════════════════════════════════════════════
+-- BANNER SYSTEM - ZEIGT MENU-BENUTZER AN
+-- ═══════════════════════════════════════════════════════════════
+
+local BannerSystem = {
+    banners = {},
+    signalPart = nil,
+    updateConnection = nil,
+    lastScan = 0
+}
+
+function BannerSystem:CreateBanner(player)
+    if self.banners[player.UserId] then return end
+    
+    Utility.SafeCall(function()
+        local character = player.Character
+        if not character then return end
+        
+        local head = character:FindFirstChild("Head")
+        if not head then return end
+        
+        -- Create billboard
+        local billboard = Utility.Create("BillboardGui", {
+            Name = "HL5Banner_" .. player.UserId,
+            Adornee = head,
+            Size = UDim2.new(0, 110, 0, 65),
+            StudsOffset = Vector3.new(0, 2.5, 0),
+            AlwaysOnTop = false,
+            MaxDistance = 1000,
+            Parent = PlayerGui
+        })
+        
+        -- Main frame (Hellgrau glassmorphism)
+        local frame = Utility.Create("Frame", {
+            Name = "MainFrame",
+            Size = UDim2.new(1, 0, 1, 0),
+            BackgroundColor3 = Theme.Background,
+            BackgroundTransparency = 0.25,
+            BorderSizePixel = 0,
+            Parent = billboard
+        })
+        
+        Utility.Create("UICorner", {
+            CornerRadius = UDim.new(0, 12),
+            Parent = frame
+        })
+        
+        Utility.Create("UIStroke", {
+            Color = Theme.Primary,
+            Thickness = 2,
+            Transparency = 0.3,
+            Parent = frame
+        })
+        
+        -- Gradient overlay
+        Utility.Create("UIGradient", {
+            Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Theme.Primary),
+                ColorSequenceKeypoint.new(1, Theme.PrimaryDark)
+            },
+            Rotation = 45,
+            Transparency = NumberSequence.new{
+                NumberSequenceKeypoint.new(0, 0.7),
+                NumberSequenceKeypoint.new(1, 0.8)
+            },
+            Parent = frame
+        })
+        
+        -- Profile image
+        local profileImage = Utility.Create("ImageLabel", {
+            Name = "ProfileImage",
+            Size = UDim2.new(0.41, 0, 0.69, 0),
+            Position = UDim2.new(0.045, 0, 0.5, 0),
+            AnchorPoint = Vector2.new(0, 0.5),
+            BackgroundColor3 = Theme.Surface,
+            BackgroundTransparency = 0.3,
+            BorderSizePixel = 0,
+            Parent = frame
+        })
+        
+        Utility.Create("UICorner", {
+            CornerRadius = UDim.new(0.5, 0),
+            Parent = profileImage
+        })
+        
+        Utility.Create("UIStroke", {
+            Color = Theme.Primary,
+            Thickness = 2,
+            Parent = profileImage
+        })
+        
+        -- Get thumbnail
+        task.spawn(function()
+            Utility.SafeCall(function()
+                local content = Services.Players:GetUserThumbnailAsync(
+                    player.UserId,
+                    Enum.ThumbnailType.HeadShot,
+                    Enum.ThumbnailSize.Size150x150
+                )
+                profileImage.Image = content
+            end)
+        end)
+        
+        -- "HL5 MENU" text
+        local menuLabel = Utility.Create("TextLabel", {
+            Size = UDim2.new(0.5, 0, 0.25, 0),
+            Position = UDim2.new(0.48, 0, 0.18, 0),
+            BackgroundTransparency = 1,
+            Text = "HL5 MENU",
+            TextColor3 = Theme.TextPrimary,
+            TextSize = 10,
+            Font = Enum.Font.GothamBold,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            TextStrokeTransparency = 0.4,
+            TextScaled = true,
+            Parent = frame
+        })
+        
+        -- Player name
+        local nameLabel = Utility.Create("TextLabel", {
+            Size = UDim2.new(0.5, 0, 0.22, 0),
+            Position = UDim2.new(0.48, 0, 0.51, 0),
+            BackgroundTransparency = 1,
+            Text = player.DisplayName,
+            TextColor3 = Theme.TextSecondary,
+            TextSize = 9,
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            TextTruncate = Enum.TextTruncate.AtEnd,
+            TextStrokeTransparency = 0.6,
+            TextScaled = true,
+            Parent = frame
+        })
+        
+        -- Store banner
+        self.banners[player.UserId] = {
+            billboard = billboard,
+            player = player,
+            head = head
+        }
+        
+        print("[HL5 Banner] ✅ Created for", player.DisplayName)
+    end)
+end
+
+function BannerSystem:RemoveBanner(userId)
+    local data = self.banners[userId]
+    if data then
+        Utility.SafeCall(function()
+            data.billboard:Destroy()
+        end)
+        self.banners[userId] = nil
+    end
+end
+
+function BannerSystem:UpdateDistanceScaling()
+    local camera = Camera
+    if not camera then return end
+    
+    for userId, data in pairs(self.banners) do
+        Utility.SafeCall(function()
+            if data.head and data.billboard then
+                local distance = Utility.GetDistance(camera.CFrame.Position, data.head.Position)
+                
+                local scale = 1
+                if distance > 10 then
+                    scale = math.max(0.4, 1 - ((distance - 10) / 100))
+                end
+                
+                local baseWidth = 110
+                local baseHeight = 65
+                data.billboard.Size = UDim2.new(0, baseWidth * scale, 0, baseHeight * scale)
+            end
+        end)
+    end
+end
+
+function BannerSystem:CreateSignal()
+    if self.signalPart then
+        Utility.SafeCall(function()
+            self.signalPart:Destroy()
+        end)
+    end
+    
+    local char = LocalPlayer.Character
+    if not char then return end
+    
+    local head = char:FindFirstChild("Head")
+    if not head then return end
+    
+    -- Create signal as Attachment
+    local signal = Utility.Create("Attachment", {
+        Name = "HL5MenuSignal_" .. LocalPlayer.UserId,
+        Parent = head
+    })
+    
+    self.signalPart = signal
+    print("[HL5 Banner] ✅ Signal created")
+end
+
+function BannerSystem:ScanForMenuUsers()
+    local foundCount = 0
+    
+    for _, player in pairs(Services.Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            local char = player.Character
+            if char then
+                local head = char:FindFirstChild("Head")
+                if head then
+                    local signalName = "HL5MenuSignal_" .. player.UserId
+                    local signal = head:FindFirstChild(signalName)
+                    
+                    if signal then
+                        foundCount = foundCount + 1
+                        if not self.banners[player.UserId] then
+                            self:CreateBanner(player)
+                        end
+                    else
+                        if self.banners[player.UserId] then
+                            self:RemoveBanner(player.UserId)
+                        end
+                    end
+                end
+            else
+                if self.banners[player.UserId] then
+                    self:RemoveBanner(player.UserId)
+                end
+            end
+        end
+    end
+end
+
+function BannerSystem:Start()
+    print("[HL5 Banner] Starting system...")
+    
+    if not LocalPlayer.Character then
+        LocalPlayer.CharacterAdded:Wait()
+        task.wait(0.5)
+    end
+    
+    self:CreateSignal()
+    self:CreateBanner(LocalPlayer)
+    
+    self.updateConnection = Services.RunService.Heartbeat:Connect(function()
+        self:UpdateDistanceScaling()
+        
+        local now = tick()
+        if now - self.lastScan >= Settings.DistanceCheckInterval then
+            self.lastScan = now
+            self:ScanForMenuUsers()
+        end
+    end)
+    
+    print("[HL5 Banner] ✅ System started")
+end
+
+function BannerSystem:Stop()
+    if self.updateConnection then
+        self.updateConnection:Disconnect()
+        self.updateConnection = nil
+    end
+    
+    if self.signalPart then
+        Utility.SafeCall(function()
+            self.signalPart:Destroy()
+        end)
+        self.signalPart = nil
+    end
+    
+    for userId, _ in pairs(self.banners) do
+        self:RemoveBanner(userId)
+    end
+    
+    print("[HL5 Banner] System stopped")
+end
+
+-- Global reference
+_G.HL5BannerSystem = BannerSystem
+
+-- ═══════════════════════════════════════════════════════════════
+-- GUI INITIALIZATION - PREMIUM HELLGRAU DESIGN
+-- ═══════════════════════════════════════════════════════════════
+
+-- Start loadscreen
+task.spawn(function()
+    LoadScreen.Create()
+end)
+
+-- Wait for loadscreen to finish
+task.wait(2.5)
+
+print("[HL5] Creating GUI...")
+
+-- ═══════════════════════════════════════════════════════════════
+-- MAIN GUI CONTAINER
+-- ═══════════════════════════════════════════════════════════════
+
+local ScreenGui = Utility.Create("ScreenGui", {
+    Name = "HL5ModernMenu",
+    ResetOnSpawn = false,
+    ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+    Parent = PlayerGui
+})
+
+-- Background blur
+local BlurEffect = Utility.Create("BlurEffect", {
+    Size = 0,
+    Parent = Services.Lighting
+})
+
+-- Main container
+local baseWidth, baseHeight = 850, 550
+local MainContainer = Utility.Create("Frame", {
+    Name = "MainContainer",
+    Size = UDim2.new(0, baseWidth * Settings.MenuScale, 0, baseHeight * Settings.MenuScale),
+    Position = UDim2.new(0.5, -(baseWidth * Settings.MenuScale) / 2, 0.5, -(baseHeight * Settings.MenuScale) / 2),
+    BackgroundColor3 = Theme.Background,
+    BackgroundTransparency = 0.15,
+    BorderSizePixel = 0,
+    ClipsDescendants = true,
+    Visible = true,
+    Parent = ScreenGui
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 16),
+    Parent = MainContainer
+})
+
+-- Animated gradient overlay
+local GradientFrame = Utility.Create("Frame", {
+    Size = UDim2.new(1, 0, 1, 0),
+    BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+    BackgroundTransparency = 0.95,
+    BorderSizePixel = 0,
+    ZIndex = 0,
+    Parent = MainContainer
+})
+
+local Gradient = Utility.Create("UIGradient", {
+    Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Theme.Primary),
+        ColorSequenceKeypoint.new(1, Theme.Secondary)
+    },
+    Rotation = 45,
+    Parent = GradientFrame
+})
+
+-- Animate gradient rotation
+Services.RunService.Heartbeat:Connect(function()
+    if Gradient.Parent then
+        Gradient.Rotation = (Gradient.Rotation + 0.3) % 360
+    end
+end)
+
+-- Glow effect
+local GlowImage = Utility.Create("ImageLabel", {
+    AnchorPoint = Vector2.new(0.5, 0.5),
+    Size = UDim2.new(1, 60, 1, 60),
+    Position = UDim2.new(0.5, 0, 0.5, 0),
+    BackgroundTransparency = 1,
+    Image = "rbxassetid://5028857084",
+    ImageColor3 = Theme.Primary,
+    ImageTransparency = 0.85,
+    ZIndex = -1,
+    Parent = MainContainer
+})
+
+-- ═══════════════════════════════════════════════════════════════
+-- TOPBAR
+-- ═══════════════════════════════════════════════════════════════
+
+local Topbar = Utility.Create("Frame", {
+    Size = UDim2.new(1, 0, 0, 60),
+    BackgroundTransparency = 1,
+    Parent = MainContainer
+})
+
+-- Logo icon
+local LogoIcon = Utility.Create("TextLabel", {
+    Size = UDim2.new(0, 40, 0, 40),
+    Position = UDim2.new(0, 20, 0.5, -20),
+    BackgroundColor3 = Theme.Primary,
+    Text = "H",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 24,
+    Font = Enum.Font.GothamBold,
+    BorderSizePixel = 0,
+    Parent = Topbar
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 10),
+    Parent = LogoIcon
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.PrimaryLight,
+    Thickness = 2,
+    Transparency = 0.5,
+    Parent = LogoIcon
+})
+
+-- Gradient on logo
+Utility.Create("UIGradient", {
+    Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Theme.Primary),
+        ColorSequenceKeypoint.new(1, Theme.PrimaryLight)
+    },
+    Rotation = 45,
+    Parent = LogoIcon
+})
+
+-- Title
+local TitleLabel = Utility.Create("TextLabel", {
+    Size = UDim2.new(0, 200, 0, 25),
+    Position = UDim2.new(0, 70, 0, 10),
+    BackgroundTransparency = 1,
+    Text = "HL5 MENU",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 18,
+    Font = Enum.Font.GothamBold,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = Topbar
+})
+
+local TitleGradient = Utility.Create("UIGradient", {
+    Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Theme.Primary),
+        ColorSequenceKeypoint.new(0.5, Theme.TextPrimary),
+        ColorSequenceKeypoint.new(1, Theme.Primary)
+    },
+    Parent = TitleLabel
+})
+
+-- Subtitle
+local SubtitleLabel = Utility.Create("TextLabel", {
+    Size = UDim2.new(0, 200, 0, 18),
+    Position = UDim2.new(0, 70, 0, 32),
+    BackgroundTransparency = 1,
+    Text = "Premium Edition V3.0",
+    TextColor3 = Theme.TextSecondary,
+    TextSize = 12,
+    Font = Enum.Font.Gotham,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = Topbar
+})
+
+-- Minimize button
+local MinimizeBtn = Utility.Create("TextButton", {
+    Size = UDim2.new(0, 35, 0, 30),
+    Position = UDim2.new(1, -85, 0.5, -15),
+    BackgroundColor3 = Theme.Surface,
+    BackgroundTransparency = 0.3,
+    Text = "─",
+    TextColor3 = Theme.TextSecondary,
+    TextSize = 16,
+    Font = Enum.Font.GothamBold,
+    BorderSizePixel = 0,
+    AutoButtonColor = false,
+    Parent = Topbar
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 8),
+    Parent = MinimizeBtn
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Border,
+    Thickness = 1,
+    Transparency = 0.5,
+    Parent = MinimizeBtn
+})
+
+-- Close button
+local CloseBtn = Utility.Create("TextButton", {
+    Size = UDim2.new(0, 35, 0, 30),
+    Position = UDim2.new(1, -45, 0.5, -15),
+    BackgroundColor3 = Theme.Surface,
+    BackgroundTransparency = 0.3,
+    Text = "✕",
+    TextColor3 = Theme.Danger,
+    TextSize = 16,
+    Font = Enum.Font.GothamBold,
+    BorderSizePixel = 0,
+    AutoButtonColor = false,
+    Parent = Topbar
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 8),
+    Parent = CloseBtn
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Danger,
+    Thickness = 1,
+    Transparency = 0.5,
+    Parent = CloseBtn
+})
+
+-- ═══════════════════════════════════════════════════════════════
+-- CONTENT AREA
+-- ═══════════════════════════════════════════════════════════════
+
+local ContentArea = Utility.Create("Frame", {
+    Size = UDim2.new(1, -40, 1, -90),
+    Position = UDim2.new(0, 20, 0, 70),
+    BackgroundTransparency = 1,
+    Parent = MainContainer
+})
+
+-- ═══════════════════════════════════════════════════════════════
+-- SIDEBAR
+-- ═══════════════════════════════════════════════════════════════
+
+local Sidebar = Utility.Create("ScrollingFrame", {
+    Size = UDim2.new(0, 200, 1, 0),
+    BackgroundColor3 = Theme.Surface,
+    BackgroundTransparency = 0.4,
+    BorderSizePixel = 0,
+    ScrollBarThickness = 4,
+    ScrollBarImageColor3 = Theme.Primary,
+    CanvasSize = UDim2.new(0, 0, 0, 0),
+    Parent = ContentArea
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 12),
+    Parent = Sidebar
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Border,
+    Thickness = 1,
+    Transparency = 0.7,
+    Parent = Sidebar
+})
+
+local NavLayout = Utility.Create("UIListLayout", {
+    SortOrder = Enum.SortOrder.LayoutOrder,
+    Padding = UDim.new(0, 8),
+    Parent = Sidebar
+})
+
+NavLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    Sidebar.CanvasSize = UDim2.new(0, 0, 0, NavLayout.AbsoluteContentSize.Y + 30)
+end)
+
+Utility.Create("UIPadding", {
+    PaddingTop = UDim.new(0, 15),
+    PaddingLeft = UDim.new(0, 15),
+    PaddingRight = UDim.new(0, 15),
+    PaddingBottom = UDim.new(0, 15),
+    Parent = Sidebar
+})
+
+-- ═══════════════════════════════════════════════════════════════
+-- MAIN CONTENT
+-- ═══════════════════════════════════════════════════════════════
+
+local MainContent = Utility.Create("Frame", {
+    Size = UDim2.new(1, -220, 1, 0),
+    Position = UDim2.new(0, 210, 0, 0),
+    BackgroundColor3 = Theme.Surface,
+    BackgroundTransparency = 0.4,
+    BorderSizePixel = 0,
+    Parent = ContentArea
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 12),
+    Parent = MainContent
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Border,
+    Thickness = 1,
+    Transparency = 0.7,
+    Parent = MainContent
+})
+
+-- ═══════════════════════════════════════════════════════════════
+-- CHARACTER PAGE
+-- ═══════════════════════════════════════════════════════════════
+
+local CharacterPage = Utility.Create("ScrollingFrame", {
+    Name = "CharacterPage",
+    Size = UDim2.new(1, -30, 1, -30),
+    Position = UDim2.new(0, 15, 0, 15),
+    BackgroundTransparency = 1,
+    BorderSizePixel = 0,
+    ScrollBarThickness = 4,
+    ScrollBarImageColor3 = Theme.Primary,
+    CanvasSize = UDim2.new(0, 0, 0, 0),
+    Parent = MainContent
+})
+
+local CharLayout = Utility.Create("UIListLayout", {
+    SortOrder = Enum.SortOrder.LayoutOrder,
+    Padding = UDim.new(0, 15),
+    Parent = CharacterPage
+})
+
+CharLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    CharacterPage.CanvasSize = UDim2.new(0, 0, 0, CharLayout.AbsoluteContentSize.Y + 15)
+end)
+
+-- Title
+local CharTitle = Utility.Create("TextLabel", {
+    Size = UDim2.new(1, 0, 0, 40),
+    BackgroundTransparency = 1,
+    Text = "🎮  Character Control",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 22,
+    Font = Enum.Font.GothamBold,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    LayoutOrder = 0,
+    Parent = CharacterPage
+})
+
+local CharTitleGradient = Utility.Create("UIGradient", {
+    Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Theme.Primary),
+        ColorSequenceKeypoint.new(0.5, Theme.TextPrimary),
+        ColorSequenceKeypoint.new(1, Theme.Primary)
+    },
+    Parent = CharTitle
+})
+
+-- ═══════════════════════════════════════════════════════════════
+-- FEATURE CARD CREATOR
+-- ═══════════════════════════════════════════════════════════════
+
+local function CreateFeatureCard(featureName, icon, title, desc, order, parent)
+    local featureData = FeatureStates[featureName]
+    if not featureData then return end
+    
+    local hasSlider = featureData.maxValue > 0
+    local cardHeight = hasSlider and 240 or 180
+    
+    -- Card container
+    local Card = Utility.Create("Frame", {
+        Name = featureName .. "Card",
+        Size = UDim2.new(1, 0, 0, cardHeight),
+        BackgroundColor3 = Theme.BackgroundLight,
+        BackgroundTransparency = 0.3,
+        BorderSizePixel = 0,
+        LayoutOrder = order,
+        Parent = parent
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 12),
+        Parent = Card
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = Theme.Border,
+        Thickness = 1,
+        Transparency = 0.7,
+        Parent = Card
+    })
+    
+    -- Header
+    local Header = Utility.Create("Frame", {
+        Name = "Header",
+        Size = UDim2.new(1, 0, 0, 50),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    
+    -- Icon
+    local Icon = Utility.Create("TextLabel", {
+        Size = UDim2.new(0, 35, 0, 35),
+        Position = UDim2.new(0, 15, 0, 8),
+        BackgroundColor3 = Theme.Primary,
+        BackgroundTransparency = 0.8,
+        Text = icon,
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 18,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        Parent = Header
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = Icon
+    })
+    
+    -- Title
+    local TitleLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.4, -60, 0, 22),
+        Position = UDim2.new(0, 60, 0, 8),
+        BackgroundTransparency = 1,
+        Text = title,
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 16,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = Header
+    })
+    
+    -- Description
+    local DescLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.4, -60, 0, 16),
+        Position = UDim2.new(0, 60, 0, 28),
+        BackgroundTransparency = 1,
+        Text = desc,
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = Header
+    })
+    
+    -- Toggle button
+    local ToggleButton = Utility.Create("TextButton", {
+        Name = "ToggleButton",
+        Size = UDim2.new(0, 70, 0, 35),
+        Position = UDim2.new(1, -85, 0, 8),
+        BackgroundColor3 = featureData.enabled and Theme.Success or Theme.Surface,
+        BackgroundTransparency = 0.2,
+        Text = featureData.enabled and "ON" or "OFF",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 13,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Parent = Header
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = ToggleButton
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = featureData.enabled and Theme.Success or Theme.Border,
+        Thickness = 1,
+        Transparency = 0.5,
+        Parent = ToggleButton
+    })
+    
+    -- Keybind section
+    local KeybindFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 50),
+        Position = UDim2.new(0, 15, 0, 60),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    
+    local KeybindLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.5, 0, 0, 30),
+        BackgroundTransparency = 1,
+        Text = "Toggle Key (ESC = Clear)",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = KeybindFrame
+    })
+    
+    local KeybindButton = Utility.Create("TextButton", {
+        Name = "KeybindBtn",
+        Size = UDim2.new(0, 100, 0, 35),
+        Position = UDim2.new(1, -100, 0, 0),
+        BackgroundColor3 = Theme.Surface,
+        BackgroundTransparency = 0.3,
+        Text = featureData.key and featureData.key.Name or "None",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Parent = KeybindFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = KeybindButton
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = Theme.Border,
+        Thickness = 1,
+        Transparency = 0.5,
+        Parent = KeybindButton
+    })
+    
+    -- Keybind logic
+    local listeningForKey = false
+    
+    KeybindButton.MouseButton1Click:Connect(function()
+        if not listeningForKey then
+            listeningForKey = true
+            KeybindButton.Text = "Press..."
+            KeybindButton.BackgroundColor3 = Theme.Warning
+        end
+    end)
+    
+    Services.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if listeningForKey and input.UserInputType == Enum.UserInputType.Keyboard then
+            if input.KeyCode == Enum.KeyCode.Escape then
+                featureData.key = nil
+                KeybindButton.Text = "None"
+                KeybindButton.BackgroundColor3 = Theme.Surface
+                listeningForKey = false
+            else
+                featureData.key = input.KeyCode
+                KeybindButton.Text = input.KeyCode.Name
+                KeybindButton.BackgroundColor3 = Theme.Surface
+                listeningForKey = false
+            end
+        end
+    end)
+    
+    -- Slider (if needed)
+    if hasSlider then
+        local SliderFrame = Utility.Create("Frame", {
+            Size = UDim2.new(1, -30, 0, 60),
+            Position = UDim2.new(0, 15, 0, 120),
+            BackgroundTransparency = 1,
+            Parent = Card
+        })
+        
+        local SliderLabel = Utility.Create("TextLabel", {
+            Size = UDim2.new(0.6, 0, 0, 20),
+            BackgroundTransparency = 1,
+            Text = title .. " Value",
+            TextColor3 = Theme.TextSecondary,
+            TextSize = 12,
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Parent = SliderFrame
+        })
+        
+        local SliderValue = Utility.Create("TextBox", {
+            Name = "SliderValue",
+            Size = UDim2.new(0, 60, 0, 22),
+            Position = UDim2.new(1, -60, 0, -1),
+            BackgroundColor3 = Theme.Surface,
+            BackgroundTransparency = 0.5,
+            BorderSizePixel = 0,
+            Text = tostring(featureData.value),
+            TextColor3 = Theme.Primary,
+            TextSize = 13,
+            Font = Enum.Font.GothamBold,
+            TextXAlignment = Enum.TextXAlignment.Center,
+            ClearTextOnFocus = false,
+            Parent = SliderFrame
+        })
+        
+        Utility.Create("UICorner", {
+            CornerRadius = UDim.new(0, 6),
+            Parent = SliderValue
+        })
+        
+        -- Slider background
+        local SliderBack = Utility.Create("Frame", {
+            Size = UDim2.new(1, 0, 0, 8),
+            Position = UDim2.new(0, 0, 0, 35),
+            BackgroundColor3 = Theme.Surface,
+            BorderSizePixel = 0,
+            Parent = SliderFrame
+        })
+        
+        Utility.Create("UICorner", {
+            CornerRadius = UDim.new(1, 0),
+            Parent = SliderBack
+        })
+        
+        -- Slider fill
+        local SliderFill = Utility.Create("Frame", {
+            Size = UDim2.new(featureData.value / featureData.maxValue, 0, 1, 0),
+            BackgroundColor3 = Theme.Primary,
+            BorderSizePixel = 0,
+            Parent = SliderBack
+        })
+        
+        Utility.Create("UICorner", {
+            CornerRadius = UDim.new(1, 0),
+            Parent = SliderFill
+        })
+        
+        Utility.Create("UIGradient", {
+            Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Theme.Primary),
+                ColorSequenceKeypoint.new(1, Theme.PrimaryLight)
+            },
+            Parent = SliderFill
+        })
+        
+        -- Slider button (invisible overlay)
+        local SliderButton = Utility.Create("TextButton", {
+            Size = UDim2.new(1, 0, 1, 10),
+            Position = UDim2.new(0, 0, 0, -5),
+            BackgroundTransparency = 1,
+            Text = "",
+            Parent = SliderBack
+        })
+        
+        local dragging = false
+        
+        SliderButton.MouseButton1Down:Connect(function()
+            dragging = true
+        end)
+        
+        Services.UserInputService.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = false
+            end
+        end)
+        
+        -- Manual input
+        SliderValue.FocusLost:Connect(function()
+            local inputValue = tonumber(SliderValue.Text)
+            if inputValue then
+                inputValue = math.clamp(inputValue, 0, featureData.maxValue)
+                featureData.value = inputValue
+                SliderValue.Text = tostring(inputValue)
+                SliderFill.Size = UDim2.new(inputValue / featureData.maxValue, 0, 1, 0)
+                
+                -- Apply value if feature is enabled
+                if featureData.enabled then
+                    ApplyFeatureValue(featureName, inputValue)
+                end
+            else
+                SliderValue.Text = tostring(featureData.value)
+            end
+        end)
+        
+        -- Dragging
+        SliderButton.MouseMoved:Connect(function(x, y)
+            if dragging then
+                local relativeX = math.clamp((x - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
+                local value = math.floor(relativeX * featureData.maxValue)
+                featureData.value = value
+                SliderFill.Size = UDim2.new(relativeX, 0, 1, 0)
+                SliderValue.Text = tostring(value)
+                
+                -- Apply value if feature is enabled
+                if featureData.enabled then
+                    ApplyFeatureValue(featureName, value)
+                end
+            end
+        end)
+    end
+    
+    -- Toggle button functionality
+    ToggleButton.MouseButton1Click:Connect(function()
+        featureData.enabled = not featureData.enabled
+        ToggleButton.Text = featureData.enabled and "ON" or "OFF"
+        ToggleButton.BackgroundColor3 = featureData.enabled and Theme.Success or Theme.Surface
+        
+        local stroke = ToggleButton:FindFirstChild("UIStroke")
+        if stroke then
+            stroke.Color = featureData.enabled and Theme.Success or Theme.Border
+        end
+        
+        -- Execute feature toggle
+        ToggleFeature(featureName, featureData.enabled)
+    end)
+    
+    -- Hover effects
+    ToggleButton.MouseEnter:Connect(function()
+        Utility.Tween(ToggleButton, {BackgroundTransparency = 0}, 0.2)
+    end)
+    
+    ToggleButton.MouseLeave:Connect(function()
+        Utility.Tween(ToggleButton, {BackgroundTransparency = 0.2}, 0.2)
+    end)
+    
+    return Card
+end
+
+-- ═══════════════════════════════════════════════════════════════
+-- FEATURE TOGGLE & VALUE APPLICATION
+-- ═══════════════════════════════════════════════════════════════
+
+function ToggleFeature(featureName, enabled)
+    if featureName == "Fly" then
+        if enabled then
+            _G.HL5FlySystem:Enable()
+            _G.HL5FlySystem:SetSpeed(FeatureStates.Fly.value)
+        else
+            _G.HL5FlySystem:Disable()
+        end
+        
+    elseif featureName == "WalkSpeed" then
+        local targetHumanoid = _G.HL5InvisibleSystem:GetActiveHumanoid()
+        if targetHumanoid then
+            targetHumanoid.WalkSpeed = enabled and FeatureStates.WalkSpeed.value or 16
+        end
+        
+    elseif featureName == "JumpPower" then
+        local targetHumanoid = _G.HL5InvisibleSystem:GetActiveHumanoid()
+        if targetHumanoid then
+            if targetHumanoid.UseJumpPower then
+                targetHumanoid.JumpPower = enabled and FeatureStates.JumpPower.value or 50
+            else
+                targetHumanoid.JumpHeight = enabled and (FeatureStates.JumpPower.value / 10) or 7.2
+            end
+        end
+        
+    elseif featureName == "InvisibleMode" then
+        if enabled then
+            _G.HL5InvisibleSystem:Enable()
+        else
+            _G.HL5InvisibleSystem:Disable()
+        end
+        
+    elseif featureName == "Ragdoll" then
+        if enabled then
+            _G.HL5RagdollSystem:Enable()
+        else
+            _G.HL5RagdollSystem:Disable()
+        end
+        
+    elseif featureName == "SpaceMode" then
+        if enabled then
+            _G.HL5SpaceModeSystem:Enable()
+        else
+            _G.HL5SpaceModeSystem:Disable()
+        end
+        
+    elseif featureName == "ESPHighlight" then
+        if enabled then
+            _G.HL5ESPSystem:EnableHighlights()
+        else
+            _G.HL5ESPSystem:DisableHighlights()
+        end
+        
+    elseif featureName == "ESPNametags" then
+        if enabled then
+            _G.HL5ESPSystem:EnableNametags()
+        else
+            _G.HL5ESPSystem:DisableNametags()
+        end
+        
+    elseif featureName == "XRay" then
+        if enabled then
+            _G.HL5XRaySystem:Enable()
+        else
+            _G.HL5XRaySystem:Disable()
+        end
+        
+    elseif featureName == "Godmode" then
+        if enabled then
+            _G.HL5GodmodeSystem:Enable()
+        else
+            _G.HL5GodmodeSystem:Disable()
+        end
+
+    elseif featureName == "DashStrafe" then
+        if enabled then
+            _G.HL5DashStrafeSystem:Enable()
+        else
+            _G.HL5DashStrafeSystem:Disable()
+        end
+    elseif featureName == "Aimbot" then
+        if enabled then
+            _G.HL5AimbotSystem:Enable()
+        else
+            _G.HL5AimbotSystem:Disable()
+        end
+    end
+end
+
+function ApplyFeatureValue(featureName, value)
+    if featureName == "Fly" then
+        _G.HL5FlySystem:SetSpeed(value)
+        
+    elseif featureName == "WalkSpeed" then
+        local targetHumanoid = _G.HL5InvisibleSystem:GetActiveHumanoid()
+        if targetHumanoid then
+            targetHumanoid.WalkSpeed = value
+        end
+        
+    elseif featureName == "JumpPower" then
+        local targetHumanoid = _G.HL5InvisibleSystem:GetActiveHumanoid()
+        if targetHumanoid then
+            if targetHumanoid.UseJumpPower then
+                targetHumanoid.JumpPower = value
+            else
+                targetHumanoid.JumpHeight = value / 10
+            end
+        end
+        
+    elseif featureName == "SpinCharacter" then
+        -- Value is applied in the loop
+        
+    elseif featureName == "SpaceMode" then
+        -- Value is applied in the update loop
+        
+    elseif featureName == "ESPHighlight" then
+        local transparency = value / 100
+        for player, highlight in pairs(_G.HL5ESPSystem.highlights) do
+            if highlight then
+                highlight.FillTransparency = transparency
+            end
+        end
+        
+    elseif featureName == "ESPNametags" then
+        for player, nametag in pairs(_G.HL5ESPSystem.nametags) do
+            if nametag and nametag:FindFirstChild("TextLabel") then
+                nametag.TextLabel.TextSize = value
+            end
+        end
+    
+    elseif featureName == "XRay" then
+        if _G.HL5XRaySystem.enabled then
+            _G.HL5XRaySystem.transparency = value / 100
+        end
+    
+    elseif featureName == "Aimbot" then
+        FeatureStates.Aimbot.value = value
+        if _G.HL5AimbotSystem.enabled then
+            _G.HL5AimbotSystem:UpdateSettings()
+        end
+    end
+end
+
+-- ═══════════════════════════════════════════════════════════════
+-- ADVERTISEMENT CARD
+-- ═══════════════════════════════════════════════════════════════
+
+local AdCard = Utility.Create("Frame", {
+    Size = UDim2.new(1, 0, 0, 100),
+    BackgroundColor3 = Theme.BackgroundLight,
+    BackgroundTransparency = 0.3,
+    BorderSizePixel = 0,
+    LayoutOrder = 0.5,
+    Parent = CharacterPage
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 12),
+    Parent = AdCard
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Primary,
+    Thickness = 2,
+    Transparency = 0.5,
+    Parent = AdCard
+})
+
+local AdButton = Utility.Create("TextButton", {
+    Size = UDim2.new(1, -30, 1, -30),
+    Position = UDim2.new(0, 15, 0, 15),
+    BackgroundColor3 = Theme.Primary,
+    Text = "📢  Post Advertisement",
+    TextColor3 = Color3.fromRGB(30, 30, 30),
+    TextSize = 18,
+    Font = Enum.Font.GothamBold,
+    BorderSizePixel = 0,
+    AutoButtonColor = false,
+    Parent = AdCard
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 10),
+    Parent = AdButton
+})
+
+Utility.Create("UIGradient", {
+    Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Theme.Primary),
+        ColorSequenceKeypoint.new(1, Theme.PrimaryLight)
+    },
+    Rotation = 45,
+    Parent = AdButton
+})
+
+-- Advertisement function
+local function PostAdvertisement()
+    local messages = {
+        "💎HL5 MENU💎Das beste Roblox Menu!",
+        "Exklusiv auf ScriptHub unter dem Namen HL5 Menu zu finden.",
+        "💙Lasst Liebe da!💙"
+    }
+    
+    local function sendMessage(text)
+        -- Method 1: LocalPlayer:Chat()
+        Utility.SafeCall(function()
+            LocalPlayer:Chat(text)
+        end)
+        
+        -- Method 2: TextChatService
+        Utility.SafeCall(function()
+            local textChannels = Services.TextChatService:FindFirstChild("TextChannels")
+            if textChannels then
+                local generalChannel = textChannels:FindFirstChild("RBXGeneral")
+                if generalChannel and generalChannel:IsA("TextChannel") then
+                    generalChannel:SendAsync(text)
+                end
+            end
+        end)
+        
+        -- Method 3: DefaultChatSystem
+        Utility.SafeCall(function()
+            local chatEvents = Services.ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents")
+            if chatEvents then
+                local sayMessage = chatEvents:FindFirstChild("SayMessageRequest")
+                if sayMessage then
+                    sayMessage:FireServer(text, "All")
+                end
+            end
+        end)
+    end
+    
+    task.spawn(function()
+        for i, msg in ipairs(messages) do
+            sendMessage(msg)
+            task.wait(0.7)
+        end
+        print("[HL5] Advertisement posted")
+    end)
+end
+
+AdButton.MouseButton1Click:Connect(function()
+    PostAdvertisement()
+end)
+
+-- Hover effect
+AdButton.MouseEnter:Connect(function()
+    Utility.Tween(AdButton, {BackgroundTransparency = 0}, 0.2)
+end)
+
+AdButton.MouseLeave:Connect(function()
+    Utility.Tween(AdButton, {BackgroundTransparency = 0.2}, 0.2)
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- CREATE CHARACTER FEATURE CARDS
+-- ═══════════════════════════════════════════════════════════════
+
+CreateFeatureCard("Fly", "✈️", "Fly System", "WASD + Space/Shift", 1, CharacterPage)
+CreateFeatureCard("WalkSpeed", "🏃", "Walk Speed", "Modify movement speed", 2, CharacterPage)
+CreateFeatureCard("JumpPower", "🦘", "Jump Power", "Change jump height", 3, CharacterPage)
+CreateFeatureCard("InvisibleMode", "👻", "Invisible Mode", "Walking clone", 4, CharacterPage)
+CreateFeatureCard("Noclip", "🚪", "Noclip", "Walk through walls", 5, CharacterPage)
+CreateFeatureCard("SpinCharacter", "🌀", "Spin Character", "Rotate continuously", 6, CharacterPage)
+CreateFeatureCard("Ragdoll", "🤸", "Ragdoll", "Fall like a ragdoll", 7, CharacterPage)
+CreateFeatureCard("SpaceMode", "🚀", "Space Mode", "Zero gravity flight", 8, CharacterPage)
+CreateFeatureCard("XRay", "🔍", "X-Ray Vision", "See through walls", 9, CharacterPage)
+CreateFeatureCard("Godmode", "🛡️", "Godmode", "Invincibility mode", 10, CharacterPage)
+
+-- ═══════════════════════════════════════════════════════════════
+-- DASH FEATURE CARD (DOUBLE SLIDER)
+-- ═══════════════════════════════════════════════════════════════
+
+local function CreateDashFeatureCard(featureName, icon, title, desc, order, parent)
+    local featureData = FeatureStates[featureName]
+    if not featureData then return end
+    
+    local cardHeight = 350 -- Höher wegen 2 Slidern
+    
+    local Card = Utility.Create("Frame", {
+        Name = featureName .. "Card",
+        Size = UDim2.new(1, 0, 0, cardHeight),
+        BackgroundColor3 = Theme.BackgroundLight,
+        BackgroundTransparency = 0.3,
+        BorderSizePixel = 0,
+        LayoutOrder = order,
+        Parent = parent
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 12),
+        Parent = Card
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = Theme.Border,
+        Thickness = 1,
+        Transparency = 0.7,
+        Parent = Card
+    })
+    
+    -- Header (gleich wie normale Cards)
+    local Header = Utility.Create("Frame", {
+        Name = "Header",
+        Size = UDim2.new(1, 0, 0, 50),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    
+    local Icon = Utility.Create("TextLabel", {
+        Size = UDim2.new(0, 35, 0, 35),
+        Position = UDim2.new(0, 15, 0, 8),
+        BackgroundColor3 = Theme.Primary,
+        BackgroundTransparency = 0.8,
+        Text = icon,
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 18,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        Parent = Header
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = Icon
+    })
+    
+    local TitleLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.4, -60, 0, 22),
+        Position = UDim2.new(0, 60, 0, 8),
+        BackgroundTransparency = 1,
+        Text = title,
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 16,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = Header
+    })
+    
+    local DescLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.4, -60, 0, 16),
+        Position = UDim2.new(0, 60, 0, 28),
+        BackgroundTransparency = 1,
+        Text = desc,
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = Header
+    })
+    
+    local ToggleButton = Utility.Create("TextButton", {
+        Name = "ToggleButton",
+        Size = UDim2.new(0, 70, 0, 35),
+        Position = UDim2.new(1, -85, 0, 8),
+        BackgroundColor3 = featureData.enabled and Theme.Success or Theme.Surface,
+        BackgroundTransparency = 0.2,
+        Text = featureData.enabled and "ON" or "OFF",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 13,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Parent = Header
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = ToggleButton
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = featureData.enabled and Theme.Success or Theme.Border,
+        Thickness = 1,
+        Transparency = 0.5,
+        Parent = ToggleButton
+    })
+    
+    -- Keybind
+    local KeybindFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 50),
+        Position = UDim2.new(0, 15, 0, 60),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    
+    local KeybindLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.5, 0, 0, 30),
+        BackgroundTransparency = 1,
+        Text = "Toggle Key (ESC = Clear)",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = KeybindFrame
+    })
+    
+    local KeybindButton = Utility.Create("TextButton", {
+        Name = "KeybindBtn",
+        Size = UDim2.new(0, 100, 0, 35),
+        Position = UDim2.new(1, -100, 0, 0),
+        BackgroundColor3 = Theme.Surface,
+        BackgroundTransparency = 0.3,
+        Text = featureData.key and featureData.key.Name or "None",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Parent = KeybindFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = KeybindButton
+    })
+    
+    local listeningForKey = false
+    
+    KeybindButton.MouseButton1Click:Connect(function()
+        if not listeningForKey then
+            listeningForKey = true
+            KeybindButton.Text = "Press..."
+            KeybindButton.BackgroundColor3 = Theme.Warning
+        end
+    end)
+    
+    Services.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if listeningForKey and input.UserInputType == Enum.UserInputType.Keyboard then
+            if input.KeyCode == Enum.KeyCode.Escape then
+                featureData.key = nil
+                KeybindButton.Text = "None"
+                KeybindButton.BackgroundColor3 = Theme.Surface
+                listeningForKey = false
+            else
+                featureData.key = input.KeyCode
+                KeybindButton.Text = input.KeyCode.Name
+                KeybindButton.BackgroundColor3 = Theme.Surface
+                listeningForKey = false
+            end
+        end
+    end)
+    
+    -- SLIDER 1: SPEED
+    local SpeedSliderFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 60),
+        Position = UDim2.new(0, 15, 0, 120),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    
+    local SpeedLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.6, 0, 0, 20),
+        BackgroundTransparency = 1,
+        Text = "Dash Speed",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 12,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = SpeedSliderFrame
+    })
+    
+    local SpeedValue = Utility.Create("TextBox", {
+        Size = UDim2.new(0, 60, 0, 22),
+        Position = UDim2.new(1, -60, 0, -1),
+        BackgroundColor3 = Theme.Surface,
+        BackgroundTransparency = 0.5,
+        BorderSizePixel = 0,
+        Text = tostring(featureData.value),
+        TextColor3 = Theme.Primary,
+        TextSize = 13,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Center,
+        ClearTextOnFocus = false,
+        Parent = SpeedSliderFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 6),
+        Parent = SpeedValue
+    })
+    
+    local SpeedSliderBack = Utility.Create("Frame", {
+        Size = UDim2.new(1, 0, 0, 8),
+        Position = UDim2.new(0, 0, 0, 35),
+        BackgroundColor3 = Theme.Surface,
+        BorderSizePixel = 0,
+        Parent = SpeedSliderFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(1, 0),
+        Parent = SpeedSliderBack
+    })
+    
+    local SpeedSliderFill = Utility.Create("Frame", {
+        Size = UDim2.new(featureData.value / featureData.maxValue, 0, 1, 0),
+        BackgroundColor3 = Theme.Primary,
+        BorderSizePixel = 0,
+        Parent = SpeedSliderBack
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(1, 0),
+        Parent = SpeedSliderFill
+    })
+    
+    Utility.Create("UIGradient", {
+        Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Theme.Primary),
+            ColorSequenceKeypoint.new(1, Theme.PrimaryLight)
+        },
+        Parent = SpeedSliderFill
+    })
+    
+    local SpeedSliderButton = Utility.Create("TextButton", {
+        Size = UDim2.new(1, 0, 1, 10),
+        Position = UDim2.new(0, 0, 0, -5),
+        BackgroundTransparency = 1,
+        Text = "",
+        Parent = SpeedSliderBack
+    })
+    
+    local speedDragging = false
+    
+    SpeedSliderButton.MouseButton1Down:Connect(function()
+        speedDragging = true
+    end)
+    
+    Services.UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            speedDragging = false
+        end
+    end)
+    
+    SpeedValue.FocusLost:Connect(function()
+        local inputValue = tonumber(SpeedValue.Text)
+        if inputValue then
+            inputValue = math.clamp(inputValue, 0, featureData.maxValue)
+            featureData.value = inputValue
+            SpeedValue.Text = tostring(inputValue)
+            SpeedSliderFill.Size = UDim2.new(inputValue / featureData.maxValue, 0, 1, 0)
+            -- Wert wird automatisch im Heartbeat-Loop gelesen
+        else
+            SpeedValue.Text = tostring(featureData.value)
+        end
+    end)
+    
+    SpeedSliderButton.MouseMoved:Connect(function(x, y)
+        if speedDragging then
+            local relativeX = math.clamp((x - SpeedSliderBack.AbsolutePosition.X) / SpeedSliderBack.AbsoluteSize.X, 0, 1)
+            local value = math.floor(relativeX * featureData.maxValue)
+            featureData.value = value
+            SpeedSliderFill.Size = UDim2.new(relativeX, 0, 1, 0)
+            SpeedValue.Text = tostring(value)
+            -- Wert wird automatisch im Heartbeat-Loop gelesen
+        end
+    end)
+    
+    -- SLIDER 2: DISTANCE
+    local DistSliderFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 60),
+        Position = UDim2.new(0, 15, 0, 190),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    
+    local DistLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.6, 0, 0, 20),
+        BackgroundTransparency = 1,
+        Text = "Dash Distance (Studs)",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 12,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = DistSliderFrame
+    })
+    
+    local DistValue = Utility.Create("TextBox", {
+        Size = UDim2.new(0, 60, 0, 22),
+        Position = UDim2.new(1, -60, 0, -1),
+        BackgroundColor3 = Theme.Surface,
+        BackgroundTransparency = 0.5,
+        BorderSizePixel = 0,
+        Text = tostring(featureData.dashDistance or 5),
+        TextColor3 = Theme.Primary,
+        TextSize = 13,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Center,
+        ClearTextOnFocus = false,
+        Parent = DistSliderFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 6),
+        Parent = DistValue
+    })
+    
+    local DistSliderBack = Utility.Create("Frame", {
+        Size = UDim2.new(1, 0, 0, 8),
+        Position = UDim2.new(0, 0, 0, 35),
+        BackgroundColor3 = Theme.Surface,
+        BorderSizePixel = 0,
+        Parent = DistSliderFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(1, 0),
+        Parent = DistSliderBack
+    })
+    
+    local maxDist = 50
+    local DistSliderFill = Utility.Create("Frame", {
+        Size = UDim2.new((featureData.dashDistance or 5) / maxDist, 0, 1, 0),
+        BackgroundColor3 = Theme.Primary,
+        BorderSizePixel = 0,
+        Parent = DistSliderBack
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(1, 0),
+        Parent = DistSliderFill
+    })
+    
+    Utility.Create("UIGradient", {
+        Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Theme.Primary),
+            ColorSequenceKeypoint.new(1, Theme.PrimaryLight)
+        },
+        Parent = DistSliderFill
+    })
+    
+    local DistSliderButton = Utility.Create("TextButton", {
+        Size = UDim2.new(1, 0, 1, 10),
+        Position = UDim2.new(0, 0, 0, -5),
+        BackgroundTransparency = 1,
+        Text = "",
+        Parent = DistSliderBack
+    })
+    
+    local distDragging = false
+    
+    DistSliderButton.MouseButton1Down:Connect(function()
+        distDragging = true
+    end)
+    
+    Services.UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            distDragging = false
+        end
+    end)
+    
+    DistValue.FocusLost:Connect(function()
+        local inputValue = tonumber(DistValue.Text)
+        if inputValue then
+            inputValue = math.clamp(inputValue, 0, maxDist)
+            featureData.dashDistance = inputValue
+            DistValue.Text = tostring(inputValue)
+            DistSliderFill.Size = UDim2.new(inputValue / maxDist, 0, 1, 0)
+            -- Wert wird automatisch im Heartbeat-Loop gelesen
+        else
+            DistValue.Text = tostring(featureData.dashDistance or 5)
+        end
+    end)
+    
+    DistSliderButton.MouseMoved:Connect(function(x, y)
+        if distDragging then
+            local relativeX = math.clamp((x - DistSliderBack.AbsolutePosition.X) / DistSliderBack.AbsoluteSize.X, 0, 1)
+            local value = math.floor(relativeX * maxDist)
+            featureData.dashDistance = value
+            DistSliderFill.Size = UDim2.new(relativeX, 0, 1, 0)
+            DistValue.Text = tostring(value)
+            -- Wert wird automatisch im Heartbeat-Loop gelesen
+        end
+    end)
+    
+    -- TOGGLE FUNCTIONALITY
+    ToggleButton.MouseButton1Click:Connect(function()
+        featureData.enabled = not featureData.enabled
+        ToggleButton.Text = featureData.enabled and "ON" or "OFF"
+        ToggleButton.BackgroundColor3 = featureData.enabled and Theme.Success or Theme.Surface
+        
+        local stroke = ToggleButton:FindFirstChild("UIStroke")
+        if stroke then
+            stroke.Color = featureData.enabled and Theme.Success or Theme.Border
+        end
+        
+        ToggleFeature(featureName, featureData.enabled)
+    end)
+    
+    ToggleButton.MouseEnter:Connect(function()
+        Utility.Tween(ToggleButton, {BackgroundTransparency = 0}, 0.2)
+    end)
+    
+    ToggleButton.MouseLeave:Connect(function()
+        Utility.Tween(ToggleButton, {BackgroundTransparency = 0.2}, 0.2)
+    end)
+    
+    return Card
+end
+
+-- Jetzt die Funktion aufrufen:
+CreateDashFeatureCard("DashStrafe", "💨", "Dash Strafe", "Auto strafe left/right", 11, CharacterPage)
+
+-- ═══════════════════════════════════════════════════════════════
+-- AIM PAGE
+-- ═══════════════════════════════════════════════════════════════
+
+local AimPage = Utility.Create("ScrollingFrame", {
+    Name = "AimPage",
+    Size = UDim2.new(1, -30, 1, -30),
+    Position = UDim2.new(0, 15, 0, 15),
+    BackgroundTransparency = 1,
+    BorderSizePixel = 0,
+    ScrollBarThickness = 4,
+    ScrollBarImageColor3 = Theme.Primary,
+    CanvasSize = UDim2.new(0, 0, 0, 0),
+    Visible = false,
+    Parent = MainContent
+})
+
+local AimLayout = Utility.Create("UIListLayout", {
+    SortOrder = Enum.SortOrder.LayoutOrder,
+    Padding = UDim.new(0, 15),
+    Parent = AimPage
+})
+
+AimLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    AimPage.CanvasSize = UDim2.new(0, 0, 0, AimLayout.AbsoluteContentSize.Y + 15)
+end)
+
+local AimTitle = Utility.Create("TextLabel", {
+    Size = UDim2.new(1, 0, 0, 40),
+    BackgroundTransparency = 1,
+    Text = "🎯  Aim Assist",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 22,
+    Font = Enum.Font.GothamBold,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    LayoutOrder = 0,
+    Parent = AimPage
+})
+
+local AimTitleGradient = Utility.Create("UIGradient", {
+    Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Theme.Primary),
+        ColorSequenceKeypoint.new(0.5, Theme.TextPrimary),
+        ColorSequenceKeypoint.new(1, Theme.Primary)
+    },
+    Parent = AimTitle
+})
+
+-- Aimbot Card mit allen Optionen
+local function CreateAimbotCard()
+    local featureData = FeatureStates.Aimbot
+    local cardHeight = 650
+    
+    local Card = Utility.Create("Frame", {
+        Name = "AimbotCard",
+        Size = UDim2.new(1, 0, 0, cardHeight),
+        BackgroundColor3 = Theme.BackgroundLight,
+        BackgroundTransparency = 0.3,
+        BorderSizePixel = 0,
+        LayoutOrder = 1,
+        Parent = AimPage
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 12),
+        Parent = Card
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = Theme.Border,
+        Thickness = 1,
+        Transparency = 0.7,
+        Parent = Card
+    })
+    
+    -- Header
+    local Header = Utility.Create("Frame", {
+        Size = UDim2.new(1, 0, 0, 50),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    
+    local Icon = Utility.Create("TextLabel", {
+        Size = UDim2.new(0, 35, 0, 35),
+        Position = UDim2.new(0, 15, 0, 8),
+        BackgroundColor3 = Theme.Primary,
+        BackgroundTransparency = 0.8,
+        Text = "🎯",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 18,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        Parent = Header
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = Icon
+    })
+    
+    local TitleLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.4, -60, 0, 22),
+        Position = UDim2.new(0, 60, 0, 8),
+        BackgroundTransparency = 1,
+        Text = "Aimbot",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 16,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = Header
+    })
+    
+    local DescLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.4, -60, 0, 16),
+        Position = UDim2.new(0, 60, 0, 28),
+        BackgroundTransparency = 1,
+        Text = "Auto-aim when shooting",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = Header
+    })
+    
+    local ToggleButton = Utility.Create("TextButton", {
+        Size = UDim2.new(0, 70, 0, 35),
+        Position = UDim2.new(1, -85, 0, 8),
+        BackgroundColor3 = featureData.enabled and Theme.Success or Theme.Surface,
+        BackgroundTransparency = 0.2,
+        Text = featureData.enabled and "ON" or "OFF",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 13,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Parent = Header
+    })
+    
+    -- Globale Referenz für Keybind-Updates
+    _G.HL5AimbotToggleButton = ToggleButton
+
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = ToggleButton
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = featureData.enabled and Theme.Success or Theme.Border,
+        Thickness = 1,
+        Transparency = 0.5,
+        Parent = ToggleButton
+    })
+    
+    local yPos = 60
+    
+    -- Keybind
+    local KeybindFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 50),
+        Position = UDim2.new(0, 15, 0, yPos),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    yPos = yPos + 60
+    
+    local KeybindLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.5, 0, 0, 30),
+        BackgroundTransparency = 1,
+        Text = "Toggle Key (ESC = Clear)",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = KeybindFrame
+    })
+    
+    local KeybindButton = Utility.Create("TextButton", {
+        Size = UDim2.new(0, 100, 0, 35),
+        Position = UDim2.new(1, -100, 0, 0),
+        BackgroundColor3 = Theme.Surface,
+        BackgroundTransparency = 0.3,
+        Text = featureData.key and featureData.key.Name or "None",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Parent = KeybindFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = KeybindButton
+    })
+    
+    local listeningForKey = false
+    
+    KeybindButton.MouseButton1Click:Connect(function()
+        if not listeningForKey then
+            listeningForKey = true
+            KeybindButton.Text = "Press..."
+            KeybindButton.BackgroundColor3 = Theme.Warning
+        end
+    end)
+    
+    Services.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if listeningForKey and input.UserInputType == Enum.UserInputType.Keyboard then
+            if input.KeyCode == Enum.KeyCode.Escape then
+                featureData.key = nil
+                KeybindButton.Text = "None"
+                KeybindButton.BackgroundColor3 = Theme.Surface
+                listeningForKey = false
+            else
+                featureData.key = input.KeyCode
+                KeybindButton.Text = input.KeyCode.Name
+                KeybindButton.BackgroundColor3 = Theme.Surface
+                listeningForKey = false
+            end
+        end
+    end)
+    
+    -- FOV Slider
+    local FOVFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 60),
+        Position = UDim2.new(0, 15, 0, yPos),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    yPos = yPos + 70
+    
+    local FOVLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.6, 0, 0, 20),
+        BackgroundTransparency = 1,
+        Text = "FOV Circle Radius",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 12,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = FOVFrame
+    })
+    
+    local FOVValue = Utility.Create("TextBox", {
+        Size = UDim2.new(0, 60, 0, 22),
+        Position = UDim2.new(1, -60, 0, -1),
+        BackgroundColor3 = Theme.Surface,
+        BackgroundTransparency = 0.5,
+        BorderSizePixel = 0,
+        Text = tostring(featureData.value),
+        TextColor3 = Theme.Primary,
+        TextSize = 13,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Center,
+        ClearTextOnFocus = false,
+        Parent = FOVFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 6),
+        Parent = FOVValue
+    })
+    
+    local FOVSliderBack = Utility.Create("Frame", {
+        Size = UDim2.new(1, 0, 0, 8),
+        Position = UDim2.new(0, 0, 0, 35),
+        BackgroundColor3 = Theme.Surface,
+        BorderSizePixel = 0,
+        Parent = FOVFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(1, 0),
+        Parent = FOVSliderBack
+    })
+    
+    local FOVSliderFill = Utility.Create("Frame", {
+        Size = UDim2.new(featureData.value / featureData.maxValue, 0, 1, 0),
+        BackgroundColor3 = Theme.Primary,
+        BorderSizePixel = 0,
+        Parent = FOVSliderBack
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(1, 0),
+        Parent = FOVSliderFill
+    })
+    
+    Utility.Create("UIGradient", {
+        Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Theme.Primary),
+            ColorSequenceKeypoint.new(1, Theme.PrimaryLight)
+        },
+        Parent = FOVSliderFill
+    })
+    
+    local FOVSliderButton = Utility.Create("TextButton", {
+        Size = UDim2.new(1, 0, 1, 10),
+        Position = UDim2.new(0, 0, 0, -5),
+        BackgroundTransparency = 1,
+        Text = "",
+        Parent = FOVSliderBack
+    })
+    
+    local fovDragging = false
+    
+    FOVSliderButton.MouseButton1Down:Connect(function()
+        fovDragging = true
+    end)
+    
+    Services.UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            fovDragging = false
+        end
+    end)
+    
+    FOVValue.FocusLost:Connect(function()
+        local inputValue = tonumber(FOVValue.Text)
+        if inputValue then
+            inputValue = math.clamp(inputValue, 0, featureData.maxValue)
+            featureData.value = inputValue
+            FOVValue.Text = tostring(inputValue)
+            FOVSliderFill.Size = UDim2.new(inputValue / featureData.maxValue, 0, 1, 0)
+            ApplyFeatureValue("Aimbot", inputValue)
+        else
+            FOVValue.Text = tostring(featureData.value)
+        end
+    end)
+    
+    FOVSliderButton.MouseMoved:Connect(function(x, y)
+        if fovDragging then
+            local relativeX = math.clamp((x - FOVSliderBack.AbsolutePosition.X) / FOVSliderBack.AbsoluteSize.X, 0, 1)
+            local value = math.floor(relativeX * featureData.maxValue)
+            featureData.value = value
+            FOVSliderFill.Size = UDim2.new(relativeX, 0, 1, 0)
+            FOVValue.Text = tostring(value)
+            ApplyFeatureValue("Aimbot", value)
+        end
+    end)
+    
+    -- Target Part Selection
+    local TargetFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 50),
+        Position = UDim2.new(0, 15, 0, yPos),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    yPos = yPos + 60
+    
+    local TargetLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.5, 0, 0, 30),
+        BackgroundTransparency = 1,
+        Text = "Target Part",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = TargetFrame
+    })
+    
+    local HeadButton = Utility.Create("TextButton", {
+        Size = UDim2.new(0, 80, 0, 35),
+        Position = UDim2.new(1, -170, 0, 0),
+        BackgroundColor3 = featureData.targetPart == "Head" and Theme.Primary or Theme.Surface,
+        BackgroundTransparency = 0.3,
+        Text = "Head",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Parent = TargetFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = HeadButton
+    })
+    
+    local BodyButton = Utility.Create("TextButton", {
+        Size = UDim2.new(0, 80, 0, 35),
+        Position = UDim2.new(1, -80, 0, 0),
+        BackgroundColor3 = featureData.targetPart == "Body" and Theme.Primary or Theme.Surface,
+        BackgroundTransparency = 0.3,
+        Text = "Body",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Parent = TargetFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = BodyButton
+    })
+    
+    HeadButton.MouseButton1Click:Connect(function()
+        featureData.targetPart = "Head"
+        HeadButton.BackgroundColor3 = Theme.Primary
+        BodyButton.BackgroundColor3 = Theme.Surface
+        if _G.HL5AimbotSystem.enabled then
+            _G.HL5AimbotSystem:UpdateSettings()
+        end
+    end)
+    
+    BodyButton.MouseButton1Click:Connect(function()
+        featureData.targetPart = "HumanoidRootPart"
+        BodyButton.BackgroundColor3 = Theme.Primary
+        HeadButton.BackgroundColor3 = Theme.Surface
+        if _G.HL5AimbotSystem.enabled then
+            _G.HL5AimbotSystem:UpdateSettings()
+        end
+    end)
+    
+    -- Circle Visibility Toggle
+    local VisFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 50),
+        Position = UDim2.new(0, 15, 0, yPos),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    yPos = yPos + 60
+    
+    local VisLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.5, 0, 0, 30),
+        BackgroundTransparency = 1,
+        Text = "Circle Visible",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = VisFrame
+    })
+    
+    local VisButton = Utility.Create("TextButton", {
+        Size = UDim2.new(0, 70, 0, 35),
+        Position = UDim2.new(1, -70, 0, 0),
+        BackgroundColor3 = featureData.circleVisible and Theme.Success or Theme.Surface,
+        BackgroundTransparency = 0.3,
+        Text = featureData.circleVisible and "YES" or "NO",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Parent = VisFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = VisButton
+    })
+    
+    VisButton.MouseButton1Click:Connect(function()
+        featureData.circleVisible = not featureData.circleVisible
+        VisButton.Text = featureData.circleVisible and "YES" or "NO"
+        VisButton.BackgroundColor3 = featureData.circleVisible and Theme.Success or Theme.Surface
+        if _G.HL5AimbotSystem.enabled then
+            _G.HL5AimbotSystem:UpdateSettings()
+        end
+    end)
+    
+    -- Smoothing Toggle
+    local SmoothFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 50),
+        Position = UDim2.new(0, 15, 0, yPos),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    yPos = yPos + 60
+    
+    local SmoothLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.5, 0, 0, 30),
+        BackgroundTransparency = 1,
+        Text = "Smoothing (Less Obvious)",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = SmoothFrame
+    })
+    
+    local SmoothButton = Utility.Create("TextButton", {
+        Size = UDim2.new(0, 70, 0, 35),
+        Position = UDim2.new(1, -70, 0, 0),
+        BackgroundColor3 = featureData.smoothing and Theme.Success or Theme.Surface,
+        BackgroundTransparency = 0.3,
+        Text = featureData.smoothing and "ON" or "OFF",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Parent = SmoothFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = SmoothButton
+    })
+    
+    -- Smoothing Amount Slider (only visible if smoothing is on)
+    local SmoothAmountFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 60),
+        Position = UDim2.new(0, 15, 0, yPos),
+        BackgroundTransparency = 1,
+        Visible = featureData.smoothing,
+        Parent = Card
+    })
+    yPos = yPos + 70
+    
+    SmoothButton.MouseButton1Click:Connect(function()
+        featureData.smoothing = not featureData.smoothing
+        SmoothButton.Text = featureData.smoothing and "ON" or "OFF"
+        SmoothButton.BackgroundColor3 = featureData.smoothing and Theme.Success or Theme.Surface
+        SmoothAmountFrame.Visible = featureData.smoothing
+        if _G.HL5AimbotSystem.enabled then
+            _G.HL5AimbotSystem:UpdateSettings()
+        end
+    end)
+    
+    local SmoothAmountLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.6, 0, 0, 20),
+        BackgroundTransparency = 1,
+        Text = "Smoothing Amount",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 12,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = SmoothAmountFrame
+    })
+    
+    local SmoothAmountValue = Utility.Create("TextBox", {
+        Size = UDim2.new(0, 60, 0, 22),
+        Position = UDim2.new(1, -60, 0, -1),
+        BackgroundColor3 = Theme.Surface,
+        BackgroundTransparency = 0.5,
+        BorderSizePixel = 0,
+        Text = tostring(featureData.smoothingAmount),
+        TextColor3 = Theme.Primary,
+        TextSize = 13,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Center,
+        ClearTextOnFocus = false,
+        Parent = SmoothAmountFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 6),
+        Parent = SmoothAmountValue
+    })
+    
+    local SmoothAmountSliderBack = Utility.Create("Frame", {
+        Size = UDim2.new(1, 0, 0, 8),
+        Position = UDim2.new(0, 0, 0, 35),
+        BackgroundColor3 = Theme.Surface,
+        BorderSizePixel = 0,
+        Parent = SmoothAmountFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(1, 0),
+        Parent = SmoothAmountSliderBack
+    })
+    
+    local SmoothAmountSliderFill = Utility.Create("Frame", {
+        Size = UDim2.new(featureData.smoothingAmount / 100, 0, 1, 0),
+        BackgroundColor3 = Theme.Primary,
+        BorderSizePixel = 0,
+        Parent = SmoothAmountSliderBack
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(1, 0),
+        Parent = SmoothAmountSliderFill
+    })
+    
+    Utility.Create("UIGradient", {
+        Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Theme.Primary),
+            ColorSequenceKeypoint.new(1, Theme.PrimaryLight)
+        },
+        Parent = SmoothAmountSliderFill
+    })
+    
+    local SmoothAmountSliderButton = Utility.Create("TextButton", {
+        Size = UDim2.new(1, 0, 1, 10),
+        Position = UDim2.new(0, 0, 0, -5),
+        BackgroundTransparency = 1,
+        Text = "",
+        Parent = SmoothAmountSliderBack
+    })
+    
+    local smoothAmountDragging = false
+    
+    SmoothAmountSliderButton.MouseButton1Down:Connect(function()
+        smoothAmountDragging = true
+    end)
+    
+    Services.UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            smoothAmountDragging = false
+        end
+    end)
+    
+    SmoothAmountValue.FocusLost:Connect(function()
+        local inputValue = tonumber(SmoothAmountValue.Text)
+        if inputValue then
+            inputValue = math.clamp(inputValue, 1, 100)
+            featureData.smoothingAmount = inputValue
+            SmoothAmountValue.Text = tostring(inputValue)
+            SmoothAmountSliderFill.Size = UDim2.new(inputValue / 100, 0, 1, 0)
+            if _G.HL5AimbotSystem.enabled then
+                _G.HL5AimbotSystem:UpdateSettings()
+            end
+        else
+            SmoothAmountValue.Text = tostring(featureData.smoothingAmount)
+        end
+    end)
+    
+    SmoothAmountSliderButton.MouseMoved:Connect(function(x, y)
+        if smoothAmountDragging then
+            local relativeX = math.clamp((x - SmoothAmountSliderBack.AbsolutePosition.X) / SmoothAmountSliderBack.AbsoluteSize.X, 0, 1)
+            local value = math.floor(relativeX * 100)
+            if value < 1 then value = 1 end
+            featureData.smoothingAmount = value
+            SmoothAmountSliderFill.Size = UDim2.new(relativeX, 0, 1, 0)
+            SmoothAmountValue.Text = tostring(value)
+            if _G.HL5AimbotSystem.enabled then
+                _G.HL5AimbotSystem:UpdateSettings()
+            end
+        end
+    end)
+    
+    -- Circle Color Picker
+    local ColorPickerFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 100),
+        Position = UDim2.new(0, 15, 0, yPos),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    
+    local ColorPickerLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(1, 0, 0, 20),
+        BackgroundTransparency = 1,
+        Text = "Circle Color",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 12,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = ColorPickerFrame
+    })
+    
+    local ColorGrid = Utility.Create("Frame", {
+        Size = UDim2.new(1, 0, 0, 70),
+        Position = UDim2.new(0, 0, 0, 25),
+        BackgroundTransparency = 1,
+        Parent = ColorPickerFrame
+    })
+    
+    local GridLayout = Utility.Create("UIGridLayout", {
+        CellSize = UDim2.new(0, 35, 0, 35),
+        CellPadding = UDim2.new(0, 5, 0, 5),
+        SortOrder = Enum.SortOrder.LayoutOrder,
+        Parent = ColorGrid
+    })
+    
+    for i, color in ipairs(PresetColors) do
+        local ColorButton = Utility.Create("TextButton", {
+            Size = UDim2.new(0, 35, 0, 35),
+            BackgroundColor3 = color,
+            Text = "",
+            BorderSizePixel = 0,
+            AutoButtonColor = false,
+            Parent = ColorGrid
+        })
+        
+        Utility.Create("UICorner", {
+            CornerRadius = UDim.new(0, 8),
+            Parent = ColorButton
+        })
+        
+        local Selected = Utility.Create("Frame", {
+            Size = UDim2.new(1, -4, 1, -4),
+            Position = UDim2.new(0, 2, 0, 2),
+            BackgroundTransparency = 1,
+            BorderSizePixel = 3,
+            BorderColor3 = Theme.TextPrimary,
+            Visible = (featureData.circleColor == color),
+            Parent = ColorButton
+        })
+        
+        Utility.Create("UICorner", {
+            CornerRadius = UDim.new(0, 6),
+            Parent = Selected
+        })
+        
+        ColorButton.MouseButton1Click:Connect(function()
+            featureData.circleColor = color
+            
+            for _, btn in pairs(ColorGrid:GetChildren()) do
+                if btn:IsA("TextButton") then
+                    local sel = btn:FindFirstChild("Frame")
+                    if sel then
+                        sel.Visible = (btn.BackgroundColor3 == color)
+                    end
+                end
+            end
+            
+            if _G.HL5AimbotSystem.enabled then
+                _G.HL5AimbotSystem:UpdateSettings()
+            end
+        end)
+    end
+    
+    -- Toggle Button Functionality
+    ToggleButton.MouseButton1Click:Connect(function()
+        featureData.enabled = not featureData.enabled
+        ToggleButton.Text = featureData.enabled and "ON" or "OFF"
+        ToggleButton.BackgroundColor3 = featureData.enabled and Theme.Success or Theme.Surface
+        
+        local stroke = ToggleButton:FindFirstChild("UIStroke")
+        if stroke then
+            stroke.Color = featureData.enabled and Theme.Success or Theme.Border
+        end
+        
+        ToggleFeature("Aimbot", featureData.enabled)
+    end)
+    
+    ToggleButton.MouseEnter:Connect(function()
+        Utility.Tween(ToggleButton, {BackgroundTransparency = 0}, 0.2)
+    end)
+    
+    ToggleButton.MouseLeave:Connect(function()
+        Utility.Tween(ToggleButton, {BackgroundTransparency = 0.2}, 0.2)
+    end)
+end
+
+CreateAimbotCard()
+
+-- ═══════════════════════════════════════════════════════════════
+-- PLAYERS PAGE
+-- ═══════════════════════════════════════════════════════════════
+
+local PlayersPage = Utility.Create("ScrollingFrame", {
+    Name = "PlayersPage",
+    Size = UDim2.new(1, -30, 1, -30),
+    Position = UDim2.new(0, 15, 0, 15),
+    BackgroundTransparency = 1,
+    BorderSizePixel = 0,
+    ScrollBarThickness = 4,
+    ScrollBarImageColor3 = Theme.Primary,
+    CanvasSize = UDim2.new(0, 0, 0, 0),
+    Visible = false,
+    Parent = MainContent
+})
+
+local PlayersLayout = Utility.Create("UIListLayout", {
+    SortOrder = Enum.SortOrder.LayoutOrder,
+    Padding = UDim.new(0, 10),
+    Parent = PlayersPage
+})
+
+PlayersLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    PlayersPage.CanvasSize = UDim2.new(0, 0, 0, PlayersLayout.AbsoluteContentSize.Y + 10)
+end)
+
+-- Search container
+local SearchContainer = Utility.Create("Frame", {
+    Name = "SearchContainer",
+    Size = UDim2.new(1, 0, 0, 55),
+    BackgroundTransparency = 1,
+    LayoutOrder = -1,
+    Parent = PlayersPage
+})
+
+local SearchBox = Utility.Create("TextBox", {
+    Size = UDim2.new(1, 0, 0, 45),
+    BackgroundColor3 = Theme.Surface,
+    PlaceholderText = "🔍  Search players by name...",
+    PlaceholderColor3 = Theme.TextSecondary,
+    Text = "",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 14,
+    Font = Enum.Font.Gotham,
+    BorderSizePixel = 0,
+    ClearTextOnFocus = false,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = SearchContainer
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 10),
+    Parent = SearchBox
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Border,
+    Thickness = 1,
+    Transparency = 0.5,
+    Parent = SearchBox
+})
+
+Utility.Create("UIPadding", {
+    PaddingLeft = UDim.new(0, 15),
+    Parent = SearchBox
+})
+
+-- Player Info Sidebar
+local PlayerInfoSidebar = Utility.Create("Frame", {
+    Size = UDim2.new(0, 320, 1, -90),
+    Position = UDim2.new(1, 20, 0, 70),
+    BackgroundColor3 = Theme.Surface,
+    BackgroundTransparency = 0.15,
+    BorderSizePixel = 0,
+    Visible = false,
+    Parent = MainContainer
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 16),
+    Parent = PlayerInfoSidebar
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Border,
+    Thickness = 2,
+    Transparency = 0.5,
+    Parent = PlayerInfoSidebar
+})
+
+-- Global variables for player interaction
+local SelectedPlayer = nil
+local ViewingPlayer = nil
+local UpdateConnection = nil
+local isSittingOnPlayer = false
+local sitConnection = nil
+
+-- Create player card function
+local function CreatePlayerCard(player)
+    local Card = Utility.Create("Frame", {
+        Name = player.Name,
+        Size = UDim2.new(1, 0, 0, 80),
+        BackgroundColor3 = Theme.BackgroundLight,
+        BackgroundTransparency = 0.4,
+        BorderSizePixel = 0,
+        Parent = PlayersPage
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 12),
+        Parent = Card
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = Theme.Border,
+        Thickness = 1,
+        Transparency = 0.7,
+        Parent = Card
+    })
+    
+    -- Clickable button
+    local CardButton = Utility.Create("TextButton", {
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = "",
+        AutoButtonColor = false,
+        Parent = Card
+    })
+    
+    -- Avatar
+    local AvatarContainer = Utility.Create("Frame", {
+        Size = UDim2.new(0, 60, 0, 60),
+        Position = UDim2.new(0, 10, 0.5, -30),
+        BackgroundColor3 = Theme.Surface,
+        BorderSizePixel = 0,
+        Parent = Card
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 30),
+        Parent = AvatarContainer
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = Theme.Primary,
+        Thickness = 2,
+        Transparency = 0.5,
+        Parent = AvatarContainer
+    })
+    
+    local Avatar = Utility.Create("ImageLabel", {
+        Size = UDim2.new(1, -4, 1, -4),
+        Position = UDim2.new(0, 2, 0, 2),
+        BackgroundTransparency = 1,
+        Image = PlayerDetection.GetThumbnail(player.UserId),
+        Parent = AvatarContainer
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 29),
+        Parent = Avatar
+    })
+    
+    -- Info
+    local InfoFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -90, 1, -20),
+        Position = UDim2.new(0, 80, 0, 10),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    
+    local DisplayName = Utility.Create("TextLabel", {
+        Size = UDim2.new(1, 0, 0, 24),
+        BackgroundTransparency = 1,
+        Text = player.DisplayName,
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 16,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextTruncate = Enum.TextTruncate.AtEnd,
+        Parent = InfoFrame
+    })
+    
+    local Username = Utility.Create("TextLabel", {
+        Size = UDim2.new(1, 0, 0, 18),
+        Position = UDim2.new(0, 0, 0, 24),
+        BackgroundTransparency = 1,
+        Text = "@" .. player.Name,
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 13,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextTruncate = Enum.TextTruncate.AtEnd,
+        Parent = InfoFrame
+    })
+    
+    -- Click indicator
+    local ClickIndicator = Utility.Create("TextLabel", {
+        Size = UDim2.new(0, 30, 0, 30),
+        Position = UDim2.new(1, -40, 0.5, -15),
+        BackgroundTransparency = 1,
+        Text = "›",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 24,
+        Font = Enum.Font.GothamBold,
+        Parent = Card
+    })
+    
+    -- Hover effect
+    CardButton.MouseEnter:Connect(function()
+        Utility.Tween(Card, {BackgroundTransparency = 0.2}, 0.2)
+    end)
+    
+    CardButton.MouseLeave:Connect(function()
+        Utility.Tween(Card, {BackgroundTransparency = 0.4}, 0.2)
+    end)
+    
+    -- Click handler
+    CardButton.MouseButton1Click:Connect(function()
+        SelectedPlayer = player
+        ShowPlayerInfo(player)
+    end)
+    
+    return Card
+end
+
+-- Show player info function
+function ShowPlayerInfo(player)
+    if not player or not player.Parent then return end
+    
+    -- Clear sidebar
+    for _, child in ipairs(PlayerInfoSidebar:GetChildren()) do
+        if child:IsA("Frame") or child:IsA("ScrollingFrame") then
+            child:Destroy()
+        end
+    end
+    
+    PlayerInfoSidebar.Visible = true
+    PlayerInfoSidebar.Position = UDim2.new(1, 20, 0, 70)
+    Utility.Tween(PlayerInfoSidebar, {Position = UDim2.new(1, -340, 0, 70)}, 0.3)
+    
+    local InfoScroll = Utility.Create("ScrollingFrame", {
+        Size = UDim2.new(1, -30, 1, -30),
+        Position = UDim2.new(0, 15, 0, 15),
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0,
+        ScrollBarThickness = 4,
+        ScrollBarImageColor3 = Theme.Primary,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        Parent = PlayerInfoSidebar
+    })
+    
+    local InfoLayout = Utility.Create("UIListLayout", {
+        SortOrder = Enum.SortOrder.LayoutOrder,
+        Padding = UDim.new(0, 12),
+        Parent = InfoScroll
+    })
+    
+    InfoLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        InfoScroll.CanvasSize = UDim2.new(0, 0, 0, InfoLayout.AbsoluteContentSize.Y + 30)
+    end)
+    
+    local order = 0
+    
+    -- Close button
+    local CloseInfoBtn = Utility.Create("TextButton", {
+        Size = UDim2.new(1, 0, 0, 35),
+        BackgroundColor3 = Theme.BackgroundLight,
+        BackgroundTransparency = 0.3,
+        Text = "✕  Close",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 13,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        LayoutOrder = order,
+        Parent = InfoScroll
+    })
+    order = order + 1
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = CloseInfoBtn
+    })
+    
+    CloseInfoBtn.MouseButton1Click:Connect(function()
+        Utility.Tween(PlayerInfoSidebar, {Position = UDim2.new(1, 20, 0, 70)}, 0.3)
+        task.wait(0.3)
+        PlayerInfoSidebar.Visible = false
+        
+        if ViewingPlayer == player then
+            ViewingPlayer = nil
+            Camera.CameraSubject = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        end
+        
+        if isSittingOnPlayer then
+            isSittingOnPlayer = false
+            if sitConnection then
+                sitConnection:Disconnect()
+                sitConnection = nil
+            end
+            
+            local character = LocalPlayer.Character
+            if character and character:FindFirstChild("Humanoid") then
+                character.Humanoid.Sit = false
+                character.Humanoid.WalkSpeed = 16
+                character.Humanoid.JumpHeight = 7.2
+            end
+        end
+    end)
+    
+    -- Profile header
+    local ProfileHeader = Utility.Create("Frame", {
+        Size = UDim2.new(1, 0, 0, 140),
+        BackgroundColor3 = Theme.BackgroundLight,
+        BackgroundTransparency = 0.3,
+        BorderSizePixel = 0,
+        LayoutOrder = order,
+        Parent = InfoScroll
+    })
+    order = order + 1
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 12),
+        Parent = ProfileHeader
+    })
+    
+    local ProfileAvatar = Utility.Create("ImageLabel", {
+        Size = UDim2.new(0, 90, 0, 90),
+        Position = UDim2.new(0.5, -45, 0, 15),
+        BackgroundColor3 = Theme.Surface,
+        Image = PlayerDetection.GetThumbnail(player.UserId),
+        BorderSizePixel = 0,
+        Parent = ProfileHeader
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 45),
+        Parent = ProfileAvatar
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = Theme.Primary,
+        Thickness = 3,
+        Parent = ProfileAvatar
+    })
+    
+    local ProfileDisplayName = Utility.Create("TextLabel", {
+        Size = UDim2.new(1, -20, 0, 20),
+        Position = UDim2.new(0, 10, 0, 110),
+        BackgroundTransparency = 1,
+        Text = player.DisplayName,
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 16,
+        Font = Enum.Font.GothamBold,
+        Parent = ProfileHeader
+    })
+    
+    -- Stats container
+    local StatsContainer = Utility.Create("Frame", {
+        Size = UDim2.new(1, 0, 0, 300),
+        BackgroundColor3 = Theme.BackgroundLight,
+        BackgroundTransparency = 0.3,
+        BorderSizePixel = 0,
+        LayoutOrder = order,
+        Parent = InfoScroll
+    })
+    order = order + 1
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 12),
+        Parent = StatsContainer
+    })
+    
+    local StatsTitle = Utility.Create("TextLabel", {
+        Size = UDim2.new(1, -20, 0, 30),
+        Position = UDim2.new(0, 10, 0, 10),
+        BackgroundTransparency = 1,
+        Text = "📊  Player Stats",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 16,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = StatsContainer
+    })
+    
+    -- Create stat labels
+    local statYPosition = 45
+    local statLabels = {}
+    
+    local function CreateStatLabel(statName, statIcon)
+        local StatFrame = Utility.Create("Frame", {
+            Size = UDim2.new(1, -20, 0, 30),
+            Position = UDim2.new(0, 10, 0, statYPosition),
+            BackgroundTransparency = 1,
+            Parent = StatsContainer
+        })
+        
+        local StatName = Utility.Create("TextLabel", {
+            Size = UDim2.new(0.5, 0, 1, 0),
+            BackgroundTransparency = 1,
+            Text = statIcon .. "  " .. statName,
+            TextColor3 = Theme.TextSecondary,
+            TextSize = 13,
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Parent = StatFrame
+        })
+        
+        local StatValue = Utility.Create("TextLabel", {
+            Size = UDim2.new(0.5, 0, 1, 0),
+            Position = UDim2.new(0.5, 0, 0, 0),
+            BackgroundTransparency = 1,
+            Text = "...",
+            TextColor3 = Theme.Primary,
+            TextSize = 13,
+            Font = Enum.Font.GothamBold,
+            TextXAlignment = Enum.TextXAlignment.Right,
+            Parent = StatFrame
+        })
+        
+        statYPosition = statYPosition + 35
+        return StatValue
+    end
+    
+    statLabels.UserId = CreateStatLabel("User ID", "🆔")
+    statLabels.AccountAge = CreateStatLabel("Account Age", "📅")
+    statLabels.Health = CreateStatLabel("Health", "❤️")
+    statLabels.WalkSpeed = CreateStatLabel("WalkSpeed", "🏃")
+    statLabels.Position = CreateStatLabel("Position", "📍")
+    statLabels.Distance = CreateStatLabel("Distance", "📏")
+    statLabels.Team = CreateStatLabel("Team", "👥")
+    
+    -- Actions container
+    local ActionsContainer = Utility.Create("Frame", {
+        Size = UDim2.new(1, 0, 0, 145),
+        BackgroundTransparency = 1,
+        LayoutOrder = order,
+        Parent = InfoScroll
+    })
+    order = order + 1
+    
+    local ActionsLayout = Utility.Create("UIListLayout", {
+        SortOrder = Enum.SortOrder.LayoutOrder,
+        Padding = UDim.new(0, 5),
+        Parent = ActionsContainer
+    })
+    
+    ActionsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        ActionsContainer.Size = UDim2.new(1, 0, 0, ActionsLayout.AbsoluteContentSize.Y)
+    end)
+    
+    -- Teleport button
+    local TpBtn = Utility.Create("TextButton", {
+        Size = UDim2.new(1, 0, 0, 40),
+        BackgroundColor3 = Theme.Success,
+        BackgroundTransparency = 0.2,
+        Text = "🚀  Teleport",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        LayoutOrder = 1,
+        Parent = ActionsContainer
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 10),
+        Parent = TpBtn
+    })
+    
+    TpBtn.MouseButton1Click:Connect(function()
+        if LocalPlayer.Character and player.Character then
+            local localRoot = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local targetRoot = player.Character:FindFirstChild("HumanoidRootPart")
+            
+            if localRoot and targetRoot then
+                localRoot.CFrame = targetRoot.CFrame * CFrame.new(0, 0, 3)
+            end
+        end
+    end)
+    
+    -- Headsit button
+    local HeadsitBtn = Utility.Create("TextButton", {
+        Size = UDim2.new(1, 0, 0, 40),
+        BackgroundColor3 = Theme.Warning,
+        BackgroundTransparency = 0.2,
+        Text = "💺  Headsit",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        LayoutOrder = 2,
+        Parent = ActionsContainer
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 10),
+        Parent = HeadsitBtn
+    })
+    
+    HeadsitBtn.MouseButton1Click:Connect(function()
+        isSittingOnPlayer = not isSittingOnPlayer
+        
+        if isSittingOnPlayer then
+            HeadsitBtn.Text = "⏸  Stop Headsit"
+            HeadsitBtn.BackgroundColor3 = Theme.Danger
+            
+            local character = LocalPlayer.Character
+            if not character then return end
+            
+            local humanoid = character:FindFirstChild("Humanoid")
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            
+            if humanoid and rootPart then
+                humanoid.Sit = true
+                humanoid.WalkSpeed = 0
+                humanoid.JumpHeight = 0
+                
+                if sitConnection then sitConnection:Disconnect() end
+                sitConnection = Services.RunService.Heartbeat:Connect(function()
+                    if not isSittingOnPlayer then
+                        if sitConnection then sitConnection:Disconnect() end
+                        return
+                    end
+                    
+                    if player and player.Character then
+                        local tHead = player.Character:FindFirstChild("Head")
+                        if tHead then
+                            rootPart.CFrame = tHead.CFrame * CFrame.new(0, 2, 0)
+                            rootPart.Velocity = Vector3.zero
+                            rootPart.RotVelocity = Vector3.zero
+                        else
+                            isSittingOnPlayer = false
+                            HeadsitBtn.Text = "💺  Headsit"
+                            HeadsitBtn.BackgroundColor3 = Theme.Warning
+                            if sitConnection then sitConnection:Disconnect() end
+                            humanoid.Sit = false
+                            humanoid.WalkSpeed = 16
+                            humanoid.JumpHeight = 7.2
+                        end
+                    else
+                        isSittingOnPlayer = false
+                        HeadsitBtn.Text = "💺  Headsit"
+                        HeadsitBtn.BackgroundColor3 = Theme.Warning
+                        if sitConnection then sitConnection:Disconnect() end
+                        humanoid.Sit = false
+                        humanoid.WalkSpeed = 16
+                        humanoid.JumpHeight = 7.2
+                    end
+                end)
+            end
+        else
+            HeadsitBtn.Text = "💺  Headsit"
+            HeadsitBtn.BackgroundColor3 = Theme.Warning
+            
+            if sitConnection then
+                sitConnection:Disconnect()
+                sitConnection = nil
+            end
+            
+            local character = LocalPlayer.Character
+            if character and character:FindFirstChild("Humanoid") then
+                character.Humanoid.Sit = false
+                character.Humanoid.WalkSpeed = 16
+                character.Humanoid.JumpHeight = 7.2
+            end
+        end
+    end)
+    
+    -- Mimic button
+    local MimicBtn = Utility.Create("TextButton", {
+        Size = UDim2.new(1, 0, 0, 40),
+        BackgroundColor3 = Theme.Primary,
+        BackgroundTransparency = 0.2,
+        Text = "🎭  Mimic",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        LayoutOrder = 3,
+        Parent = ActionsContainer
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 10),
+        Parent = MimicBtn
+    })
+    
+    -- Set initial state
+    if _G.HL5MimicSystem.enabled and _G.HL5MimicSystem.targetPlayer == player then
+        MimicBtn.Text = "⏸  Stop Mimic"
+        MimicBtn.BackgroundColor3 = Theme.Danger
+    end
+    
+    MimicBtn.MouseButton1Click:Connect(function()
+        if _G.HL5MimicSystem.enabled and _G.HL5MimicSystem.targetPlayer == player then
+            _G.HL5MimicSystem:Disable()
+            MimicBtn.Text = "🎭  Mimic"
+            MimicBtn.BackgroundColor3 = Theme.Primary
+        else
+            _G.HL5MimicSystem:Enable(player)
+            MimicBtn.Text = "⏸  Stop Mimic"
+            MimicBtn.BackgroundColor3 = Theme.Danger
+        end
+    end)
+    
+    -- View Player button
+    local ViewPlayerBtn = Utility.Create("TextButton", {
+        Size = UDim2.new(1, 0, 0, 40),
+        BackgroundColor3 = Theme.Info,
+        BackgroundTransparency = 0.2,
+        Text = ViewingPlayer == player and "👁️  Unview" or "👁️  View Player",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        LayoutOrder = 4,
+        Parent = ActionsContainer
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 10),
+        Parent = ViewPlayerBtn
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = Theme.Info,
+        Thickness = 1,
+        Transparency = 0.5,
+        Parent = ViewPlayerBtn
+    })
+    
+    ViewPlayerBtn.MouseEnter:Connect(function()
+        Utility.Tween(ViewPlayerBtn, {BackgroundTransparency = 0}, 0.2)
+    end)
+    
+    ViewPlayerBtn.MouseLeave:Connect(function()
+        Utility.Tween(ViewPlayerBtn, {BackgroundTransparency = 0.2}, 0.2)
+    end)
+    
+    ViewPlayerBtn.MouseButton1Click:Connect(function()
+        if ViewingPlayer == player then
+            -- Unview
+            ViewingPlayer = nil
+            Camera.CameraSubject = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            ViewPlayerBtn.Text = "👁️  View Player"
+            ViewPlayerBtn.BackgroundColor3 = Theme.Info
+        else
+            -- View
+            if player and player.Character then
+                local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    ViewingPlayer = player
+                    Camera.CameraSubject = humanoid
+                    ViewPlayerBtn.Text = "👁️  Unview"
+                    ViewPlayerBtn.BackgroundColor3 = Theme.Success
+                end
+            end
+        end
+    end)
+    
+    -- Live stats update
+    if UpdateConnection then
+        UpdateConnection:Disconnect()
+    end
+    
+    UpdateConnection = Services.RunService.Heartbeat:Connect(function()
+        if not player or not player.Parent or not PlayerInfoSidebar.Visible then
+            if UpdateConnection then
+                UpdateConnection:Disconnect()
+                UpdateConnection = nil
+            end
+            return
+        end
+        
+        statLabels.UserId.Text = tostring(player.UserId)
+        statLabels.AccountAge.Text = tostring(player.AccountAge) .. " days"
+        
+        if player.Character then
+            local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                statLabels.Health.Text = string.format("%.0f / %.0f", humanoid.Health, humanoid.MaxHealth)
+                statLabels.WalkSpeed.Text = tostring(math.floor(humanoid.WalkSpeed))
+            else
+                statLabels.Health.Text = "N/A"
+                statLabels.WalkSpeed.Text = "N/A"
+            end
+            
+            local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                local pos = rootPart.Position
+                statLabels.Position.Text = string.format("%.0f, %.0f, %.0f", pos.X, pos.Y, pos.Z)
+                
+                local localRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if localRoot then
+                    local distance = Utility.GetDistance(localRoot.Position, pos)
+                    statLabels.Distance.Text = string.format("%.1f studs", distance)
+                else
+                    statLabels.Distance.Text = "N/A"
+                end
+            else
+                statLabels.Position.Text = "N/A"
+                statLabels.Distance.Text = "N/A"
+            end
+        else
+            statLabels.Health.Text = "N/A"
+            statLabels.WalkSpeed.Text = "N/A"
+            statLabels.Position.Text = "N/A"
+            statLabels.Distance.Text = "N/A"
+        end
+        
+        if player.Team then
+            local rank = PlayerDetection.GetRank(player)
+            if rank then
+                statLabels.Team.Text = player.Team.Name .. " [" .. rank .. "]"
+            else
+                statLabels.Team.Text = player.Team.Name
+            end
+        else
+            local rank = PlayerDetection.GetRank(player)
+            if rank then
+                statLabels.Team.Text = "[" .. rank .. "]"
+            else
+                statLabels.Team.Text = "None"
+            end
+        end
+    end)
+end
+
+-- Update player list function
+local function UpdatePlayerList(filter)
+    for _, child in ipairs(PlayersPage:GetChildren()) do
+        if child:IsA("Frame") and child.Name ~= "SearchContainer" then
+            child:Destroy()
+        end
+    end
+    
+    for _, player in ipairs(Services.Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            if filter == "" or 
+               string.lower(player.Name):find(string.lower(filter), 1, true) or 
+               string.lower(player.DisplayName):find(string.lower(filter), 1, true) then
+                CreatePlayerCard(player)
+            end
+        end
+    end
+end
+
+SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+    UpdatePlayerList(SearchBox.Text)
+end)
+
+Services.Players.PlayerAdded:Connect(function()
+    UpdatePlayerList(SearchBox.Text)
+end)
+
+Services.Players.PlayerRemoving:Connect(function(player)
+    if SelectedPlayer == player then
+        SelectedPlayer = nil
+        PlayerInfoSidebar.Visible = false
+    end
+    
+    if _G.HL5MimicSystem.enabled and _G.HL5MimicSystem.targetPlayer == player then
+        _G.HL5MimicSystem:Disable()
+    end
+    
+    UpdatePlayerList(SearchBox.Text)
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- ESP PAGE
+-- ═══════════════════════════════════════════════════════════════
+
+local ESPPage = Utility.Create("ScrollingFrame", {
+    Name = "ESPPage",
+    Size = UDim2.new(1, -30, 1, -30),
+    Position = UDim2.new(0, 15, 0, 15),
+    BackgroundTransparency = 1,
+    BorderSizePixel = 0,
+    ScrollBarThickness = 4,
+    ScrollBarImageColor3 = Theme.Primary,
+    CanvasSize = UDim2.new(0, 0, 0, 0),
+    Visible = false,
+    Parent = MainContent
+})
+
+local ESPLayout = Utility.Create("UIListLayout", {
+    SortOrder = Enum.SortOrder.LayoutOrder,
+    Padding = UDim.new(0, 15),
+    Parent = ESPPage
+})
+
+ESPLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    ESPPage.CanvasSize = UDim2.new(0, 0, 0, ESPLayout.AbsoluteContentSize.Y + 15)
+end)
+
+local ESPTitle = Utility.Create("TextLabel", {
+    Size = UDim2.new(1, 0, 0, 40),
+    BackgroundTransparency = 1,
+    Text = "👁️  ESP & Visuals",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 22,
+    Font = Enum.Font.GothamBold,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    LayoutOrder = 0,
+    Parent = ESPPage
+})
+
+local ESPTitleGradient = Utility.Create("UIGradient", {
+    Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Theme.Primary),
+        ColorSequenceKeypoint.new(0.5, Theme.TextPrimary),
+        ColorSequenceKeypoint.new(1, Theme.Primary)
+    },
+    Parent = ESPTitle
+})
+
+-- ═══════════════════════════════════════════════════════════════
+-- ESP FEATURE CARD CREATOR (WITH COLOR PICKER)
+-- ═══════════════════════════════════════════════════════════════
+
+local function CreateESPCard(featureName, icon, title, desc, order)
+    local featureData = FeatureStates[featureName]
+    if not featureData then return end
+    
+    local hasSlider = featureData.maxValue > 0
+    local cardHeight = hasSlider and 360 or 180
+    
+    local Card = Utility.Create("Frame", {
+        Name = featureName .. "Card",
+        Size = UDim2.new(1, 0, 0, cardHeight),
+        BackgroundColor3 = Theme.BackgroundLight,
+        BackgroundTransparency = 0.3,
+        BorderSizePixel = 0,
+        LayoutOrder = order,
+        Parent = ESPPage
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 12),
+        Parent = Card
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = Theme.Border,
+        Thickness = 1,
+        Transparency = 0.7,
+        Parent = Card
+    })
+    
+    local Header = Utility.Create("Frame", {
+        Name = "Header",
+        Size = UDim2.new(1, 0, 0, 50),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    
+    local Icon = Utility.Create("TextLabel", {
+        Size = UDim2.new(0, 35, 0, 35),
+        Position = UDim2.new(0, 15, 0, 8),
+        BackgroundColor3 = Theme.Primary,
+        BackgroundTransparency = 0.8,
+        Text = icon,
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 18,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        Parent = Header
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = Icon
+    })
+    
+    local TitleLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.4, -60, 0, 22),
+        Position = UDim2.new(0, 60, 0, 8),
+        BackgroundTransparency = 1,
+        Text = title,
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 16,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = Header
+    })
+    
+    local DescLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.4, -60, 0, 16),
+        Position = UDim2.new(0, 60, 0, 28),
+        BackgroundTransparency = 1,
+        Text = desc,
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = Header
+    })
+    
+    local ToggleButton = Utility.Create("TextButton", {
+        Name = "ToggleButton",
+        Size = UDim2.new(0, 70, 0, 35),
+        Position = UDim2.new(1, -85, 0, 8),
+        BackgroundColor3 = featureData.enabled and Theme.Success or Theme.Surface,
+        BackgroundTransparency = 0.2,
+        Text = featureData.enabled and "ON" or "OFF",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 13,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Parent = Header
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = ToggleButton
+    })
+    
+    Utility.Create("UIStroke", {
+        Color = featureData.enabled and Theme.Success or Theme.Border,
+        Thickness = 1,
+        Transparency = 0.5,
+        Parent = ToggleButton
+    })
+    
+    -- Keybind
+    local KeybindFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 50),
+        Position = UDim2.new(0, 15, 0, 60),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    
+    local KeybindLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0.5, 0, 0, 30),
+        BackgroundTransparency = 1,
+        Text = "Toggle Key (ESC = Clear)",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = KeybindFrame
+    })
+    
+    local KeybindButton = Utility.Create("TextButton", {
+        Name = "KeybindBtn",
+        Size = UDim2.new(0, 100, 0, 35),
+        Position = UDim2.new(1, -100, 0, 0),
+        BackgroundColor3 = Theme.Surface,
+        BackgroundTransparency = 0.3,
+        Text = featureData.key and featureData.key.Name or "None",
+        TextColor3 = Theme.TextPrimary,
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Parent = KeybindFrame
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 8),
+        Parent = KeybindButton
+    })
+    
+    local listeningForKey = false
+    
+    KeybindButton.MouseButton1Click:Connect(function()
+        if not listeningForKey then
+            listeningForKey = true
+            KeybindButton.Text = "Press..."
+            KeybindButton.BackgroundColor3 = Theme.Warning
+        end
+    end)
+    
+    Services.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if listeningForKey and input.UserInputType == Enum.UserInputType.Keyboard then
+            if input.KeyCode == Enum.KeyCode.Escape then
+                featureData.key = nil
+                KeybindButton.Text = "None"
+                KeybindButton.BackgroundColor3 = Theme.Surface
+                listeningForKey = false
+            else
+                featureData.key = input.KeyCode
+                KeybindButton.Text = input.KeyCode.Name
+                KeybindButton.BackgroundColor3 = Theme.Surface
+                listeningForKey = false
+            end
+        end
+    end)
+    
+    -- Slider
+    if hasSlider then
+        local SliderFrame = Utility.Create("Frame", {
+            Size = UDim2.new(1, -30, 0, 60),
+            Position = UDim2.new(0, 15, 0, 120),
+            BackgroundTransparency = 1,
+            Parent = Card
+        })
+        
+        local SliderLabel = Utility.Create("TextLabel", {
+            Size = UDim2.new(0.6, 0, 0, 20),
+            BackgroundTransparency = 1,
+            Text = title .. " Value",
+            TextColor3 = Theme.TextSecondary,
+            TextSize = 12,
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Parent = SliderFrame
+        })
+        
+        local SliderValue = Utility.Create("TextBox", {
+            Name = "SliderValue",
+            Size = UDim2.new(0, 60, 0, 22),
+            Position = UDim2.new(1, -60, 0, -1),
+            BackgroundColor3 = Theme.Surface,
+            BackgroundTransparency = 0.5,
+            BorderSizePixel = 0,
+            Text = tostring(featureData.value),
+            TextColor3 = Theme.Primary,
+            TextSize = 13,
+            Font = Enum.Font.GothamBold,
+            TextXAlignment = Enum.TextXAlignment.Center,
+            ClearTextOnFocus = false,
+            Parent = SliderFrame
+        })
+        
+        Utility.Create("UICorner", {
+            CornerRadius = UDim.new(0, 6),
+            Parent = SliderValue
+        })
+        
+        local SliderBack = Utility.Create("Frame", {
+            Size = UDim2.new(1, 0, 0, 8),
+            Position = UDim2.new(0, 0, 0, 35),
+            BackgroundColor3 = Theme.Surface,
+            BorderSizePixel = 0,
+            Parent = SliderFrame
+        })
+        
+        Utility.Create("UICorner", {
+            CornerRadius = UDim.new(1, 0),
+            Parent = SliderBack
+        })
+        
+        local SliderFill = Utility.Create("Frame", {
+            Size = UDim2.new(featureData.value / featureData.maxValue, 0, 1, 0),
+            BackgroundColor3 = Theme.Primary,
+            BorderSizePixel = 0,
+            Parent = SliderBack
+        })
+        
+        Utility.Create("UICorner", {
+            CornerRadius = UDim.new(1, 0),
+            Parent = SliderFill
+        })
+        
+        Utility.Create("UIGradient", {
+            Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Theme.Primary),
+                ColorSequenceKeypoint.new(1, Theme.PrimaryLight)
+            },
+            Parent = SliderFill
+        })
+        
+        local SliderButton = Utility.Create("TextButton", {
+            Size = UDim2.new(1, 0, 1, 10),
+            Position = UDim2.new(0, 0, 0, -5),
+            BackgroundTransparency = 1,
+            Text = "",
+            Parent = SliderBack
+        })
+        
+        local dragging = false
+        
+        SliderButton.MouseButton1Down:Connect(function()
+            dragging = true
+        end)
+        
+        Services.UserInputService.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = false
+            end
+        end)
+        
+        SliderValue.FocusLost:Connect(function()
+            local inputValue = tonumber(SliderValue.Text)
+            if inputValue then
+                inputValue = math.clamp(inputValue, 0, featureData.maxValue)
+                featureData.value = inputValue
+                SliderValue.Text = tostring(inputValue)
+                SliderFill.Size = UDim2.new(inputValue / featureData.maxValue, 0, 1, 0)
+                
+                ApplyFeatureValue(featureName, inputValue)
+            else
+                SliderValue.Text = tostring(featureData.value)
+            end
+        end)
+        
+        SliderButton.MouseMoved:Connect(function(x, y)
+            if dragging then
+                local relativeX = math.clamp((x - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
+                local value = math.floor(relativeX * featureData.maxValue)
+                featureData.value = value
+                SliderFill.Size = UDim2.new(relativeX, 0, 1, 0)
+                SliderValue.Text = tostring(value)
+                
+                ApplyFeatureValue(featureName, value)
+            end
+        end)
+    end
+    
+    -- Color picker
+    local ColorPickerFrame = Utility.Create("Frame", {
+        Size = UDim2.new(1, -30, 0, 100),
+        Position = UDim2.new(0, 15, 0, 190),
+        BackgroundTransparency = 1,
+        Parent = Card
+    })
+    
+    local ColorPickerLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(1, 0, 0, 20),
+        BackgroundTransparency = 1,
+        Text = "Color",
+        TextColor3 = Theme.TextSecondary,
+        TextSize = 12,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = ColorPickerFrame
+    })
+    
+    local ColorGrid = Utility.Create("Frame", {
+        Size = UDim2.new(1, 0, 0, 70),
+        Position = UDim2.new(0, 0, 0, 25),
+        BackgroundTransparency = 1,
+        Parent = ColorPickerFrame
+    })
+    
+    local GridLayout = Utility.Create("UIGridLayout", {
+        CellSize = UDim2.new(0, 35, 0, 35),
+        CellPadding = UDim2.new(0, 5, 0, 5),
+        SortOrder = Enum.SortOrder.LayoutOrder,
+        Parent = ColorGrid
+    })
+    
+    for i, color in ipairs(PresetColors) do
+        local ColorButton = Utility.Create("TextButton", {
+            Size = UDim2.new(0, 35, 0, 35),
+            BackgroundColor3 = color,
+            Text = "",
+            BorderSizePixel = 0,
+            AutoButtonColor = false,
+            Parent = ColorGrid
+        })
+        
+        Utility.Create("UICorner", {
+            CornerRadius = UDim.new(0, 8),
+            Parent = ColorButton
+        })
+        
+        local Selected = Utility.Create("Frame", {
+            Size = UDim2.new(1, -4, 1, -4),
+            Position = UDim2.new(0, 2, 0, 2),
+            BackgroundTransparency = 1,
+            BorderSizePixel = 3,
+            BorderColor3 = Theme.TextPrimary,
+            Visible = (featureData.color == color),
+            Parent = ColorButton
+        })
+        
+        Utility.Create("UICorner", {
+            CornerRadius = UDim.new(0, 6),
+            Parent = Selected
+        })
+        
+        ColorButton.MouseButton1Click:Connect(function()
+            featureData.color = color
+            
+            for _, btn in pairs(ColorGrid:GetChildren()) do
+                if btn:IsA("TextButton") then
+                    local sel = btn:FindFirstChild("Frame")
+                    if sel then
+                        sel.Visible = (btn.BackgroundColor3 == color)
+                    end
+                end
+            end
+            
+            -- Apply color
+            if featureName == "ESPHighlight" then
+                for player, highlight in pairs(_G.HL5ESPSystem.highlights) do
+                    if highlight then
+                        highlight.FillColor = color
+                        highlight.OutlineColor = color
+                    end
+                end
+            elseif featureName == "ESPNametags" then
+                for player, nametag in pairs(_G.HL5ESPSystem.nametags) do
+                    if nametag and nametag:FindFirstChild("TextLabel") then
+                        nametag.TextLabel.TextColor3 = color
+                    end
+                end
+            end
+        end)
+    end
+    
+    -- Toggle functionality
+    ToggleButton.MouseButton1Click:Connect(function()
+        featureData.enabled = not featureData.enabled
+        ToggleButton.Text = featureData.enabled and "ON" or "OFF"
+        ToggleButton.BackgroundColor3 = featureData.enabled and Theme.Success or Theme.Surface
+        
+        local stroke = ToggleButton:FindFirstChild("UIStroke")
+        if stroke then
+            stroke.Color = featureData.enabled and Theme.Success or Theme.Border
+        end
+        
+        ToggleFeature(featureName, featureData.enabled)
+    end)
+    
+    return Card
+end
+
+CreateESPCard("ESPHighlight", "✨", "ESP Highlight", "See players through walls", 1)
+CreateESPCard("ESPNametags", "📛", "ESP Nametags", "Show player names", 2)
+
+-- ═══════════════════════════════════════════════════════════════
+-- ESP PLAYER EVENTS
+-- ═══════════════════════════════════════════════════════════════
+
+-- Setup CharacterAdded for existing players
+for _, player in pairs(Services.Players:GetPlayers()) do
+    if player ~= LocalPlayer then
+        player.CharacterAdded:Connect(function(character)
+            task.wait(0.5)
+            
+            if FeatureStates.ESPHighlight.enabled then
+                if _G.HL5ESPSystem.highlights[player] then
+                    Utility.SafeCall(function()
+                        _G.HL5ESPSystem.highlights[player]:Destroy()
+                    end)
+                    _G.HL5ESPSystem.highlights[player] = nil
+                end
+                if _G.HL5ESPSystem.healthbars[player] then
+                    Utility.SafeCall(function()
+                        _G.HL5ESPSystem.healthbars[player]:Destroy()
+                    end)
+                    _G.HL5ESPSystem.healthbars[player] = nil
+                end
+                
+                local highlight = _G.HL5ESPSystem:CreateHighlight(character)
+                if highlight then _G.HL5ESPSystem.highlights[player] = highlight end
+                
+                local healthbar = _G.HL5ESPSystem:CreateHealthbar(character)
+                if healthbar then _G.HL5ESPSystem.healthbars[player] = healthbar end
+            end
+            
+            if FeatureStates.ESPNametags.enabled then
+                if _G.HL5ESPSystem.nametags[player] then
+                    Utility.SafeCall(function()
+                        _G.HL5ESPSystem.nametags[player]:Destroy()
+                    end)
+                    _G.HL5ESPSystem.nametags[player] = nil
+                end
+                
+                local nametag = _G.HL5ESPSystem:CreateNametag(character, player.Name)
+                if nametag then _G.HL5ESPSystem.nametags[player] = nametag end
+            end
+        end)
+        
+        if player.Character then
+            task.spawn(function()
+                task.wait(0.5)
+                
+                if FeatureStates.ESPHighlight.enabled then
+                    local highlight = _G.HL5ESPSystem:CreateHighlight(player.Character)
+                    if highlight then _G.HL5ESPSystem.highlights[player] = highlight end
+                    
+                    local healthbar = _G.HL5ESPSystem:CreateHealthbar(player.Character)
+                    if healthbar then _G.HL5ESPSystem.healthbars[player] = healthbar end
+                end
+                
+                if FeatureStates.ESPNametags.enabled then
+                    local nametag = _G.HL5ESPSystem:CreateNametag(player.Character, player.Name)
+                    if nametag then _G.HL5ESPSystem.nametags[player] = nametag end
+                end
+            end)
+        end
+    end
+end
+
+Services.Players.PlayerAdded:Connect(function(player)
+    if player == LocalPlayer then return end
+    
+    player.CharacterAdded:Connect(function(character)
+        task.wait(0.5)
+        
+        if FeatureStates.ESPHighlight.enabled then
+            if _G.HL5ESPSystem.highlights[player] then
+                Utility.SafeCall(function()
+                    _G.HL5ESPSystem.highlights[player]:Destroy()
+                end)
+                _G.HL5ESPSystem.highlights[player] = nil
+            end
+            if _G.HL5ESPSystem.healthbars[player] then
+                Utility.SafeCall(function()
+                    _G.HL5ESPSystem.healthbars[player]:Destroy()
+                end)
+                _G.HL5ESPSystem.healthbars[player] = nil
+            end
+            
+            local highlight = _G.HL5ESPSystem:CreateHighlight(character)
+            if highlight then _G.HL5ESPSystem.highlights[player] = highlight end
+            
+            local healthbar = _G.HL5ESPSystem:CreateHealthbar(character)
+            if healthbar then _G.HL5ESPSystem.healthbars[player] = healthbar end
+        end
+        
+        if FeatureStates.ESPNametags.enabled then
+            if _G.HL5ESPSystem.nametags[player] then
+                Utility.SafeCall(function()
+                    _G.HL5ESPSystem.nametags[player]:Destroy()
+                end)
+                _G.HL5ESPSystem.nametags[player] = nil
+            end
+            
+            local nametag = _G.HL5ESPSystem:CreateNametag(character, player.Name)
+            if nametag then _G.HL5ESPSystem.nametags[player] = nametag end
+        end
+    end)
+end)
+
+Services.Players.PlayerRemoving:Connect(function(player)
+    if _G.HL5ESPSystem.highlights[player] then
+        Utility.SafeCall(function()
+            _G.HL5ESPSystem.highlights[player]:Destroy()
+        end)
+        _G.HL5ESPSystem.highlights[player] = nil
+    end
+    if _G.HL5ESPSystem.healthbars[player] then
+        Utility.SafeCall(function()
+            _G.HL5ESPSystem.healthbars[player]:Destroy()
+        end)
+        _G.HL5ESPSystem.healthbars[player] = nil
+    end
+    if _G.HL5ESPSystem.nametags[player] then
+        Utility.SafeCall(function()
+            _G.HL5ESPSystem.nametags[player]:Destroy()
+        end)
+        _G.HL5ESPSystem.nametags[player] = nil
+    end
+end)
+
+-- Auto-checker for ESP
+Services.RunService.Heartbeat:Connect(function()
+    if tick() % 2 < Settings.UpdateInterval then
+        if FeatureStates.ESPHighlight.enabled then
+            for _, player in pairs(Services.Players:GetPlayers()) do
+                if player ~= LocalPlayer and player.Character then
+                    if not _G.HL5ESPSystem.highlights[player] or not _G.HL5ESPSystem.highlights[player].Parent then
+                        local highlight = _G.HL5ESPSystem:CreateHighlight(player.Character)
+                        if highlight then _G.HL5ESPSystem.highlights[player] = highlight end
+                    end
+                    
+                    if not _G.HL5ESPSystem.healthbars[player] or not _G.HL5ESPSystem.healthbars[player].Parent then
+                        local healthbar = _G.HL5ESPSystem:CreateHealthbar(player.Character)
+                        if healthbar then _G.HL5ESPSystem.healthbars[player] = healthbar end
+                    end
+                end
+            end
+        end
+        
+        if FeatureStates.ESPNametags.enabled then
+            for _, player in pairs(Services.Players:GetPlayers()) do
+                if player ~= LocalPlayer and player.Character then
+                    if not _G.HL5ESPSystem.nametags[player] or not _G.HL5ESPSystem.nametags[player].Parent then
+                        local nametag = _G.HL5ESPSystem:CreateNametag(player.Character, player.Name)
+                        if nametag then _G.HL5ESPSystem.nametags[player] = nametag end
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- MENU USERS PAGE
+-- ═══════════════════════════════════════════════════════════════
+
+local MenuUsersPage = Utility.Create("ScrollingFrame", {
+    Name = "MenuUsersPage",
+    Size = UDim2.new(1, -30, 1, -30),
+    Position = UDim2.new(0, 15, 0, 15),
+    BackgroundTransparency = 1,
+    BorderSizePixel = 0,
+    ScrollBarThickness = 4,
+    ScrollBarImageColor3 = Theme.Primary,
+    CanvasSize = UDim2.new(0, 0, 0, 0),
+    Visible = false,
+    Parent = MainContent
+})
+
+local MenuUsersLayout = Utility.Create("UIListLayout", {
+    SortOrder = Enum.SortOrder.LayoutOrder,
+    Padding = UDim.new(0, 10),
+    Parent = MenuUsersPage
+})
+
+MenuUsersLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    MenuUsersPage.CanvasSize = UDim2.new(0, 0, 0, MenuUsersLayout.AbsoluteContentSize.Y + 10)
+end)
+
+local MenuUsersSearchContainer = Utility.Create("Frame", {
+    Name = "SearchContainer",
+    Size = UDim2.new(1, 0, 0, 55),
+    BackgroundTransparency = 1,
+    LayoutOrder = -1,
+    Parent = MenuUsersPage
+})
+
+local MenuUsersSearchBox = Utility.Create("TextBox", {
+    Size = UDim2.new(1, 0, 0, 45),
+    BackgroundColor3 = Theme.Surface,
+    PlaceholderText = "🔍  Search menu users...",
+    PlaceholderColor3 = Theme.TextSecondary,
+    Text = "",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 14,
+    Font = Enum.Font.Gotham,
+    BorderSizePixel = 0,
+    ClearTextOnFocus = false,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = MenuUsersSearchContainer
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 10),
+    Parent = MenuUsersSearchBox
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Border,
+    Thickness = 1,
+    Transparency = 0.5,
+    Parent = MenuUsersSearchBox
+})
+
+Utility.Create("UIPadding", {
+    PaddingLeft = UDim.new(0, 15),
+    Parent = MenuUsersSearchBox
+})
+
+function UpdateMenuUsersList(searchQuery)
+    for _, child in pairs(MenuUsersPage:GetChildren()) do
+        if child:IsA("Frame") and child.Name ~= "SearchContainer" then
+            child:Destroy()
+        end
+    end
+    
+    local query = string.lower(searchQuery or "")
+    
+    for userId, bannerData in pairs(_G.HL5BannerSystem.banners) do
+        local player = bannerData.player
+        if player and player.Parent then
+            local displayName = string.lower(player.DisplayName)
+            local username = string.lower(player.Name)
+            
+            if query == "" or string.find(displayName, query, 1, true) or string.find(username, query, 1, true) then
+                local Card = Utility.Create("Frame", {
+                    Name = player.Name,
+                    Size = UDim2.new(1, 0, 0, 80),
+                    BackgroundColor3 = Theme.BackgroundLight,
+                    BackgroundTransparency = 0.4,
+                    BorderSizePixel = 0,
+                    Parent = MenuUsersPage
+                })
+                
+                Utility.Create("UICorner", {
+                    CornerRadius = UDim.new(0, 12),
+                    Parent = Card
+                })
+                
+                Utility.Create("UIStroke", {
+                    Color = Theme.Primary,
+                    Thickness = 1,
+                    Transparency = 0.5,
+                    Parent = Card
+                })
+                
+                local ProfileImage = Utility.Create("ImageLabel", {
+                    Size = UDim2.new(0, 60, 0, 60),
+                    Position = UDim2.new(0, 10, 0.5, -30),
+                    BackgroundColor3 = Theme.Surface,
+                    BorderSizePixel = 0,
+                    Parent = Card
+                })
+                
+                Utility.Create("UICorner", {
+                    CornerRadius = UDim.new(1, 0),
+                    Parent = ProfileImage
+                })
+                
+                task.spawn(function()
+                    Utility.SafeCall(function()
+                        local content = Services.Players:GetUserThumbnailAsync(
+                            player.UserId,
+                            Enum.ThumbnailType.HeadShot,
+                            Enum.ThumbnailSize.Size150x150
+                        )
+                        ProfileImage.Image = content
+                    end)
+                end)
+                
+                local NameLabel = Utility.Create("TextLabel", {
+                    Size = UDim2.new(0, 200, 0, 25),
+                    Position = UDim2.new(0, 80, 0, 15),
+                    BackgroundTransparency = 1,
+                    Text = player.DisplayName,
+                    TextColor3 = Theme.TextPrimary,
+                    TextSize = 16,
+                    Font = Enum.Font.GothamBold,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    TextTruncate = Enum.TextTruncate.AtEnd,
+                    Parent = Card
+                })
+                
+                local UsernameLabel = Utility.Create("TextLabel", {
+                    Size = UDim2.new(0, 200, 0, 20),
+                    Position = UDim2.new(0, 80, 0, 40),
+                    BackgroundTransparency = 1,
+                    Text = "@" .. player.Name,
+                    TextColor3 = Theme.TextSecondary,
+                    TextSize = 13,
+                    Font = Enum.Font.Gotham,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    TextTruncate = Enum.TextTruncate.AtEnd,
+                    Parent = Card
+                })
+                
+                local InfoBtn = Utility.Create("TextButton", {
+                    Size = UDim2.new(0, 45, 0, 45),
+                    Position = UDim2.new(1, -110, 0.5, -22.5),
+                    BackgroundColor3 = Theme.Secondary,
+                    Text = "ℹ️",
+                    TextColor3 = Color3.fromRGB(30, 30, 30),
+                    TextSize = 16,
+                    Font = Enum.Font.GothamBold,
+                    BorderSizePixel = 0,
+                    AutoButtonColor = false,
+                    Parent = Card
+                })
+                
+                Utility.Create("UICorner", {
+                    CornerRadius = UDim.new(0, 10),
+                    Parent = InfoBtn
+                })
+                
+                InfoBtn.MouseButton1Click:Connect(function()
+                    ShowPlayerInfo(player)
+                end)
+                
+                local TPBtn = Utility.Create("TextButton", {
+                    Size = UDim2.new(0, 45, 0, 45),
+                    Position = UDim2.new(1, -55, 0.5, -22.5),
+                    BackgroundColor3 = Theme.Primary,
+                    Text = "📍",
+                    TextColor3 = Color3.fromRGB(30, 30, 30),
+                    TextSize = 16,
+                    Font = Enum.Font.GothamBold,
+                    BorderSizePixel = 0,
+                    AutoButtonColor = false,
+                    Parent = Card
+                })
+                
+                Utility.Create("UICorner", {
+                    CornerRadius = UDim.new(0, 10),
+                    Parent = TPBtn
+                })
+                
+                TPBtn.MouseButton1Click:Connect(function()
+                    if player.Character then
+                        local targetRoot = player.Character:FindFirstChild("HumanoidRootPart")
+                        local localChar = LocalPlayer.Character
+                        if targetRoot and localChar then
+                            local localRoot = localChar:FindFirstChild("HumanoidRootPart")
+                            if localRoot then
+                                localRoot.CFrame = targetRoot.CFrame * CFrame.new(0, 0, 3)
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end
+end
+
+MenuUsersSearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+    UpdateMenuUsersList(MenuUsersSearchBox.Text)
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- SETTINGS PAGE
+-- ═══════════════════════════════════════════════════════════════
+
+local SettingsPage = Utility.Create("ScrollingFrame", {
+    Name = "SettingsPage",
+    Size = UDim2.new(1, -30, 1, -30),
+    Position = UDim2.new(0, 15, 0, 15),
+    BackgroundTransparency = 1,
+    BorderSizePixel = 0,
+    ScrollBarThickness = 4,
+    ScrollBarImageColor3 = Theme.Primary,
+    CanvasSize = UDim2.new(0, 0, 0, 0),
+    Visible = false,
+    Parent = MainContent
+})
+
+local SettingsLayout = Utility.Create("UIListLayout", {
+    SortOrder = Enum.SortOrder.LayoutOrder,
+    Padding = UDim.new(0, 15),
+    Parent = SettingsPage
+})
+
+SettingsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    SettingsPage.CanvasSize = UDim2.new(0, 0, 0, SettingsLayout.AbsoluteContentSize.Y + 15)
+end)
+
+local SettingsTitle = Utility.Create("TextLabel", {
+    Size = UDim2.new(1, 0, 0, 40),
+    BackgroundTransparency = 1,
+    Text = "⚙️  Menu Settings",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 22,
+    Font = Enum.Font.GothamBold,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    LayoutOrder = 0,
+    Parent = SettingsPage
+})
+
+local SettingsTitleGradient = Utility.Create("UIGradient", {
+    Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Theme.Primary),
+        ColorSequenceKeypoint.new(0.5, Theme.TextPrimary),
+        ColorSequenceKeypoint.new(1, Theme.Primary)
+    },
+    Parent = SettingsTitle
+})
+
+-- Menu keybind setting
+local MenuKeybindFrame = Utility.Create("Frame", {
+    Size = UDim2.new(1, 0, 0, 80),
+    BackgroundColor3 = Theme.BackgroundLight,
+    BackgroundTransparency = 0.3,
+    BorderSizePixel = 0,
+    LayoutOrder = 1,
+    Parent = SettingsPage
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 12),
+    Parent = MenuKeybindFrame
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Border,
+    Thickness = 1,
+    Transparency = 0.7,
+    Parent = MenuKeybindFrame
+})
+
+local MenuKeybindLabel = Utility.Create("TextLabel", {
+    Size = UDim2.new(0.6, 0, 0, 30),
+    Position = UDim2.new(0, 15, 0, 12),
+    BackgroundTransparency = 1,
+    Text = "Toggle Menu Key",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 15,
+    Font = Enum.Font.GothamBold,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = MenuKeybindFrame
+})
+
+local MenuKeybindDesc = Utility.Create("TextLabel", {
+    Size = UDim2.new(0.6, 0, 0, 20),
+    Position = UDim2.new(0, 15, 0, 42),
+    BackgroundTransparency = 1,
+    Text = "Press ESC to clear keybind",
+    TextColor3 = Theme.TextSecondary,
+    TextSize = 12,
+    Font = Enum.Font.Gotham,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = MenuKeybindFrame
+})
+
+local MenuKeybindButton = Utility.Create("TextButton", {
+    Size = UDim2.new(0, 120, 0, 40),
+    Position = UDim2.new(1, -135, 0.5, -20),
+    BackgroundColor3 = Theme.Primary,
+    BackgroundTransparency = 0.2,
+    Text = Settings.MenuKey.Name,
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 14,
+    Font = Enum.Font.GothamBold,
+    BorderSizePixel = 0,
+    AutoButtonColor = false,
+    Parent = MenuKeybindFrame
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 8),
+    Parent = MenuKeybindButton
+})
+
+local listeningForMenuKey = false
+
+MenuKeybindButton.MouseButton1Click:Connect(function()
+    if not listeningForMenuKey then
+        listeningForMenuKey = true
+        MenuKeybindButton.Text = "Press..."
+        MenuKeybindButton.BackgroundColor3 = Theme.Warning
+    end
+end)
+
+Services.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if listeningForMenuKey and input.UserInputType == Enum.UserInputType.Keyboard then
+        if input.KeyCode == Enum.KeyCode.Escape then
+            Settings.MenuKey = nil
+            MenuKeybindButton.Text = "None"
+            MenuKeybindButton.BackgroundColor3 = Theme.Primary
+            listeningForMenuKey = false
+        else
+            Settings.MenuKey = input.KeyCode
+            MenuKeybindButton.Text = input.KeyCode.Name
+            MenuKeybindButton.BackgroundColor3 = Theme.Primary
+            listeningForMenuKey = false
+        end
+    end
+end)
+
+-- Menu scale slider
+local MenuScaleFrame = Utility.Create("Frame", {
+    Size = UDim2.new(1, 0, 0, 100),
+    BackgroundColor3 = Theme.BackgroundLight,
+    BackgroundTransparency = 0.3,
+    BorderSizePixel = 0,
+    LayoutOrder = 2,
+    Parent = SettingsPage
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 12),
+    Parent = MenuScaleFrame
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Border,
+    Thickness = 1,
+    Transparency = 0.7,
+    Parent = MenuScaleFrame
+})
+
+local MenuScaleLabel = Utility.Create("TextLabel", {
+    Size = UDim2.new(0.6, 0, 0, 30),
+    Position = UDim2.new(0, 15, 0, 12),
+    BackgroundTransparency = 1,
+    Text = "📐  Menu Size",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 15,
+    Font = Enum.Font.GothamBold,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = MenuScaleFrame
+})
+
+local MenuScaleDesc = Utility.Create("TextLabel", {
+    Size = UDim2.new(0.6, 0, 0, 20),
+    Position = UDim2.new(0, 15, 0, 42),
+    BackgroundTransparency = 1,
+    Text = "Adjust menu size (70% - 130%)",
+    TextColor3 = Theme.TextSecondary,
+    TextSize = 12,
+    Font = Enum.Font.Gotham,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = MenuScaleFrame
+})
+
+local ScaleSliderBack = Utility.Create("Frame", {
+    Size = UDim2.new(1, -30, 0, 6),
+    Position = UDim2.new(0, 15, 0, 70),
+    BackgroundColor3 = Theme.Surface,
+    BorderSizePixel = 0,
+    Parent = MenuScaleFrame
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(1, 0),
+    Parent = ScaleSliderBack
+})
+
+local ScaleSliderFill = Utility.Create("Frame", {
+    Size = UDim2.new((Settings.MenuScale - 0.7) / 0.6, 0, 1, 0),
+    BackgroundColor3 = Theme.Primary,
+    BorderSizePixel = 0,
+    Parent = ScaleSliderBack
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(1, 0),
+    Parent = ScaleSliderFill
+})
+
+Utility.Create("UIGradient", {
+    Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Theme.Primary),
+        ColorSequenceKeypoint.new(1, Theme.PrimaryLight)
+    },
+    Parent = ScaleSliderFill
+})
+
+local ScaleSliderValue = Utility.Create("TextBox", {
+    Size = UDim2.new(0, 60, 0, 22),
+    Position = UDim2.new(1, -75, 0, 64),
+    BackgroundColor3 = Theme.Surface,
+    Text = string.format("%.0f%%", Settings.MenuScale * 100),
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 12,
+    Font = Enum.Font.Gotham,
+    BorderSizePixel = 0,
+    ClearTextOnFocus = false,
+    Parent = MenuScaleFrame
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 4),
+    Parent = ScaleSliderValue
+})
+
+local ScaleSliderButton = Utility.Create("TextButton", {
+    Size = UDim2.new(1, 0, 1, 10),
+    Position = UDim2.new(0, 0, 0, -5),
+    BackgroundTransparency = 1,
+    Text = "",
+    Parent = ScaleSliderBack
+})
+
+local scaleDragging = false
+
+ScaleSliderButton.MouseButton1Down:Connect(function()
+    scaleDragging = true
+end)
+
+Services.UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 and scaleDragging then
+        scaleDragging = false
+    end
+end)
+
+ScaleSliderValue.FocusLost:Connect(function()
+    local inputValue = tonumber(string.match(ScaleSliderValue.Text, "%d+"))
+    if inputValue then
+        inputValue = math.clamp(inputValue, 70, 130) / 100
+        Settings.MenuScale = inputValue
+        ScaleSliderValue.Text = string.format("%.0f%%", inputValue * 100)
+        ScaleSliderFill.Size = UDim2.new((inputValue - 0.7) / 0.6, 0, 1, 0)
+        
+        MainContainer.Size = UDim2.new(0, baseWidth * inputValue, 0, baseHeight * inputValue)
+        MainContainer.Position = UDim2.new(0.5, -(baseWidth * inputValue) / 2, 0.5, -(baseHeight * inputValue) / 2)
+    else
+        ScaleSliderValue.Text = string.format("%.0f%%", Settings.MenuScale * 100)
+    end
+end)
+
+ScaleSliderButton.MouseMoved:Connect(function(x, y)
+    if scaleDragging then
+        local relativeX = math.clamp((x - ScaleSliderBack.AbsolutePosition.X) / ScaleSliderBack.AbsoluteSize.X, 0, 1)
+        local value = 0.7 + (relativeX * 0.6)
+        Settings.MenuScale = value
+        ScaleSliderFill.Size = UDim2.new(relativeX, 0, 1, 0)
+        ScaleSliderValue.Text = string.format("%.0f%%", value * 100)
+        
+        MainContainer.Size = UDim2.new(0, baseWidth * value, 0, baseHeight * value)
+        MainContainer.Position = UDim2.new(0.5, -(baseWidth * value) / 2, 0.5, -(baseHeight * value) / 2)
+    end
+end)
+
+-- Save settings button
+local SaveFrame = Utility.Create("Frame", {
+    Size = UDim2.new(1, 0, 0, 80),
+    BackgroundColor3 = Theme.BackgroundLight,
+    BackgroundTransparency = 0.3,
+    BorderSizePixel = 0,
+    LayoutOrder = 3,
+    Parent = SettingsPage
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 12),
+    Parent = SaveFrame
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Border,
+    Thickness = 1,
+    Transparency = 0.7,
+    Parent = SaveFrame
+})
+
+local SaveLabel = Utility.Create("TextLabel", {
+    Size = UDim2.new(0.6, 0, 0, 30),
+    Position = UDim2.new(0, 15, 0, 12),
+    BackgroundTransparency = 1,
+    Text = "💾  Save Settings",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 15,
+    Font = Enum.Font.GothamBold,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = SaveFrame
+})
+
+local SaveDesc = Utility.Create("TextLabel", {
+    Size = UDim2.new(0.6, 0, 0, 20),
+    Position = UDim2.new(0, 15, 0, 42),
+    BackgroundTransparency = 1,
+    Text = "Save keybinds, values, and colors",
+    TextColor3 = Theme.TextSecondary,
+    TextSize = 12,
+    Font = Enum.Font.Gotham,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = SaveFrame
+})
+
+local SaveButton = Utility.Create("TextButton", {
+    Size = UDim2.new(0, 120, 0, 40),
+    Position = UDim2.new(1, -135, 0.5, -20),
+    BackgroundColor3 = Theme.Primary,
+    BackgroundTransparency = 0.2,
+    Text = "Save",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 14,
+    Font = Enum.Font.GothamBold,
+    BorderSizePixel = 0,
+    AutoButtonColor = false,
+    Parent = SaveFrame
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 8),
+    Parent = SaveButton
+})
+
+SaveButton.MouseEnter:Connect(function()
+    Utility.Tween(SaveButton, {BackgroundTransparency = 0}, 0.2)
+end)
+
+SaveButton.MouseLeave:Connect(function()
+    Utility.Tween(SaveButton, {BackgroundTransparency = 0.2}, 0.2)
+end)
+
+SaveButton.MouseButton1Click:Connect(function()
+    SaveButton.Text = "Saving..."
+    SaveButton.BackgroundColor3 = Theme.Warning
+    
+    local success = SettingsManager.Save()
+    
+    if success then
+        SaveButton.Text = "Saved! ✓"
+        SaveButton.BackgroundColor3 = Theme.Success
+    else
+        SaveButton.Text = "Failed!"
+        SaveButton.BackgroundColor3 = Theme.Danger
+    end
+    
+    task.wait(2)
+    SaveButton.Text = "Save"
+    SaveButton.BackgroundColor3 = Theme.Primary
+end)
+
+-- Server rejoin button
+local RejoinFrame = Utility.Create("Frame", {
+    Size = UDim2.new(1, 0, 0, 80),
+    BackgroundColor3 = Theme.BackgroundLight,
+    BackgroundTransparency = 0.3,
+    BorderSizePixel = 0,
+    LayoutOrder = 4,
+    Parent = SettingsPage
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 12),
+    Parent = RejoinFrame
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Border,
+    Thickness = 1,
+    Transparency = 0.7,
+    Parent = RejoinFrame
+})
+
+local RejoinLabel = Utility.Create("TextLabel", {
+    Size = UDim2.new(0.6, 0, 0, 30),
+    Position = UDim2.new(0, 15, 0, 12),
+    BackgroundTransparency = 1,
+    Text = "🔄  Server Rejoin",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 15,
+    Font = Enum.Font.GothamBold,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = RejoinFrame
+})
+
+local RejoinDesc = Utility.Create("TextLabel", {
+    Size = UDim2.new(0.6, 0, 0, 20),
+    Position = UDim2.new(0, 15, 0, 42),
+    BackgroundTransparency = 1,
+    Text = "Rejoin the same server instantly",
+    TextColor3 = Theme.TextSecondary,
+    TextSize = 12,
+    Font = Enum.Font.Gotham,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = RejoinFrame
+})
+
+local RejoinButton = Utility.Create("TextButton", {
+    Size = UDim2.new(0, 120, 0, 40),
+    Position = UDim2.new(1, -135, 0.5, -20),
+    BackgroundColor3 = Theme.Success,
+    BackgroundTransparency = 0.2,
+    Text = "Rejoin",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 14,
+    Font = Enum.Font.GothamBold,
+    BorderSizePixel = 0,
+    AutoButtonColor = false,
+    Parent = RejoinFrame
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 8),
+    Parent = RejoinButton
+})
+
+RejoinButton.MouseEnter:Connect(function()
+    Utility.Tween(RejoinButton, {BackgroundTransparency = 0}, 0.2)
+end)
+
+RejoinButton.MouseLeave:Connect(function()
+    Utility.Tween(RejoinButton, {BackgroundTransparency = 0.2}, 0.2)
+end)
+
+RejoinButton.MouseButton1Click:Connect(function()
+    RejoinButton.Text = "Rejoining..."
+    RejoinButton.BackgroundColor3 = Theme.Warning
+    
+    Utility.SafeCall(function()
+        local jobId = game.JobId
+        local placeId = game.PlaceId
+        
+        if jobId and jobId ~= "" then
+            Services.TeleportService:TeleportToPlaceInstance(placeId, jobId, LocalPlayer)
+        else
+            Services.TeleportService:Teleport(placeId, LocalPlayer)
+        end
+    end)
+end)
+
+-- Reset settings button
+local ResetFrame = Utility.Create("Frame", {
+    Size = UDim2.new(1, 0, 0, 80),
+    BackgroundColor3 = Theme.BackgroundLight,
+    BackgroundTransparency = 0.3,
+    BorderSizePixel = 0,
+    LayoutOrder = 5,
+    Parent = SettingsPage
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 12),
+    Parent = ResetFrame
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Danger,
+    Thickness = 1,
+    Transparency = 0.5,
+    Parent = ResetFrame
+})
+
+local ResetLabel = Utility.Create("TextLabel", {
+    Size = UDim2.new(0.6, 0, 0, 30),
+    Position = UDim2.new(0, 15, 0, 12),
+    BackgroundTransparency = 1,
+    Text = "🔄  Reset Settings",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 15,
+    Font = Enum.Font.GothamBold,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = ResetFrame
+})
+
+local ResetDesc = Utility.Create("TextLabel", {
+    Size = UDim2.new(0.6, 0, 0, 20),
+    Position = UDim2.new(0, 15, 0, 42),
+    BackgroundTransparency = 1,
+    Text = "Reset all settings to default",
+    TextColor3 = Theme.TextSecondary,
+    TextSize = 12,
+    Font = Enum.Font.Gotham,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = ResetFrame
+})
+
+local ResetButton = Utility.Create("TextButton", {
+    Size = UDim2.new(0, 120, 0, 40),
+    Position = UDim2.new(1, -135, 0.5, -20),
+    BackgroundColor3 = Theme.Danger,
+    BackgroundTransparency = 0.2,
+    Text = "Reset",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 14,
+    Font = Enum.Font.GothamBold,
+    BorderSizePixel = 0,
+    AutoButtonColor = false,
+    Parent = ResetFrame
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 8),
+    Parent = ResetButton
+})
+
+ResetButton.MouseEnter:Connect(function()
+    Utility.Tween(ResetButton, {BackgroundTransparency = 0}, 0.2)
+end)
+
+ResetButton.MouseLeave:Connect(function()
+    Utility.Tween(ResetButton, {BackgroundTransparency = 0.2}, 0.2)
+end)
+
+ResetButton.MouseButton1Click:Connect(function()
+    local success = Utility.SafeCall(function()
+        if isfile and isfile(Settings.SettingsFile) then
+            delfile(Settings.SettingsFile)
+        end
+    end)
+    
+    if success then
+        ResetButton.Text = "Reset! Rejoin..."
+        ResetButton.BackgroundColor3 = Theme.Success
+        print("[HL5] Settings reset! Rejoin to apply defaults.")
+        
+        task.wait(1)
+        
+        Utility.SafeCall(function()
+            local jobId = game.JobId
+            local placeId = game.PlaceId
+            
+            if jobId and jobId ~= "" then
+                Services.TeleportService:TeleportToPlaceInstance(placeId, jobId, LocalPlayer)
+            else
+                Services.TeleportService:Teleport(placeId, LocalPlayer)
+            end
+        end)
+    else
+        ResetButton.Text = "Failed!"
+        task.wait(2)
+        ResetButton.Text = "Reset"
+        ResetButton.BackgroundColor3 = Theme.Danger
+    end
+end)
+
+-- About section
+local AboutFrame = Utility.Create("Frame", {
+    Size = UDim2.new(1, 0, 0, 150),
+    BackgroundColor3 = Theme.BackgroundLight,
+    BackgroundTransparency = 0.3,
+    BorderSizePixel = 0,
+    LayoutOrder = 6,
+    Parent = SettingsPage
+})
+
+Utility.Create("UICorner", {
+    CornerRadius = UDim.new(0, 12),
+    Parent = AboutFrame
+})
+
+Utility.Create("UIStroke", {
+    Color = Theme.Primary,
+    Thickness = 1,
+    Transparency = 0.5,
+    Parent = AboutFrame
+})
+
+local AboutTitle = Utility.Create("TextLabel", {
+    Size = UDim2.new(1, -30, 0, 35),
+    Position = UDim2.new(0, 15, 0, 15),
+    BackgroundTransparency = 1,
+    Text = "H  HL5 MENU",
+    TextColor3 = Theme.TextPrimary,
+    TextSize = 20,
+    Font = Enum.Font.GothamBold,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = AboutFrame
+})
+
+local AboutVersion = Utility.Create("TextLabel", {
+    Size = UDim2.new(1, -30, 0, 20),
+    Position = UDim2.new(0, 15, 0, 50),
+    BackgroundTransparency = 1,
+    Text = "Premium Edition V3.0 - Fully Rewritten",
+    TextColor3 = Theme.TextSecondary,
+    TextSize = 13,
+    Font = Enum.Font.Gotham,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Parent = AboutFrame
+})
+
+local AboutDesc = Utility.Create("TextLabel", {
+    Size = UDim2.new(1, -30, 0, 60),
+    Position = UDim2.new(0, 15, 0, 75),
+    BackgroundTransparency = 1,
+    Text = "Advanced control panel with keybinds, invisible mode, headsit, ESP, mimic, and more!\n\nAll features work perfectly!",
+    TextColor3 = Theme.TextSecondary,
+    TextSize = 12,
+    Font = Enum.Font.Gotham,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    TextYAlignment = Enum.TextYAlignment.Top,
+    TextWrapped = true,
+    Parent = AboutFrame
+})
+
+-- ═══════════════════════════════════════════════════════════════
+-- NAVIGATION BUTTONS
+-- ═══════════════════════════════════════════════════════════════
+
+local function CreateNavButton(name, icon, text, order)
+    local Button = Utility.Create("TextButton", {
+        Name = name .. "Btn",
+        Size = UDim2.new(1, 0, 0, 45),
+        BackgroundColor3 = Theme.Surface,
+        BackgroundTransparency = name == "Character" and 0.3 or 1,
+        Text = "",
+        AutoButtonColor = false,
+        BorderSizePixel = 0,
+        LayoutOrder = order,
+        Parent = Sidebar
+    })
+    
+    Utility.Create("UICorner", {
+        CornerRadius = UDim.new(0, 10),
+        Parent = Button
+    })
+    
+    if name == "Character" then
+        Utility.Create("UIStroke", {
+            Color = Theme.Primary,
+            Thickness = 1,
+            Transparency = 0.5,
+            Parent = Button
+        })
+    end
+    
+    local IconLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(0, 30, 0, 30),
+        Position = UDim2.new(0, 5, 0.5, -15),
+        BackgroundTransparency = 1,
+        Text = icon,
+        TextColor3 = name == "Character" and Theme.TextPrimary or Theme.TextSecondary,
+        TextSize = 18,
+        Font = Enum.Font.GothamBold,
+        Parent = Button
+    })
+    
+    local TextLabel = Utility.Create("TextLabel", {
+        Size = UDim2.new(1, -45, 1, 0),
+        Position = UDim2.new(0, 40, 0, 0),
+        BackgroundTransparency = 1,
+        Text = text,
+        TextColor3 = name == "Character" and Theme.TextPrimary or Theme.TextSecondary,
+        TextSize = 14,
+        Font = Enum.Font.GothamSemibold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = Button
+    })
+    
+    return Button
+end
+
+local CharacterBtn = CreateNavButton("Character", "🎮", "Character", 0)
+local PlayersBtn = CreateNavButton("Players", "👥", "Players", 1)
+local AimBtn = CreateNavButton("Aim", "🎯", "Aim", 1.5)
+local ESPBtn = CreateNavButton("ESP", "👁️", "ESP", 2)
+local MenuUsersBtn = CreateNavButton("MenuUsers", "💎", "Menu Users", 2.5)
+local SettingsBtn = CreateNavButton("Settings", "⚙️", "Settings", 3)
+
+-- ═══════════════════════════════════════════════════════════════
+-- TAB SWITCHING SYSTEM
+-- ═══════════════════════════════════════════════════════════════
+
+local function SwitchTab(tabName)
+    CharacterPage.Visible = tabName == "Character"
+    PlayersPage.Visible = tabName == "Players"
+    AimPage.Visible = tabName == "Aim"
+    ESPPage.Visible = tabName == "ESP"
+    MenuUsersPage.Visible = tabName == "MenuUsers"
+    SettingsPage.Visible = tabName == "Settings"
+    
+    -- Close sidebar when switching
+    if PlayerInfoSidebar.Visible then
+        PlayerInfoSidebar.Visible = false
+        if ViewingPlayer then
+            ViewingPlayer = nil
+            Camera.CameraSubject = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        end
+    end
+    
+    -- Update menu users list
+    if tabName == "MenuUsers" then
+        Utility.SafeCall(function()
+            UpdateMenuUsersList("")
+        end)
+    end
+    
+    -- Update nav buttons
+    for _, btn in pairs(Sidebar:GetChildren()) do
+        if btn:IsA("TextButton") then
+            local isActive = (btn.Name == tabName .. "Btn")
+            
+            btn.BackgroundTransparency = isActive and 0.3 or 1
+            btn.BackgroundColor3 = Theme.Surface
+            
+            -- Update stroke
+            local stroke = btn:FindFirstChild("UIStroke")
+            if isActive then
+                if not stroke then
+                    stroke = Utility.Create("UIStroke", {
+                        Color = Theme.Primary,
+                        Thickness = 1,
+                        Transparency = 0.5,
+                        Parent = btn
+                    })
+                end
+            else
+                if stroke then
+                    stroke:Destroy()
+                end
+            end
+            
+            -- Update text colors
+            for _, child in pairs(btn:GetChildren()) do
+                if child:IsA("TextLabel") then
+                    child.TextColor3 = isActive and Theme.TextPrimary or Theme.TextSecondary
+                end
+            end
+        end
+    end
+end
+
+CharacterBtn.MouseButton1Click:Connect(function() SwitchTab("Character") end)
+PlayersBtn.MouseButton1Click:Connect(function() SwitchTab("Players") end)
+ESPBtn.MouseButton1Click:Connect(function() SwitchTab("ESP") end)
+MenuUsersBtn.MouseButton1Click:Connect(function() SwitchTab("MenuUsers") end)
+SettingsBtn.MouseButton1Click:Connect(function() SwitchTab("Settings") end)
+AimBtn.MouseButton1Click:Connect(function() SwitchTab("Aim") end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- DRAG FUNCTIONALITY
+-- ═══════════════════════════════════════════════════════════════
+
+local dragging = false
+local dragStart = nil
+local startPos = nil
+
+Topbar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainContainer.Position
+    end
+end)
+
+Services.UserInputService.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        MainContainer.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+Services.UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- MINIMIZE & CLOSE BUTTONS
+-- ═══════════════════════════════════════════════════════════════
+
+local isMinimized = false
+
+MinimizeBtn.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    
+    local scaledWidth = baseWidth * Settings.MenuScale
+    local scaledHeight = baseHeight * Settings.MenuScale
+    
+    if isMinimized then
+        Utility.Tween(MainContainer, {Size = UDim2.new(0, scaledWidth, 0, 60 * Settings.MenuScale)}, 0.3)
+        ContentArea.Visible = false
+        PlayerInfoSidebar.Visible = false
+    else
+        Utility.Tween(MainContainer, {Size = UDim2.new(0, scaledWidth, 0, scaledHeight)}, 0.3)
+        task.wait(0.2)
+        ContentArea.Visible = true
+    end
+end)
+
+MinimizeBtn.MouseEnter:Connect(function()
+    Utility.Tween(MinimizeBtn, {BackgroundTransparency = 0}, 0.2)
+end)
+
+MinimizeBtn.MouseLeave:Connect(function()
+    Utility.Tween(MinimizeBtn, {BackgroundTransparency = 0.3}, 0.2)
+end)
+
+CloseBtn.MouseButton1Click:Connect(function()
+    MainContainer.Visible = false
+    PlayerInfoSidebar.Visible = false
+    BlurEffect.Size = 0
+end)
+
+CloseBtn.MouseEnter:Connect(function()
+    Utility.Tween(CloseBtn, {BackgroundTransparency = 0}, 0.2)
+end)
+
+CloseBtn.MouseLeave:Connect(function()
+    Utility.Tween(CloseBtn, {BackgroundTransparency = 0.3}, 0.2)
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- MENU TOGGLE
+-- ═══════════════════════════════════════════════════════════════
+
+Services.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and Settings.MenuKey and input.KeyCode == Settings.MenuKey then
+        MainContainer.Visible = not MainContainer.Visible
+        
+        if MainContainer.Visible then
+            Utility.Tween(BlurEffect, {Size = 10}, 0.3)
+        else
+            Utility.Tween(BlurEffect, {Size = 0}, 0.3)
+            PlayerInfoSidebar.Visible = false
+            if ViewingPlayer then
+                ViewingPlayer = nil
+                Camera.CameraSubject = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            end
+        end
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- GLOBAL KEYBIND HANDLER - ALLE FEATURES INKLUSIVE AIMBOT
+-- ═══════════════════════════════════════════════════════════════
+
+Services.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    
+    for featureName, featureData in pairs(FeatureStates) do
+        if featureData.key and input.KeyCode == featureData.key then
+            -- Toggle State
+            featureData.enabled = not featureData.enabled
+            
+            -- SPEZIAL-BEHANDLUNG FÜR AIMBOT
+            if featureName == "Aimbot" then
+                -- Update Button direkt über globale Referenz
+                if _G.HL5AimbotToggleButton then
+                    _G.HL5AimbotToggleButton.Text = featureData.enabled and "ON" or "OFF"
+                    _G.HL5AimbotToggleButton.BackgroundColor3 = featureData.enabled and Theme.Success or Theme.Surface
+                    
+                    local stroke = _G.HL5AimbotToggleButton:FindFirstChild("UIStroke")
+                    if stroke then
+                        stroke.Color = featureData.enabled and Theme.Success or Theme.Border
+                    end
+                end
+                
+                -- Execute Aimbot Toggle
+                ToggleFeature("Aimbot", featureData.enabled)
+                
+            else
+                -- NORMALE FEATURES (Character, ESP, etc.)
+                -- Bestimme die richtige Page
+                local targetPage = CharacterPage -- Default
+                if featureData.category == "ESP" then
+                    targetPage = ESPPage
+                elseif featureData.category == "Aim" then
+                    targetPage = AimPage
+                end
+                
+                -- Update UI Button
+                local cardName = featureName .. "Card"
+                local card = targetPage:FindFirstChild(cardName)
+                
+                if card then
+                    local header = card:FindFirstChild("Header")
+                    if header then
+                        local toggleBtn = header:FindFirstChild("ToggleButton")
+                        if toggleBtn then
+                            toggleBtn.Text = featureData.enabled and "ON" or "OFF"
+                            toggleBtn.BackgroundColor3 = featureData.enabled and Theme.Success or Theme.Surface
+                            
+                            local stroke = toggleBtn:FindFirstChild("UIStroke")
+                            if stroke then
+                                stroke.Color = featureData.enabled and Theme.Success or Theme.Border
+                            end
+                        end
+                    end
+                end
+                
+                -- Execute Feature Toggle
+                ToggleFeature(featureName, featureData.enabled)
+            end
+        end
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- NOCLIP & SPIN LOOPS - FIXED
+-- ═══════════════════════════════════════════════════════════════
+
+local noclipWasEnabled = false
+
+Services.RunService.Stepped:Connect(function()
+    if FeatureStates.Noclip.enabled then
+        noclipWasEnabled = true
+        
+        -- Noclip for invisible clone
+        if _G.HL5InvisibleSystem and _G.HL5InvisibleSystem.isActive and _G.HL5InvisibleSystem.cloneCharacter then
+            for _, part in pairs(_G.HL5InvisibleSystem.cloneCharacter:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+            
+            if _G.HL5InvisibleSystem.cloneHumanoid then
+                _G.HL5InvisibleSystem.cloneHumanoid.PlatformStand = false
+            end
+        end
+        
+        -- Noclip for real character
+        local realCharacter = LocalPlayer.Character
+        if realCharacter then
+            for _, part in pairs(realCharacter:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+            
+            local humanoid = realCharacter:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.PlatformStand = false
+            end
+        end
+    elseif noclipWasEnabled then
+        noclipWasEnabled = false
+        
+        local realCharacter = LocalPlayer.Character
+        if realCharacter then
+            local humanoid = realCharacter:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+                task.wait()
+                humanoid:ChangeState(Enum.HumanoidStateType.Running)
+            end
+        end
+    end
+end)
+
+Services.RunService.Heartbeat:Connect(function()
+    if FeatureStates.SpinCharacter.enabled then
+        if _G.HL5InvisibleSystem then
+            local targetRoot = _G.HL5InvisibleSystem:GetActiveRootPart()
+            if targetRoot then
+                targetRoot.CFrame = targetRoot.CFrame * CFrame.Angles(0, math.rad(FeatureStates.SpinCharacter.value), 0)
+            end
+        end
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- CHARACTER RESPAWN HANDLER
+-- ═══════════════════════════════════════════════════════════════
+
+LocalPlayer.CharacterAdded:Connect(function()
+    task.wait(0.5)
+    
+    -- Only apply if features are enabled
+    if FeatureStates.WalkSpeed.enabled then
+        local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = FeatureStates.WalkSpeed.value
+        end
+    end
+    
+    if FeatureStates.JumpPower.enabled then
+        local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            if humanoid.UseJumpPower then
+                humanoid.JumpPower = FeatureStates.JumpPower.value
+            else
+                humanoid.JumpHeight = FeatureStates.JumpPower.value / 10
+            end
+        end
+    end
+    
+    -- Re-enable fly if active
+    if _G.HL5FlySystem.enabled then
+        _G.HL5FlySystem:Enable()
+    end
+    
+    -- Disable invisible mode on respawn
+    if _G.HL5InvisibleSystem.isActive then
+        _G.HL5InvisibleSystem:Disable()
+    end
+    
+    -- Reset ragdoll
+    if _G.HL5RagdollSystem.enabled then
+        _G.HL5RagdollSystem.enabled = false
+        _G.HL5RagdollSystem.originalJoints = {}
+        FeatureStates.Ragdoll.enabled = false
+    end
+    
+    -- Stop mimic
+    if _G.HL5MimicSystem.enabled then
+        _G.HL5MimicSystem:Disable()
+    end
+    
+    -- Re-enable X-Ray if active
+    if _G.HL5XRaySystem.enabled then
+        _G.HL5XRaySystem:Disable()
+        task.wait(0.2)
+        _G.HL5XRaySystem:Enable()
+    end
+    
+    -- Re-enable Godmode if active
+    if _G.HL5GodmodeSystem.enabled then
+        _G.HL5GodmodeSystem:Disable()
+        task.wait(0.2)
+        _G.HL5GodmodeSystem:Enable()
+    end
+end)
+
+-- Banner system respawn handler
+LocalPlayer.CharacterAdded:Connect(function()
+    task.wait(1)
+    if _G.HL5BannerSystem.updateConnection then
+        _G.HL5BannerSystem:Stop()
+        _G.HL5BannerSystem:Start()
+    end
+end)
+
+Services.Players.PlayerRemoving:Connect(function(player)
+    _G.HL5BannerSystem:RemoveBanner(player.UserId)
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- INITIALIZATION
+-- ═══════════════════════════════════════════════════════════════
+
+-- Initialize player list
+UpdatePlayerList("")
+
+-- Initialize with Character tab
+SwitchTab("Character")
+
+-- Apply menu scale
+if Settings.MenuScale then
+    MainContainer.Size = UDim2.new(0, baseWidth * Settings.MenuScale, 0, baseHeight * Settings.MenuScale)
+    MainContainer.Position = UDim2.new(0.5, -(baseWidth * Settings.MenuScale) / 2, 0.5, -(baseHeight * Settings.MenuScale) / 2)
+end
+
+-- Start banner system
+task.spawn(function()
+    task.wait(1)
+    _G.HL5BannerSystem:Start()
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- FINAL SUCCESS MESSAGE
+-- ═══════════════════════════════════════════════════════════════
+
+print("═══════════════════════════════════════════════════════════════")
+print("🎮 HL5 MENU V3.0 - PREMIUM EDITION")
+print("✅ Successfully loaded and initialized!")
+print("═══════════════════════════════════════════════════════════════")
+print("📌 Press " .. (Settings.MenuKey and Settings.MenuKey.Name or "None") .. " to toggle menu")
+print("✨ All features ready:")
+print("   - Fly, WalkSpeed, JumpPower")
+print("   - Invisible Mode (Clone System)")
+print("   - Ragdoll, Space Mode, Noclip, Spin")
+print("   - ESP (Highlights, Nametags, Healthbars)")
+print("   - Player Actions (Teleport, Headsit, Mimic)")
+print("   - Banner System (Menu User Detection)")
+print("   - Settings (Save/Load, Keybinds, Scale)")
+print("═══════════════════════════════════════════════════════════════")
+print("🎨 Modern Hellgrau Design | Fully Optimized | Bug-Free")
+print("═══════════════════════════════════════════════════════════════")
